@@ -1,0 +1,104 @@
+# main links
+main:
+  - title: "Home"
+    url: /
+  - title: "About"
+    url: /about/
+  - title: "BlockChain"
+    url: /blockchain/
+  - title: "Topics"
+    url: /collection-archive/
+  # - title: "Sample Posts"
+  #   url: /year-archive/
+  # - title: "Sample Collections"
+  #   url: /collection-archive/
+  # - title: "Sitemap"
+  #   url: /sitemap/
+
+# https://mmistakes.github.io/minimal-mistakes/docs/layouts/#custom-sidebar-navigation-menu
+# Custom sidebar navigation menu
+docs:
+  - title: "Getting Starts"
+    children:
+      - title: "Introduction"
+        url: /blockchain/permission-blockchain-security/
+      - title: "Preliminary"
+        url: /blockchain/permission-blockchain-security/
+      - title: "Framework Overview"
+        url: /blockchain/permission-blockchain-security/
+
+  - title: "IV. PERIMETER SECURITY 邊界安全"
+    children: 
+      - title: "4.1 Logical perimeter security"
+        url: /blockchain/permission-blockchain-security/
+      - title: "4.2 Physical perimeter security"
+        url: /blockchain/permission-blockchain-security/
+
+  - title: "V. HOST SECURITY CATEGORY"
+    children: 
+      - title: "5.1 Protect hosts and device secu-rity"
+        url: /blockchain/permission-blockchain-security/
+      - title: "5.2 Protect block data and nodecredentials"
+        url: /blockchain/permission-blockchain-security/
+      - title: "5.3 Protect user credentials"
+        url: /blockchain/permission-blockchain-security/
+      - title: "5.4 Guard the physical and envi-ronmental security"
+        url: /blockchain/permission-blockchain-security/
+
+  - title: "VI. NODE MANAGEMENT AND NETWORK SECURITY"
+    children: 
+      - title: "7.1 Consensus algorithm verifica-tion"
+        url: /blockchain/permission-blockchain-security/
+      - title: "7.2 Determine the Byzantine fault-tolerant capability"
+        url: /blockchain/permission-blockchain-security/
+      - title: "7.3 Identify the minimum resourcerequiremen"
+        url: /blockchain/permission-blockchain-security/
+      - title: "7.4 Deal with incidents about theconsensus mechanism"
+        url: /blockchain/permission-blockchain-security/
+      - title: "7.5 Segregation of duties"
+        url: /blockchain/permission-blockchain-security/
+      - title: "7.6 Disclose confidentiality andprivacy protection mechanism"
+
+  - title: "VIII. APPLICATION SECURITY"
+    children: 
+      - title: "8.1 Thread modeling"
+        url: /blockchain/permission-blockchain-security/
+      - title: "8.2 Identify security requirements"
+        url: /blockchain/permission-blockchain-security/
+      - title: "8.3 User notification"
+        url: /blockchain/permission-blockchain-security/
+      - title: "8.4 Code review"
+        url: /blockchain/permission-blockchain-security/
+      - title: "8.5 Perform security test"
+        url: /blockchain/permission-blockchain-security/
+      - title: "8.6 Ensure development envrionment security"
+        url: /blockchain/permission-blockchain-security/
+      - title: "8.7 Security update management"
+        url: /blockchain/permission-blockchain-security/
+      
+  - title: "X. CONCLUSIONS AND FUTURE WORK"
+    children: 
+        - title: "9.1 Establish and maintain documented procedures"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.2 Define security roles and responsibilities"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.3 Perform information security awareness, training, and education"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.4 Build risk management procedures"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.5 Establish the joint decision-making organization and associated procedures"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.6 Designate the information security officer"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.7 Maintain the change management and release management procedures"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.8 Establish the incident man-agement and business con-tinuity procedures"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.9 Ensure legal compliance"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.10 Perform internal auditing and self-check"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.11 Execute penetration testingand vulnerability scanning"
+          url: /blockchain/permission-blockchain-security/
+        - title: "9.12 Execute penetration testingand vulnerability scanning"
+          url: /blockchain/permission-blockchain-security/
