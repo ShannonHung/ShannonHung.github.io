@@ -4,8 +4,10 @@ main:
     url: /
   - title: "About"
     url: /about/
-  - title: "BlockChain"
-    url: /blockchain/
+  - title: "Life"
+    url: /lifes
+  - title: "Tech"
+    url: /tech/
   - title: "Topics"
     url: /collection-archive/
   # - title: "Sample Posts"

@@ -271,13 +271,14 @@ compress_html:
 collections_dir: my_collections
 
 collections:
-  blockchain:
+  lifes:
+    output: true
+    permalink: /:collection/:path
+
+  tech:
     output: true
     permalink: /:collection/:path/
 
-  OtherTopic:
-    output: true
-    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -299,11 +300,19 @@ defaults:
     values:
       layout: single
       author_profile: true
-# _blockchain
+# _tech
   - scope:
       path: ""
-      type: blockchain
+      type: tech
     values:
       layout: splash
       author_profile: false
       read_time: true
+# _lifes
+  - scope:
+      path: ""
+      type: lifes
+    values:
+      layout: single
+      author_profile: false 
+      share: true
