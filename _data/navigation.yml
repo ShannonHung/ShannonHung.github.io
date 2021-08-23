@@ -2,14 +2,15 @@
 main:
   - title: "Home"
     url: /
+    # url: /year-archive/
   - title: "About"
     url: /about/
   - title: "Life"
     url: /lifes
   - title: "Tech"
     url: /tech/
-  - title: "Topics"
-    url: /collection-archive/
+  # - title: "Topics"
+  #   url: /collection-archive/
   # - title: "Sample Posts"
   #   url: /year-archive/
   # - title: "Sample Collections"
