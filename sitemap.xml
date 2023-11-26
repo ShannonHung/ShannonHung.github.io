@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://shannonhung.github.io/posts/wazuh-agent-install-api/</loc>
+    <loc>https://shannonhung.github.io/en/posts/wazuh-agent-install-api/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -11,7 +11,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/install-wazuh/</loc>
+    <loc>https://shannonhung.github.io/en/posts/install-wazuh/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -20,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/elastic-alert-slack-guide/</loc>
+    <loc>https://shannonhung.github.io/en/posts/elastic-alert-slack-guide/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -29,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/elastic-alert-email-guide/</loc>
+    <loc>https://shannonhung.github.io/en/posts/elastic-alert-email-guide/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -38,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/elast-alert/</loc>
+    <loc>https://shannonhung.github.io/en/posts/elast-alert/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -47,7 +47,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/pyspark-install-notebook/</loc>
+    <loc>https://shannonhung.github.io/en/posts/pyspark-install-notebook/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -56,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/linux-usual-command/</loc>
+    <loc>https://shannonhung.github.io/en/posts/linux-usual-command/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -65,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/proxmox-window-install/</loc>
+    <loc>https://shannonhung.github.io/en/posts/proxmox-window-install/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -74,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/istio-intro/</loc>
+    <loc>https://shannonhung.github.io/en/posts/istio-intro/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -83,7 +83,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/hexo-butterfly-lang-switch/</loc>
+    <loc>https://shannonhung.github.io/en/posts/hexo-butterfly-lang-switch/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/interupt-connection-pool/</loc>
+    <loc>https://shannonhung.github.io/en/link/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -101,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/transportation-germany/</loc>
+    <loc>https://shannonhung.github.io/en/about/</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -110,207 +110,207 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/ML/</loc>
+    <loc>https://shannonhung.github.io/en/tags/</loc>
     
-    <lastmod>2023-11-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/pyspark-basic/</loc>
-    
-    <lastmod>2023-11-19</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/about-jdbc-connection-pool/</loc>
+    <loc>https://shannonhung.github.io/en/categories/</loc>
     
-    <lastmod>2023-11-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/prepare-germnay/</loc>
-    
-    <lastmod>2023-11-16</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/nlp-twitter-emotion-diagnoise/</loc>
+    <loc>https://shannonhung.github.io/en/posts/pyspark-basic/</loc>
     
-    <lastmod>2023-11-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/coco-object-diagnoise/</loc>
-    
-    <lastmod>2023-11-09</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/flower102-transfer-learning/</loc>
+    <loc>https://shannonhung.github.io/en/posts/pytorch-titanic-nn/</loc>
     
-    <lastmod>2023-11-02</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/pytorch-CNN-TensorBoard/</loc>
-    
-    <lastmod>2023-10-26</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/pytorch-titanic-nn/</loc>
+    <loc>https://shannonhung.github.io/en/posts/PyTorch-Mac-GPU/</loc>
     
-    <lastmod>2023-10-24</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/DLP-Survay-Paper/</loc>
-    
-    <lastmod>2023-10-24</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/ZTA-survey-AP-DB-summary/</loc>
+    <loc>https://shannonhung.github.io/en/posts/pytorch-CNN-TensorBoard/</loc>
     
-    <lastmod>2023-10-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/first-blog/</loc>
-    
-    <lastmod>2023-10-11</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/PyTorch-Mac-GPU/</loc>
+    <loc>https://shannonhung.github.io/en/posts/nlp-twitter-emotion-diagnoise/</loc>
     
-    <lastmod>2023-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/Design-Pattern-Hands-on/</loc>
-    
-    <lastmod>2023-09-22</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/germany-visa/</loc>
+    <loc>https://shannonhung.github.io/en/posts/flower102-transfer-learning/</loc>
     
-    <lastmod>2023-09-01</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/zta-survey/</loc>
-    
-    <lastmod>2023-08-17</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/security-for-storage-infra/</loc>
+    <loc>https://shannonhung.github.io/en/posts/coco-object-diagnoise/</loc>
     
-    <lastmod>2023-08-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/posts/security-for-storage-infra-2/</loc>
-    
-    <lastmod>2023-08-17</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/posts/equals-hashCode/</loc>
+    <loc>https://shannonhung.github.io/en/posts/ML/</loc>
     
-    <lastmod>2023-07-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/link/</loc>
-    
-    <lastmod>2023-06-18</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/about/</loc>
+    <loc>https://shannonhung.github.io/en/posts/equals-hashCode/</loc>
     
-    <lastmod>2023-06-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/tags/</loc>
-    
-    <lastmod>2023-06-18</lastmod>
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/</loc>
+    <loc>https://shannonhung.github.io/en/posts/first-blog/</loc>
     
-    <lastmod>2023-06-18</lastmod>
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/zta-survey/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/ZTA-survey-AP-DB-summary/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/about-jdbc-connection-pool/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/security-for-storage-infra/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/security-for-storage-infra-2/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/interupt-connection-pool/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/DLP-Survay-Paper/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/prepare-germnay/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/transportation-germany/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/germany-visa/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/posts/Design-Pattern-Hands-on/</loc>
+    
+    <lastmod>2023-11-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -318,7 +318,7 @@
   
 
   <url>
-    <loc>https://shannonhung.github.io/</loc>
+    <loc>https://shannonhung.github.io/en</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -326,217 +326,217 @@
 
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Code-Style/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Code-Style/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Design-Pattern/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Design-Pattern/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E7%B0%BD%E8%AD%89/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E7%B0%BD%E8%AD%89/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E5%BE%B7%E5%9C%8B/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E5%BE%B7%E5%9C%8B/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E4%BA%A4%E9%80%9A%E9%90%B5%E8%B7%AF/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E5%85%A5%E7%B1%8D/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Database/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E5%BB%B6%E7%B0%BD/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Connection-Pool/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E5%B1%85%E7%95%99%E8%AD%89/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E7%A2%A9%E5%A3%AB%E8%AB%96%E6%96%87/</loc>
+    <loc>https://shannonhung.github.io/en/tags/sim%E5%8D%A1/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E5%85%A5%E7%B1%8D/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E6%8F%90%E9%A0%98%E5%B8%B3%E6%88%B6/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E5%BB%B6%E7%B0%BD/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Revolut/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E5%B1%85%E7%95%99%E8%AD%89/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E4%BF%9D%E9%9A%AA/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/sim%E5%8D%A1/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E4%BA%A4%E9%80%9A%E9%90%B5%E8%B7%AF/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E6%8F%90%E9%A0%98%E5%B8%B3%E6%88%B6/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Database/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Revolut/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Connection-Pool/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E4%BF%9D%E9%9A%AA/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E7%A2%A9%E5%A3%AB%E8%AB%96%E6%96%87/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/DLP/</loc>
+    <loc>https://shannonhung.github.io/en/tags/DLP/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Cloud-Storage/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Cloud-Storage/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Security/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Security/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/NIST-SP-800-209/</loc>
+    <loc>https://shannonhung.github.io/en/tags/NIST-SP-800-209/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Zero-Trust/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Zero-Trust/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/hexo/</loc>
+    <loc>https://shannonhung.github.io/en/tags/istio/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/istio/</loc>
+    <loc>https://shannonhung.github.io/en/tags/hexo/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/proxmox/</loc>
+    <loc>https://shannonhung.github.io/en/tags/proxmox/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Java/</loc>
+    <loc>https://shannonhung.github.io/en/tags/linux/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Mechine-Learning/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/Mechine-Learning/</loc>
+    <loc>https://shannonhung.github.io/en/tags/Java/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/linux/</loc>
+    <loc>https://shannonhung.github.io/en/tags/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/spark/</loc>
+    <loc>https://shannonhung.github.io/en/tags/spark/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/elastic/</loc>
+    <loc>https://shannonhung.github.io/en/tags/elastic/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/alert/</loc>
+    <loc>https://shannonhung.github.io/en/tags/alert/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/tags/wazuh/</loc>
+    <loc>https://shannonhung.github.io/en/tags/wazuh/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -545,161 +545,161 @@
 
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Code/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Code/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%95%99%E5%AD%B8/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%95%99%E5%AD%B8/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%A0%94%E7%A9%B6/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Code/Design-Pattern/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Code/Design-Pattern/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%A0%94%E7%A9%B6/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%95%99%E5%AD%B8/%E7%B0%BD%E8%AD%89%E7%94%B3%E8%AB%8B/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%95%99%E5%AD%B8/%E7%B0%BD%E8%AD%89%E7%94%B3%E8%AB%8B/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%95%99%E5%AD%B8/%E4%BA%A4%E9%80%9A%E6%97%85%E9%81%8A/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%95%99%E5%AD%B8/%E6%8A%B5%E9%81%94%E5%BE%B7%E5%9C%8B%E5%BF%85%E5%81%9A/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%A0%94%E7%A9%B6/Zero-Trust/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%95%99%E5%AD%B8/%E4%BA%A4%E9%80%9A%E6%97%85%E9%81%8A/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E6%8A%80%E8%A1%93/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%A0%94%E7%A9%B6/Database/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E6%8A%80%E8%A1%93/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Tech/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%A0%94%E7%A9%B6/Database/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%95%99%E5%AD%B8/%E6%8A%B5%E9%81%94%E5%BE%B7%E5%9C%8B%E5%BF%85%E5%81%9A/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%A0%94%E7%A9%B6/Zero-Trust/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Code/Mechine-Learning/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%A0%94%E7%A9%B6/DLP/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%A0%94%E7%A9%B6/DLP/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Code/Mechine-Learning/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%A0%94%E7%A9%B6/%E7%95%A2%E6%A5%AD%E8%AB%96%E6%96%87/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/Istio/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E6%8A%80%E8%A1%93/hexo/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E6%8A%80%E8%A1%93/hexo/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Tech/Istio/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/proxmox/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Tech/proxmox/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/Linux/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E6%8A%80%E8%A1%93/Java/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%A0%94%E7%A9%B6/%E7%95%A2%E6%A5%AD%E8%AB%96%E6%96%87/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Tech/Linux/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E6%8A%80%E8%A1%93/Java/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/%E7%A0%94%E7%A9%B6/Security/</loc>
+    <loc>https://shannonhung.github.io/en/categories/%E7%A0%94%E7%A9%B6/Security/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Tech/Spark/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/Spark/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Tech/elastic/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/elastic/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/categories/Tech/wazuh/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/wazuh/</loc>
     <lastmod>2023-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

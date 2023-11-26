@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
       : Number(saveToLocal.get("translate-en-cht"));
   let translateButtonObject;
   const isSnackbar = snackbarData !== undefined;
-
   const isIncludeEN = (item) => {
     const key = "/en/";
     return item.includes(key);
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
       translateButtonObject.textContent = msgToTraditionalChinese;
       // 然後導向繁體中文的網址 目前網址 /en/... => /...
       let newUrl = currentUrl.replace("/en/", "/");
-      console.log(`Redirect to ${newUrl}`);
       window.location.href = newUrl;
     } else {
       // 把文字顯示成英文
