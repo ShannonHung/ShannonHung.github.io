@@ -1,50 +1,50 @@
-<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>All basic concept of Mechine Learning - ML 的重點知識整理 | Shannon's Blog 🐟 Tech | Life | Travel</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="參考資料  Epoch, Batch size, Iteration, Learning Rate ML Lecture 6: Brief Introduction of Deep Learning ML Lecture 7: Backporpagation 聊一聊深度学习的activation function 台大李鴻毅老師的所有影片 超詳細的activation function推導公式 卷">
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>All basic concept of Mechine Learning - ML 的重點知識整理 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="參考資料  Epoch, Batch size, Iteration, Learning Rate ML Lecture 6: Brief Introduction of Deep Learning ML Lecture 7: Backporpagation 聊一聊深度学习的activation function 台大李鴻毅老師的所有影片 超詳細的activation function推導公式 卷">
 <meta property="og:type" content="article">
 <meta property="og:title" content="All basic concept of Mechine Learning - ML 的重點知識整理">
-<meta property="og:url" content="https://shannonhung.github.io/en/posts/ML/">
-<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 Tech | Life | Travel">
+<meta property="og:url" content="https://shannonhung.github.io/posts/ML/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
 <meta property="og:description" content="參考資料  Epoch, Batch size, Iteration, Learning Rate ML Lecture 6: Brief Introduction of Deep Learning ML Lecture 7: Backporpagation 聊一聊深度学习的activation function 台大李鴻毅老師的所有影片 超詳細的activation function推導公式 卷">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://shannonhung.github.io/en/img/cover/ai-knowledge.jpeg">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://shannonhung.github.io/img/cover/ai-knowledge.jpeg">
 <meta property="article:published_time" content="2023-09-30T03:36:29.000Z">
-<meta property="article:modified_time" content="2023-11-26T01:08:00.551Z">
+<meta property="article:modified_time" content="2023-11-21T10:14:05.659Z">
 <meta property="article:author" content="Shannon Hung">
 <meta property="article:tag" content="Mechine Learning">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://shannonhung.github.io/en/img/cover/ai-knowledge.jpeg"><link rel="shortcut icon" href="/en/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/en/posts/ML/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/en/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+<meta name="twitter:image" content="https://shannonhung.github.io/img/cover/ai-knowledge.jpeg"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/ML/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-XBNKVVH2P4');
 </script><script>const GLOBAL_CONFIG = {
-  root: '/en/',
+  root: '/',
   algolia: undefined,
-  localSearch: {"path":"/en/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
-  translate: {"defaultEncoding":3,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
   noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
   highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
   copy: {
-    success: 'Copy Successful',
-    error: 'Copy Error',
-    noSupport: 'Browser Not Supported'
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
   },
   relativeDate: {
     homepage: false,
     post: false
   },
-  runtime: 'days',
+  runtime: '天',
   dateSuffix: {
-    just: 'Just now',
-    min: 'minutes ago',
-    hour: 'hours ago',
-    day: 'days ago',
-    month: 'months ago'
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
   },
   copyright: undefined,
   lightbox: 'fancybox',
-  Snackbar: {"chs_to_cht":"You have switched to Traditional Chinese","cht_to_chs":"You have switched to English","day_to_night":"You have switched to Dark Mode","night_to_day":"You have switched to Light Mode","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
   infinitegrid: {
     js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
-    buttonText: 'Load More'
+    buttonText: '載入更多'
   },
   isPhotoFigcaption: true,
   islazyload: false,
@@ -60,7 +60,7 @@ gtag('config', 'G-XBNKVVH2P4');
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-11-26 09:08:00'
+  postUpdate: '2023-11-21 18:14:05'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -157,7 +157,7 @@ gtag('config', 'G-XBNKVVH2P4');
         }
       }
       detectApple()
-    })(window)</script><link rel="stylesheet" href="/en/css/style.css"><link rel="stylesheet" href="/en/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/en/img/loading-icon.gif" data-original="/en/img/dudu-me.png" onerror="onerror=null;src='/en/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/en/archives/"><div class="headline">Articles</div><div class="length-num">31</div></a><a href="/en/tags/"><div class="headline">Tags</div><div class="length-num">31</div></a><a href="/en/categories/"><div class="headline">Categories</div><div class="length-num">22</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/en/"><i class="fa-fw fas fa-home"></i><span> Home Page</span></a></div><div class="menus_item"><a class="site-page" href="/en/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categroies</span></a></div><div class="menus_item"><a class="site-page" href="/en/about/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div><div class="menus_item"><a class="site-page" href="/en/link/"><i class="fa-fw fas fa-link"></i><span> Links</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> Find Posts</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/tags/"><i class="fa-fw fas fa-tags"></i><span> By Tags</span></a></li><li><a class="site-page child" href="/en/archives/"><i class="fa-fw fas fa-archive"></i><span> By Posts</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> Language</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="https://shannonhung.github.io/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/en/img/cover/ai-knowledge.jpeg')"><nav id="nav"><span id="blog-info"><a href="/en/" title="Shannon's Blog 🐟 Tech | Life | Travel"><span class="site-name">Shannon's Blog 🐟 Tech | Life | Travel</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/en/"><i class="fa-fw fas fa-home"></i><span> Home Page</span></a></div><div class="menus_item"><a class="site-page" href="/en/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categroies</span></a></div><div class="menus_item"><a class="site-page" href="/en/about/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div><div class="menus_item"><a class="site-page" href="/en/link/"><i class="fa-fw fas fa-link"></i><span> Links</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> Find Posts</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/tags/"><i class="fa-fw fas fa-tags"></i><span> By Tags</span></a></li><li><a class="site-page child" href="/en/archives/"><i class="fa-fw fas fa-archive"></i><span> By Posts</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> Language</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="https://shannonhung.github.io/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">All basic concept of Mechine Learning - ML 的重點知識整理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-09-30T03:36:29.000Z" title="Created 2023-09-30 11:36:29">2023-09-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-11-26T01:08:00.551Z" title="Updated 2023-11-26 09:08:00">2023-11-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/en/categories/Code/">Code</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/en/categories/Code/Mechine-Learning/">Mechine Learning</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">10.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>36mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="All basic concept of Mechine Learning - ML 的重點知識整理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">Comments:</span><a href="/en/posts/ML/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="參考資料">參考資料</h1>
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">22</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/ai-knowledge.jpeg')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">All basic concept of Mechine Learning - ML 的重點知識整理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-09-30T03:36:29.000Z" title="發表於 2023-09-30 11:36:29">2023-09-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2023-11-21T10:14:05.659Z" title="更新於 2023-11-21 18:14:05">2023-11-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Code/">Code</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Code/Mechine-Learning/">Mechine Learning</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">10.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>36分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="All basic concept of Mechine Learning - ML 的重點知識整理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽次數:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/ML/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="參考資料">參考資料</h1>
 <ul>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://medium.com/%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7-%E5%80%92%E5%BA%95%E6%9C%89%E5%A4%9A%E6%99%BA%E6%85%A7/epoch-batch-size-iteration-learning-rate-b62bf6334c49">Epoch, Batch size, Iteration, Learning Rate</a></li>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://youtu.be/Dr-WRlEFefw?si=YUsDXnWbTRSBiR26">ML Lecture 6: Brief Introduction of Deep Learning</a></li>
@@ -170,29 +170,29 @@ gtag('config', 'G-XBNKVVH2P4');
 </ul>
 <h1 id="Nerual-Network">Nerual Network</h1>
 <p>主要參考：- <a target="_blank" rel="noopener external nofollow noreferrer" href="https://youtu.be/Dr-WRlEFefw?si=YUsDXnWbTRSBiR26">ML Lecture 6: Brief Introduction of Deep Learning</a></p>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/QiJ6SSW.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/QiJ6SSW.png" alt=""></p>
 <ul>
 <li>就是把 <code>input * weight + bias</code> 進行 <code>activation function</code> (ex. sigmoid )，得到 output，然後再進行下一層的運算。</li>
 <li>如果你知道當下 nerual network 當下計算出結果的所有 weight 和 bias ，稱之為一個 function，而梯度下降就是在多組 function set中找到最佳的那組 function。</li>
 </ul>
 <h2 id="Goal">Goal</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/M7cW1Jv.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/M7cW1Jv.png" alt=""></p>
 <ul>
 <li>透過 Cross Entropy 來看預測的結果跟實際的結果有多接近，越大表示差越多，越小表示差越少。</li>
 <li>而 <strong>Loss function 就是把所有的 Cross Entropy 加起來</strong>，就是我們要<strong>最小化的目標</strong>。</li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/MuUNBwO.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/MuUNBwO.png" alt=""></p>
 <ul>
 <li>找到一個 function in function set，讓 Loss function 最小化，就是我們要找的 function。</li>
 <li>找到的過程就是透過 梯度下降法 (Gradient Descent) 來找到 network parameters θ (weight, bias) 的最佳解。</li>
 </ul>
 <h2 id="hidden-layer">hidden layer</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/HHjICpr.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/HHjICpr.png" alt=""></p>
 <ul>
 <li>一個 layer 就是把 <strong>input * metrix + bias 通過 activation function</strong> （ex. sigmoid funciton）得到最後的結果</li>
 </ul>
 <h2 id="output-layer">output layer</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/xl7SWAK.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/xl7SWAK.png" alt=""></p>
 <ul>
 <li>又稱 Multi-class Classifier ，因為output layer是把前一個layer ouput當作feature，他不是直接使用原始的input(x)，而是經過很多hidden layer很多複雜轉換後抽出一組最好的feature。</li>
 <li>Multi-Class Classifier 要通過一個 Softmax function，把每個類別的機率加起來等於1，然後取最大的機率當作預測的類別。</li>
@@ -255,7 +255,7 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 </div>
 <h1 id="Learning-Rate">Learning Rate</h1>
 <p>在進行「梯度下降」（Gradient Descent）時，每次計算誤差後會做偏微分來更新權重，更新的程度會由 ∇E（Gradient）乘上一個「 η（Learning rate）」來決定，目的就是為了讓更新的幅度不要太大或太小，讓每次更新 weight, bias 尋找最小的 Loss 時，移動至下一組(weight, bias)的幅度。</p>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/CEW4U3F.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/CEW4U3F.png" alt=""><br>
 (左圖)learning rate的變化：</p>
 <ul>
 <li>如果<strong>learning rate很低</strong>，那<strong>Loss value會呈現 linear</strong></li>
@@ -271,7 +271,7 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 相對的，如果我想用<strong>Batch size = 1</strong>的條件下去訓練，那可能就<strong>要配置較小的 η ，才不會在接近 Minima 的時候來回走動</strong>，也就不用走太多冤枉路。但也因為 η 較小，我可能就需要比較多的 Epoch 才會走到 Minima。</p>
 </div>
 <h2 id="Adagrad">Adagrad</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/kHY3mYz.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/kHY3mYz.png" alt=""></p>
 <ul>
 <li>現在每個 parameters 都有自己的 learning rate，把 learning rate 除以過去所有 gradient 的平方和，得到新的parameters。</li>
 <li>如果平時 Gradient 比較陡峭，那給予小的 Learning Rate。相反的，如果平時 Gradient 比較平緩，那給予大的 Learning Rate。</li>
@@ -280,7 +280,7 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 <div class="note warning flat"><p>但是如果今天平時處理的問題可能比較複雜，怎麼辦？如下圖<br>
 你可以方向在水平直線的地方，一下 gradient 大，一下 gradient 小，所以我們<strong>要能夠更 dynamic 的調整 learning rate</strong>。因此有了 RMSProp。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Nr1cIpI.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Nr1cIpI.png" alt=""></p>
 <ul>
 <li>第一個時間點：把 learning rate 除以一個值 sigma，這個 sigma 就是第一次算出來的 gradient。</li>
 <li>第二個時間點：新的sigma就是&quot;原本sigma值平方&quot;乘上&quot;a&quot;，再加上&quot;新的gradient值平方&quot;乘上&quot;1-a&quot;，這個&quot;a&quot;可以自由去調整。這樣就可以讓 sigma 有一個平滑的效果。</li>
@@ -288,7 +288,7 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 <div class="note info flat"><p>與原本的 Adagrad 相比，<strong>RMSProp 因為都會把每次的 gradient 參考進去導致有一個平滑的效果</strong>，也可以隨著gradient改變的大小，動態調整 learning rate 的大小，讓 learning rate 更加的動態。</p>
 </div>
 <h1 id="Gradient-Descent">Gradient Descent</h1>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/jYAlRkm.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/jYAlRkm.png" alt=""><br>
 我們先很快地複習一下一般的 Gradient Descent 是怎麼做的：</p>
 <ul>
 <li>選一個初始的值並計算一下它的 gradient，假設它的 gradient 是左上角紅色箭頭的方向，那我們就走 gradient 的反方向乘上一個 learning rate，再算 gradient 之後再走一個新的方向，以此類推。</li>
@@ -301,7 +301,7 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 </ul>
 <div class="note info flat"><p>他是一個可以幫助我們跳出local minimum的方法。參考慣性的概念，讓每次更新時多跑一點。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/e8GMTen.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/e8GMTen.png" alt=""></p>
 <ul>
 <li>在進行Gradient Descent的時候，可能會<code>碰到 local minimum 的問題</code>。</li>
 <li>但是有一個方法可以幫助我們跳出 local minimum，就是使用 momentum。
@@ -313,13 +313,13 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 </ul>
 <div class="note info flat"><p><strong>所以我們就把這個慣性的特性加到 Gradient Descent 裡面去，這就叫做 momentum，他就是上一個時間點的 movement。</strong></p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/GUNg87f.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/QqVVOQm.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/GUNg87f.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/QqVVOQm.png" alt=""></p>
 <ul>
 <li>綠色線條是慣性，紅色是 gradient 的方向，把這兩個方向加起來，就是我們要走的方向。</li>
 <li>再看Momentum in graph，你可以發現在最後一個地方（最右邊處），如果今天球的gradient &lt; momentum 時，可能可以讓球跳出 local minimum。</li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/q0rdRfM.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/q0rdRfM.png" alt=""></p>
 <ul>
 <li>v 是之前所有 gradient 的總和，而 v 會乘上一個 momentum 的值，然後再加上現在的 gradient，這樣就可以讓我們的 gradient 有一個慣性的效果，讓它可以跳出 local minimum。</li>
 <li>你會發現，v1 是由 v0 * lemda 所組成，如果lemda &lt; 0，則越早之前的移動影響越小。</li>
@@ -328,7 +328,7 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 <h2 id="Adam">Adam</h2>
 <div class="note info flat"><p><strong>就是 RMSProp + Momentum = 動態調整 Learning Rate + 添加一點「慣性」</strong></p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Ir1J6fR.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Ir1J6fR.png" alt=""></p>
 <ul>
 <li>m0 是前一個時間點的movement</li>
 <li>v0 之前算出來gradient的平方和</li>
@@ -345,14 +345,14 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 <p>批次梯度下降的主要特點是它將<strong>訓練數據拆分成批次，這降低了內存需求</strong>，並使算法更適合大型數據集。但它可能會導致較多的迭代次數，因為每次迭代僅考慮一個小批次的數據。</p>
 <p>和一般的GD差異在於，<strong>梯度下降在每次迭代中使用整個訓練數據集，而批次梯度下降僅使用一個小批次的數據</strong>。</p>
 <h2 id="Stochastic-Gradient-Descent-SGD">Stochastic Gradient Descent (SGD)</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/3eLwMwv.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/3eLwMwv.png" alt=""></p>
 <ul>
 <li>作法：每次迭代中<strong>僅使用單個訓練樣本</strong>來計算梯度，然後更新模型參數。這導致每次迭代的梯度估計都是隨機的。</li>
 <li>優點：SGD的主要優點是對記憶體要求較低，對大型數據集適用，並且可能幫助模型逃離局部極小值。</li>
 <li>缺點：但它可能需要更多的迭代才能收斂，且更新不太穩定。</li>
 </ul>
 <h2 id="Mini-batch-Gradient-Descent-Mini-batch-GD">Mini-batch Gradient Descent (Mini-batch GD)</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/0jARl1y.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/0jARl1y.png" alt=""></p>
 <ul>
 <li>作法：小批次梯度下降通常是最常用的優化算法。它在每次迭代中<strong>使用一個小批次（batch）的訓練數據</strong>來計算梯度，然後更新模型參數。這樣既降低了內存需求，又提供了相對<strong>穩定</strong>的梯度估計。</li>
 <li>優點：因為它兼具SGD和標準梯度下降的優勢。它可以在大型數據集上工作，提供相對穩定的梯度估計，並在收斂速度和計算效率之間取得良好的平衡</li>
@@ -372,11 +372,11 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 <div class="note warning flat"><p>但是，<code>Sigmoid函數在深度網路中常常會導致導數逐漸變成0，使得參數無法被更新</code>，神經網路無法被最佳化。因此，現在常用的激活函數是ReLU，它的導數在正數部分恆為1，因此不會有上述問題。</p>
 </div>
 <h1 id="Loss-of-classification">Loss of classification</h1>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/ti55P7J.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/ti55P7J.png" alt=""></p>
 <ul>
 <li>pytourch 中的 Cross Entropy 已經包含 softmax 的功能，所以不需要自己寫 softmax function。</li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/YNVjMiA.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/YNVjMiA.png" alt=""></p>
 <ul>
 <li>Cross Entropy 比較容易透過梯度下降找到最小 loss 但是如果使用 MSE （Mean Square Error）會比較難找到最小 loss，可能會卡住。</li>
 </ul>
@@ -392,7 +392,7 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 <div class="note info flat"><p>其實Activation Function就是在經歷每一層 hidden layer <strong>經過非線性的activation function，傳入到下一層神經元繼續往下傳遞</strong>，如此循環往復，直到輸出層。，讓神經網路可以抓取複雜的pattern。</p>
 </div>
 <h2 id="Sigmoid">Sigmoid</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/nAcok6B.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/nAcok6B.png" alt=""></p>
 <ul>
 <li>左邊是微分前，右邊是微分後。</li>
 <li>值域在1和0之間，最終預測時可加上閾值令大於閾值的輸出為1反之為0，因此通常使用的時機為二元分類問題的輸出層。</li>
@@ -404,9 +404,9 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 </ul>
 </li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/P0WuoPn.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/P0WuoPn.png" alt=""></p>
 <h2 id="ReLU">ReLU</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Z5iB9iE.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Z5iB9iE.png" alt=""></p>
 <ul>
 <li>input &lt; 0 就是 0 ，input &gt; 0 就是 input</li>
 <li>這個東西可以微分，但是 input = 0 時是不可微分的，所以在 input = 0 時，我們就隨便給一個數字，例如 0.5 。</li>
@@ -441,8 +441,8 @@ Ans: 100萬/1000 * 5 = 5000次</p>
 </li>
 </ul>
 <h2 id="Leaky-Parametric-ReLU">Leaky / Parametric ReLU</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/9QyRAZ6.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/gjxg1M2.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/9QyRAZ6.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/gjxg1M2.png" alt=""></p>
 <div class="note info flat"><p>Leaky ReLU就是在input &lt; 0的時候，output不是0，而是乘上一個很小的數字，例如0.01。</p>
 </div>
 <div class="note info flat"><p>為什麼input不能&lt;0呢？<br>
@@ -455,14 +455,14 @@ Ans: 因為這會導致output是0，這樣就無法進行back propagation，因�
 <h2 id="Maxout">Maxout</h2>
 <div class="note info flat"><p>讓<strong>training data決定你的network自動學習activation function</strong>，而不是人為的決定。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/ALMazw3.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/ALMazw3.png" alt=""></p>
 <ul>
 <li>Step1: 他把 value group 起來，將個elements放在一個group裡面是你可以自己決定的</li>
 <li>Step2: 在同一個group裡面，取最大的那個值當作 output。類似max pooling，在layer上做max pooling。</li>
 <li>Step3: 再乘上一個 weight，回去做Step1。</li>
 </ul>
 <h3 id="Maxout-implement-ReLU">Maxout implement ReLU</h3>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/ZQgNYlD.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/ZQgNYlD.png" alt=""><br>
 Maxout 可以模仿 ReLU:</p>
 <ul>
 <li>ReLU
@@ -479,15 +479,15 @@ Maxout 可以模仿 ReLU:</p>
 </li>
 </ul>
 <h3 id="multi-activation-function">multi activation function</h3>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/TwMbHI8.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/TwMbHI8.png" alt=""></p>
 <ul>
 <li>可以透過將 0,0 <strong>weight 調整成其他參數</strong>，產生不同的 activation function。<br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/60PVR91.png" alt=""></li>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/60PVR91.png" alt=""></li>
 <li>也可以透過將<strong>多個 elements groups 再一起</strong>產生不同的 activation function。</li>
 </ul>
 <h3 id="How-to-Train">How to Train</h3>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Txu18Kp.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/icMx1qg.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Txu18Kp.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/icMx1qg.png" alt=""></p>
 <ul>
 <li>當我們在做 maxout 也是得到一個細長的 linear network，會捨棄掉比較小的output</li>
 </ul>
@@ -495,8 +495,8 @@ Maxout 可以模仿 ReLU:</p>
 Ans: 因為當給不同 input 時會導致選擇 max 值的 neuron 不一樣。而 training 的過程中，<strong>有很多不同的 input 重複跑這些 neural network，因此每次training時input值也會不同</strong>，這將會導致每次training時選擇的 max neuron 也會不同，因此每個 neuron 都有機會被 train 到。</p>
 </div>
 <h1 id="Softmax">Softmax</h1>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/sO085f5.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Ozq0g5F.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/sO085f5.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Ozq0g5F.png" alt=""></p>
 <ul>
 <li>Softmax 是一種激活函數，通常使用在最後的output layer 主要用於多分類（classification）問題，將神經網路的輸出轉換成每一類的機率，並且機率總和為1。</li>
 <li>類似 normalization。</li>
@@ -523,7 +523,7 @@ Ans: 因為當給不同 input 時會導致選擇 max 值的 neuron 不一樣。�
 <li>Stride: 通常是1，表示kernal map在移動時的步伐長度。</li>
 <li>輸出的圖片大小：new_hight * new_width</li>
 </ol>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Hhn9ecA.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Hhn9ecA.png" alt=""><br>
 以上圖為例：</p>
 <ol>
 <li>輸入的圖: W × W =10 × 10。</li>
@@ -535,7 +535,7 @@ Ans: 因為當給不同 input 時會導致選擇 max 值的 neuron 不一樣。�
 <p>是不是卷積計算後，卷積後的圖是不是就一定只能變小?<br>
 ANS: 用zero padding</p>
 <p>這個手法就是看你會消失多少的大小，在輸入的圖部份就給你加上0元素進去，這個手法稱為zero padding，實際作法如下圖。<br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/sXW7Yt2.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/sXW7Yt2.png" alt=""></p>
 <h2 id="Feature-Normalization">Feature Normalization</h2>
 <ul>
 <li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://youtu.be/BABPWOkSbLE?si=V8dv0zVW95fY56GR">【機器學習2021】類神經網路訓練不起來怎麼辦 (五)： 批次標準化 (Batch Normalization) 簡介</a></li>
@@ -546,7 +546,7 @@ ANS: 用zero padding</p>
 <blockquote>
 <p>兩個參數W1,W2對斜率的變化很大，固定的Learning Rate可能不會得到好的結果。</p>
 </blockquote>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/RB51XXy.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/RB51XXy.png" alt=""></p>
 <ul>
 <li>什麼時候w1的改變會對L很小?
 <ul>
@@ -555,7 +555,7 @@ ANS: 用zero padding</p>
 </ul>
 </li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/8slnaKM.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/8slnaKM.png" alt=""></p>
 <blockquote>
 <p><strong>公式</strong></p>
 </blockquote>
@@ -568,7 +568,7 @@ ANS: 用zero padding</p>
 <div class="note info flat"><p>問題：如果經過 某一層hidden layer 的計算後 (乘上 w 之後)，會變成很大或很小的數字，這樣就會導致後面的 layer 在接收 input 的時候這些 input 已經變成不同的範圍。因此我們對於 a (經過activation function後) 跟 z (經過activation function之前)都要執行Feature Normalization。</p>
 <p><code>但是對 a 或 z 做 normalization 不會有太大的差別。</code></p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/eqMZs7Q.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/eqMZs7Q.png" alt=""></p>
 <ul>
 <li><strong>說明</strong>：
 <ul>
@@ -580,7 +580,7 @@ ANS: 用zero padding</p>
 <h3 id="Batch-Normalization">Batch Normalization</h3>
 <div class="note info flat"><p>問題：我剛說進行feature normalization的過程就有如network一班，但是他的input很大時，我們沒辦法放這麼多計算進GPU那該怎麼辦？</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/jtDm2sm.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/jtDm2sm.png" alt=""></p>
 <ul>
 <li><strong>作法</strong>：上述講的把feature normalization 的過程當作 network，然而<strong>一次把上百萬筆資料丟到network就太多了</strong>，才有了batch normalization的概念。</li>
 <li><strong>舉例</strong>：假設batch設定64，所以我們可以一次使用64筆資料，計算這64筆資料的平均值跟標準差，對這64筆data做batch normalization。</li>
@@ -589,25 +589,25 @@ ANS: 用zero padding</p>
 </div>
 <div class="note info flat"><p>問題：如果我不希望mean是0該怎麼做？</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/LkDaDvI.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/LkDaDvI.png" alt=""><br>
 還會有其他的設定，乘上另一個向量gama是一個向量，加上另一個向量beta，<strong>有些時候不希望平均是0，這樣可以讓hidden layer的output平均不是0</strong>。gama是全部都是1的向量，beta是全部都是0的向量，這樣一開始訓練的時候每個dimention的分布比較平均。</p>
 <div class="note info flat"><p>問題：Batch normalization 怎麼在 testing 的時候運作？因為testing的時候沒有batch，就沒辦法計算平均值跟標準差。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/iziqNgH.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/iziqNgH.png" alt=""><br>
 因此這時候會會談到 Moving Average (移動平均)，在Trainning的時候，每次計算完一次batch的平均值跟標準差，就會更新一次 Moving Average，把現在算出來的平均值*p，加上1-p公式如下：<br>
 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>u</mi><mo>ˉ</mo></mover><mo>←</mo><mi>p</mi><mover accent="true"><mi>u</mi><mo>ˉ</mo></mover><mo>+</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="false">)</mo><msup><mi>y</mi><mi>t</mi></msup></mrow><annotation encoding="application/x-tex">\bar{u} \gets p\bar{u}+(1-p)y^{t}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5678em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">u</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">←</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">u</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0436em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mclose">)</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span></span></p>
 <p>那在<strong>訓練的時候，直接拿Moving Average的平均值跟標準差來做batch normalization即可</strong>。</p>
 <blockquote>
 <p>結果<br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/9y9uccI.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/9y9uccI.png" alt=""></p>
 </blockquote>
 <h1 id="Overfitting">Overfitting</h1>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Ck5jTMb.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Ck5jTMb.png" alt=""></p>
 <ul>
 <li>Overfitting 就是你的 model 在 training data 上表現得很好，但是在 testing data 上表現得很差。</li>
 <li>你可以從上圖看到，vlidation accuracy在某個epoch開始下降。</li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/0NZ1OxN.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/0NZ1OxN.png" alt=""></p>
 <ul>
 <li>Validation Data Set 驗證數據：集用於內部調整和評估模型的訓練過程。驗證數據集在訓練過程中使用，通常是在每個訓練週期（epoch）結束後，用來評估模型的性能。</li>
 <li>Test Data Set 測試數據集：用於最終評估模型的性能，以確保它對新數據的泛化能力。</li>
@@ -619,7 +619,7 @@ ANS: 用zero padding</p>
 <li>Regularization</li>
 </ol>
 <h2 id="Early-Stopping">Early Stopping</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/q3PniQa.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/q3PniQa.png" alt=""></p>
 <ul>
 <li>如果 learning rate 調整得好，Loss會變小，但是有可能導致Testing data的Loss變大，這時候就需要Early Stopping。</li>
 <li>理想上，如果我們知道 Testing Data Loss 的變化，我們應該要想辦法<strong>找到 Testing Loss最小的時候停下來</strong>。</li>
@@ -633,7 +633,7 @@ ANS: 用zero padding</p>
 <h2 id="Regularization">Regularization</h2>
 <div class="note info flat"><p>重新定義了原本的Minimized的Loss function，透過在原本的 Loss Function (e.g. Minimize square error, cross entropy)添加上「Regularization term」，來達到防止 overfitting 的效果。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Bdiqb9p.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Bdiqb9p.png" alt=""></p>
 <ul>
 <li>Regularization Term
 <ul>
@@ -643,7 +643,7 @@ ANS: 用zero padding</p>
 </li>
 </ul>
 <h3 id="How-to-do-Regularization">How to do Regularization?</h3>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/iCrRsDt.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/iCrRsDt.png" alt=""></p>
 <ul>
 <li>新的 Loss function進行偏微分：
 <ul>
@@ -653,7 +653,7 @@ ANS: 用zero padding</p>
 </ul>
 </li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/WTd6044.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/WTd6044.png" alt=""></p>
 <ul>
 <li>絕對值怎麼微分？
 <ul>
@@ -669,23 +669,23 @@ ANS: 用zero padding</p>
 </li>
 </ul>
 <h2 id="Dropout">Dropout</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/gqNoDQW.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/gqNoDQW.png" alt=""></p>
 <div class="note info flat"><p>在training更新參數之前，每個neuron有p％的幾率被丟掉。他就像是每次 train 都是新的 network，所以總共做了 2^N 種不同的 network。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/ArlhR3J.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/ArlhR3J.png" alt=""></p>
 <ul>
 <li>可能導致performance變差，但他的目地是為了讓testing結果變好。</li>
 <li>training用dropout，testing 不用 dropout</li>
 </ul>
 <h3 id="How-to-do-dropout">How to do dropout?</h3>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/3rOdy4W.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/2eSN0c3.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/3rOdy4W.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/2eSN0c3.png" alt=""></p>
 <ul>
 <li>為什麼會需要在 training 的時候反而要將所有 weight 乘上 1-p 是為了讓 testing 時所使用的 weight 接近沒有 dropout 的 training。</li>
 <li>如果不乘上 1-p 會導致 testing 時的 weight 會比 training 時的 weight 大（如果p=0.5，就會大兩倍1/0.5），這樣會導致 testing 時的結果變差。</li>
 </ul>
 <h3 id="Why-dropout-solve-overfitting">Why dropout solve overfitting?</h3>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/L0ydgyD.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/L0ydgyD.png" alt=""></p>
 <ul>
 <li>Training
 <ul>
@@ -696,7 +696,7 @@ ANS: 用zero padding</p>
 </li>
 </ul>
 <h3 id="Why-not-use-dropout-in-testing">Why not use dropout in testing?</h3>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/jf67zvl.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/jf67zvl.png" alt=""></p>
 <ul>
 <li>Testing 為什麼不跟 training 一樣做 dropout 呢？
 <ul>
@@ -721,14 +721,14 @@ ANS: 用zero padding</p>
 <h3 id="Fine-Tuning">Fine-Tuning</h3>
 <div class="note info flat"><p>如果你的target data很少，source data 很多，這可以說是 one-shot learning。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/9p8Of7L.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/9p8Of7L.png" alt=""></p>
 <ul>
 <li>Source Data: 很多，先利用source data當作初始的值。</li>
 <li>Target Data: 很少，再利用target data來微調。</li>
 <li>注意：但是要很小心，可能會發生overfitting。</li>
 </ul>
 <h4 id="Conservative-Training">Conservative Training</h4>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/8eTjv2p.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/8eTjv2p.png" alt=""></p>
 <ul>
 <li>Source Data: 很多 speaker 的聲音。</li>
 <li>Target Data: 特定 speaker 的聲音。</li>
@@ -737,7 +737,7 @@ ANS: 用zero padding</p>
 <h4 id="Layer-Transfer">Layer Transfer</h4>
 <div class="note info flat"><p>用 source data train 好一個 model，把某幾個layer copy 到新 model 裡面，然後 source data 只去 train 沒有 copy 的 layer。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/cL6pvre.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/cL6pvre.png" alt=""></p>
 <ul>
 <li>model 某幾個 layer 直接複製到新的model</li>
 <li>接下來用 source data 只去 train 沒有 copy 的 layer。？？</li>
@@ -783,7 +783,7 @@ ANS: 用zero padding</p>
 <h2 id="使用SPP-net">使用SPP-net</h2>
 <div class="note info flat"><p>為了解決都要自己構造一個網路，<code>無法共享一個捲積的問題</code>，Spatial Pyramid Pooling Layer透過通過一個pooling layer，把<code>不同大小的特徵圖拼接再一起形成一個新的特徵</code>，這樣就可以執行fully connection layer。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/unumRh1.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/unumRh1.png" alt=""></p>
 <ul>
 <li>feature maps of conv: arbitrary size 任意大小</li>
 <li>把任意大小的size做 SPP (pooling layer)</li>
@@ -792,7 +792,7 @@ ANS: 用zero padding</p>
 <h2 id="Fast-R-CNN">Fast R-CNN</h2>
 <div class="note info flat"><p>跟第一代算法的區別：跟R-CNN不同，R-CNN是透過候選框，一個個判斷。但是Faster R-CNN是先把整個圖片放入CNN，然後再去透過特徵找候選框。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/1JxmWGM.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/1JxmWGM.png" alt=""></p>
 <p><strong>步驟</strong></p>
 <ol>
 <li>Regions of Interest (RoIs)：但是Faster R-CNN 先對整個圖片執行捲積層操作，在特徵圖上找對有興趣的對應框，以此回去看整個圖片對應到的位置。</li>
@@ -802,7 +802,7 @@ ANS: 用zero padding</p>
 <div class="note warning flat"><p>問題：RoIs 產生一個個潛在區域還是很慢</p>
 </div>
 <p><strong>R-CNN vs SPP vs Fast R-CNN</strong><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/v7drAIO.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/v7drAIO.png" alt=""></p>
 <ul>
 <li>Including Region Proposals: 產生一個候選框所需的時間</li>
 <li>Excluding Region Proposals: 選擇不處理候選框所需的時間</li>
@@ -811,7 +811,7 @@ ANS: 用zero padding</p>
 <h2 id="Faster-R-CNN">Faster R-CNN</h2>
 <div class="note info flat"><p>Faster R-CNN 就是把 Region Proposal Network (RPN:找出圖像中可能的邊界框) 加入 Fast R-CNN，讓他可以一起訓練。<strong>他先做二元分類、再做多元分類</strong>。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/2aPdqho.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/2aPdqho.png" alt=""></p>
 <ul>
 <li>多了 Region Proposal Network (RPN) 邊迭代邊自動產生候選框，當地一個候選框產生的時候…
 <ul>
@@ -830,7 +830,7 @@ ANS: 用zero padding</p>
 </ul>
 </li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/LsywKgU.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/LsywKgU.png" alt=""></p>
 <ul>
 <li>這樣的結果是可以1s執行五個圖像</li>
 </ul>
@@ -853,9 +853,9 @@ ANS: 用zero padding</p>
 </ul>
 </li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/aQSMFA0.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/aQSMFA0.png" alt=""></p>
 <p><strong>作法</strong><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/5W5eWFj.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/5W5eWFj.png" alt=""></p>
 <ol>
 <li>將輸入的影像切割成 SxS 的網格 (grid)</li>
 <li>若被偵測物體的中心落入某個網格內，這個網格就要負責去偵測該物體。</li>
@@ -890,7 +890,7 @@ ANS: 用zero padding</p>
 <li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://medium.com/ching-i/%E5%BD%B1%E5%83%8F%E5%88%86%E5%89%B2-image-segmentation-%E8%AA%9E%E7%BE%A9%E5%88%86%E5%89%B2-semantic-segmentation-1-53a1dde9ed92">影像分割 Image Segmentation — 語義分割 Semantic Segmentation(1)</a></li>
 <li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://kknews.cc/code/95q8rzl.html">一文看懂反卷積層</a></li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/cVkfrIn.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/cVkfrIn.png" alt=""></p>
 <ul>
 <li><strong>Image classification</strong>: <code>判別一個圖片有哪些物體</code>，但是不知道物體的位置。</li>
 <li><strong>Object detection</strong>: 判別一個圖片有哪些物體，並且知道物體的<code>位置會匡列</code>出來。</li>
@@ -901,10 +901,10 @@ ANS: 用zero padding</p>
 <ul>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://arxiv.org/abs/1505.04366">https://arxiv.org/abs/1505.04366</a></li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/8laTgKf.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/8laTgKf.png" alt=""><br>
 U-Net 基於 Encoder-Decoder 結構，主要應用於醫學影像分割。Encoder (U-Net 稱為 contracting path) 負責提取特徵、Decoder (U-Net 稱為 expansive path) 則是用於 upsampling，網路架構形似 U。此外，經過上採樣後會與 contracting path 進行 concat，不過 contracting path 特徵圖的尺寸較大需要經過 crop 裁剪。</p>
 <h2 id="Instance-Segmentation-SegNet">Instance Segmentation: SegNet</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/s2dwXTH.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/s2dwXTH.png" alt=""><br>
 SegNet 結構與 DeconvNet 類似，不同的是去除了中間的 1x1 卷積層，為了降低記憶體使用及提升推理速度，主要應用於場景理解。由上圖可以看到 SegNet 的網路架構：</p>
 <ul>
 <li>Encoder 用於提取特徵</li>
@@ -914,9 +914,9 @@ SegNet 結構與 DeconvNet 類似，不同的是去除了中間的 1x1 卷積層
 <ul>
 <li>以下圖片取自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://medium.com/ching-i/fully-convolutional-networks-%E8%AB%96%E6%96%87%E9%96%B1%E8%AE%80-246aa68ce4ad">https://medium.com/ching-i/fully-convolutional-networks-論文閱讀-246aa68ce4ad</a><br>
 介紹 Semantic Segmentation 的評估指標，主要建立於 Confusion Matrix的基礎之上(TP, FP, FN)：<br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/tiRNvkq.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/qaIn1qP.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/VNtD1yj.png" alt=""></li>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/tiRNvkq.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/qaIn1qP.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/VNtD1yj.png" alt=""></li>
 </ul>
 <h1 id="NLP">NLP</h1>
 <ul>
@@ -955,29 +955,29 @@ SegNet 結構與 DeconvNet 類似，不同的是去除了中間的 1x1 卷積層
 <div class="note info flat"><p>RNN 是一種有記憶的Neural Network，稱做 Recurrent Neural Network，每一層產生的output都會存到 memory，下一層的input會加上上一層的output，這樣就可以記住之前的資訊。</p>
 </div>
 <p><strong>RNN的運作原理</strong><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Wgj0fGt.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Wgj0fGt.png" alt=""></p>
 <ul>
 <li>因為是第一筆input，沒有前一筆資料，因此我們可以給初始值0</li>
 <li>然後開始計算，得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>=</mo><mn>1</mn><mo>+</mo><mn>1</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">2=1+1+0+0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>(黃色跟藍色相加)，最後得到output <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>=</mo><mn>2</mn><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4=2+2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>(綠色)</li>
 <li>並且於下一步把 hidden layer 的 neuron output 值儲存，也就是將綠色的 neuron 值 2 儲存</li>
 </ul>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/Vv2Utec.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Vv2Utec.png" alt=""></p>
 <ul>
 <li>然後開始計算這時考慮到之前的值2（綠色，hidden layer output），得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>=</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">6=2+2+1+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>，最後得到output <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>=</mo><mn>6</mn><mo>+</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">12=6+6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">12</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span></li>
 <li>並且於下一步把 hidden layer 的 neuron 值儲存，也就是將綠色的 neuron 儲存</li>
 </ul>
 <div class="note info flat"><p>總結，你會發現 <strong>RNN 會考慮 input 的 order</strong>，如果把<code>[2,2]</code>移動到前面，很顯然的綠色的內容一定會改變(hidden layer output改變)，導致後面的output也會改變。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/HrZrlTT.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/HrZrlTT.png" alt=""><br>
 也因此，當我們放進去 <code>Arrive Taipei on November 2nd</code> 時，Arrive 的output會影響到 Taipei 的output，<strong>這讓 Arrive 跟 Taipei 產生關聯</strong>，因此可以判斷出 Taipei 是 destination。</p>
 <h2 id="Elman-v-s-Jordan-Network">Elman v.s Jordan Network</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/KUQrBbv.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/KUQrBbv.png" alt=""></p>
 <ul>
 <li>Elman Network: 他的 hidden layer 的 input 是來自於<strong>上一層的 hidden layer 的 output</strong>。</li>
 <li>Jordan Network: 他的 hidden layer 的 input 是來自於<strong>上一層的 output</strong>。（有人說此效果比較好）</li>
 </ul>
 <h2 id="Bidirectional-RNN">Bidirectional RNN</h2>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/3Em8uRq.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/3Em8uRq.png" alt=""></p>
 <ul>
 <li>可以同時train正向跟逆向的RNN，把這兩個RNN的hidden layer output相加，就可以得到最後的output。</li>
 <li>好處是，<strong>他看的範圍比較廣，他是看了整個句子，而不是只看前面的字</strong>。</li>
@@ -991,7 +991,7 @@ SegNet 結構與 DeconvNet 類似，不同的是去除了中間的 1x1 卷積層
 </ul>
 <p>這個gate何時打開關閉是Neural Network自己學到決定的。</p>
 </div>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/CA4mkvG.png" alt=""><br>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/CA4mkvG.png" alt=""><br>
 LSTM 有四個 input 和 一個 output，四個inputs分別為：</p>
 <ol>
 <li>input</li>
@@ -1000,12 +1000,12 @@ LSTM 有四個 input 和 一個 output，四個inputs分別為：</p>
 <li>操作forget gate 的訊號</li>
 </ol>
 <p><strong>LSTM的簡單範例</strong><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/0YPS7Ka.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/CJOUTOP.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/0YPS7Ka.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/CJOUTOP.png" alt=""></p>
 <p><strong>運作原理Simplfy</strong><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/fk3KLR0.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/1iVgXng.png" alt=""><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/JVKRvR6.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/fk3KLR0.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/1iVgXng.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/JVKRvR6.png" alt=""></p>
 <ul>
 <li>z 是的input經過transform的值，其dimension是LSTM中cell（存memory）的數目</li>
 <li>z_i 是x乘上另一個transform，每個dimension分別操控不同的input gate。</li>
@@ -1022,7 +1022,7 @@ LSTM 有四個 input 和 一個 output，四個inputs分別為：</p>
 </li>
 </ul>
 <p><strong>真正的LSTM</strong><br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/nOjfdSC.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/nOjfdSC.png" alt=""></p>
 <p><strong>一般NN跟LSTM的差異</strong></p>
 <ul>
 <li>LSTM 需要 4 個 input 才能產生 1 個 output ，參數量是一般 NN 的 4 倍。</li>
@@ -1035,14 +1035,14 @@ LSTM 有四個 input 和 一個 output，四個inputs分別為：</p>
 </ul>
 <h2 id="ELMO">ELMO</h2>
 <p>是一個RNN的Language Model，不需要標籤，只需要大量的文本資料，就可以訓練出一個模型，然後這個模型可以把每個字轉換成一個向量，這個向量可以代表這個字的意思，這個向量就是 word embedding。</p>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/0wSfBf5.png" alt=""></p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/0wSfBf5.png" alt=""></p>
 <p>每一層都會給 contextualize embedding，把這些embedding全部加起來，把第一層<em>a1，第二層</em>a2，第三層<em>a3</em>加起來，就可以得到最後的embedding。a1, a2 會根據不同的任務學出不同的weight。</p>
 <h2 id="BERT">BERT</h2>
 <p>他是 Transformer 的 Embedding，做的事情給他一個句子，每個句子中的詞彙，都會吐出一個embedding。這個embedding可以代表這個詞彙的意思。</p>
 <h3 id="Masked-LM">Masked LM</h3>
 <p>訓練Bert的方法：Masked LM 交給 Bert 的句子中，隨機有 15% 的詞彙會替換成 <code>[Mask]</code>的Token，你會蓋掉一個句子15%的詞彙。然後讓 Bert 去預測這個詞彙是什麼。</p>
 <p>Bert 怎麼填回來的？<br>
-<img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/bzB5CRW.png" alt=""></p>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/bzB5CRW.png" alt=""></p>
 <h1 id="Todo-Transformer">Todo: Transformer</h1>
 <ul>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.youtube.com/watch?v=ugWDIIOHtPA">https://www.youtube.com/watch?v=ugWDIIOHtPA</a></li>
@@ -1055,7 +1055,7 @@ LSTM 有四個 input 和 一個 output，四個inputs分別為：</p>
 <li>Hung-yi-lee ELMO, BERT, GPT: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.youtube.com/watch?v=UYPa347-DdE">https://www.youtube.com/watch?v=UYPa347-DdE</a></li>
 <li>Hung yi lee - Transformer: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.youtube.com/watch?v=ugWDIIOHtPA">https://www.youtube.com/watch?v=ugWDIIOHtPA</a></li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/en">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/en/posts/ML/">https://shannonhung.github.io/en/posts/ML/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener external nofollow noreferrer" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/en/tags/Mechine-Learning/">Mechine Learning</a></div><div class="post_share"><div class="social-share" data-image="/en/img/cover/ai-knowledge.jpeg" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/en/posts/Design-Pattern-Hands-on/" title="Design Pattern - Day1: Introd to Design Pattern"><img class="cover" src="/en/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMxNTYwMg&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/en/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Design Pattern - Day1: Introd to Design Pattern</div></div></a></div><div class="next-post pull-right"><a href="/en/posts/PyTorch-Mac-GPU/" title="MAC OS - PyTorch 上如何啟用 GPU"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/mac_ai_gpu.jpeg" onerror="onerror=null;src='/en/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">MAC OS - PyTorch 上如何啟用 GPU</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/en/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/object-detection.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-03</div><div class="title">COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection</div></div></a></div><div><a href="/en/posts/flower102-transfer-learning/" title="Flower102 Dataset - 使用 Transfer Learning 訓練 + 使用 Batch Normalization 於 CNN"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/flower-ml.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-31</div><div class="title">Flower102 Dataset - 使用 Transfer Learning 訓練 + 使用 Batch Normalization 於 CNN</div></div></a></div><div><a href="/en/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/lstm-emotion.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-16</div><div class="title">Twitter Dataset - 使用 LSTM 預測文章的情緒</div></div></a></div><div><a href="/en/posts/pytorch-CNN-TensorBoard/" title="CIFAR10 Dataset - 使用 Pytorch 搭建 CNN + 啟用 GPU + 結果展示至 TensorBoard"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/CNN-bg.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-24</div><div class="title">CIFAR10 Dataset - 使用 Pytorch 搭建 CNN + 啟用 GPU + 結果展示至 TensorBoard</div></div></a></div><div><a href="/en/posts/pytorch-titanic-nn/" title="Titanic Dataset - 使用 Pytorch 搭建神經網路 + 測試 overfitting"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/mac_coding.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-11</div><div class="title">Titanic Dataset - 使用 Pytorch 搭建神經網路 + 測試 overfitting</div></div></a></div><div><a href="/en/posts/PyTorch-Mac-GPU/" title="MAC OS - PyTorch 上如何啟用 GPU"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/mac_ai_gpu.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-30</div><div class="title">MAC OS - PyTorch 上如何啟用 GPU</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/en/img/loading-icon.gif" data-original="/en/img/dudu-me.png" onerror="this.onerror=null;this.src='/en/en/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">In order to avoid forgetfulness, I started to record</div></div><div class="card-info-data site-data is-center"><a href="/en/archives/"><div class="headline">Articles</div><div class="length-num">31</div></a><a href="/en/tags/"><div class="headline">Tags</div><div class="length-num">31</div></a><a href="/en/categories/"><div class="headline">Categories</div><div class="length-num">22</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">I am a graduate student at the Taiwan University of Science and Technology - Institute of Information Management, planning to pursue a dual-degree program in Germany this year. The reason behind setting up this website is my rather short memory span. While I have learned a lot, I tend to forget much of it. To combat forgetfulness, I have embarked on my note-taking journey.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nerual-Network"><span class="toc-text">Nerual Network</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Goal"><span class="toc-text">Goal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hidden-layer"><span class="toc-text">hidden layer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#output-layer"><span class="toc-text">output layer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%BA%E5%AE%9A%E7%9A%84%E5%8F%83%E6%95%B8"><span class="toc-text">決定的參數</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Epoch-Batch-size-Iteration"><span class="toc-text">Epoch, Batch size, Iteration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Learning-Rate"><span class="toc-text">Learning Rate</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Adagrad"><span class="toc-text">Adagrad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMSProp"><span class="toc-text">RMSProp</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Gradient-Descent"><span class="toc-text">Gradient Descent</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#momentum"><span class="toc-text">momentum</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Adam"><span class="toc-text">Adam</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Batch-Gradient-Descent-Batch-GD"><span class="toc-text">Batch Gradient Descent (Batch GD)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Stochastic-Gradient-Descent-SGD"><span class="toc-text">Stochastic Gradient Descent (SGD)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mini-batch-Gradient-Descent-Mini-batch-GD"><span class="toc-text">Mini-batch Gradient Descent (Mini-batch GD)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Back-Propagation"><span class="toc-text">Back Propagation</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Loss-of-classification"><span class="toc-text">Loss of classification</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Activation-Function"><span class="toc-text">Activation Function</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Sigmoid"><span class="toc-text">Sigmoid</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ReLU"><span class="toc-text">ReLU</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-need-ReLU"><span class="toc-text">Why need ReLU?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Problem-of-ReLU"><span class="toc-text">Problem of ReLU?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Leaky-Parametric-ReLU"><span class="toc-text">Leaky &#x2F; Parametric ReLU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maxout"><span class="toc-text">Maxout</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Maxout-implement-ReLU"><span class="toc-text">Maxout implement ReLU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#multi-activation-function"><span class="toc-text">multi activation function</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-Train"><span class="toc-text">How to Train</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Softmax"><span class="toc-text">Softmax</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CNN"><span class="toc-text">CNN</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#padding"><span class="toc-text">padding</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Feature-Normalization"><span class="toc-text">Feature Normalization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Batch-Normalization"><span class="toc-text">Batch Normalization</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Overfitting"><span class="toc-text">Overfitting</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Early-Stopping"><span class="toc-text">Early Stopping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Regularization"><span class="toc-text">Regularization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-do-Regularization"><span class="toc-text">How to do Regularization?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dropout"><span class="toc-text">Dropout</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-do-dropout"><span class="toc-text">How to do dropout?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-dropout-solve-overfitting"><span class="toc-text">Why dropout solve overfitting?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-not-use-dropout-in-testing"><span class="toc-text">Why not use dropout in testing?</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Transfer-Learning"><span class="toc-text">Transfer Learning</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#TargetData-Label-SourceData-Label"><span class="toc-text">TargetData Label &amp; SourceData Label</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Fine-Tuning"><span class="toc-text">Fine-Tuning</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Conservative-Training"><span class="toc-text">Conservative Training</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Layer-Transfer"><span class="toc-text">Layer Transfer</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Object-Detection"><span class="toc-text">Object Detection</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#R-CNN"><span class="toc-text">R-CNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8SPP-net"><span class="toc-text">使用SPP-net</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fast-R-CNN"><span class="toc-text">Fast R-CNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Faster-R-CNN"><span class="toc-text">Faster R-CNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Yolo"><span class="toc-text">Yolo</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Image-Segmentation"><span class="toc-text">Image Segmentation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Semantic-Segmentation-U-Net"><span class="toc-text">Semantic Segmentation: U-Net</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Instance-Segmentation-SegNet"><span class="toc-text">Instance Segmentation: SegNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Evaluation-Metrics"><span class="toc-text">Evaluation Metrics</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NLP"><span class="toc-text">NLP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RNN"><span class="toc-text">RNN</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Elman-v-s-Jordan-Network"><span class="toc-text">Elman v.s Jordan Network</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bidirectional-RNN"><span class="toc-text">Bidirectional RNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LSTM"><span class="toc-text">LSTM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Todo-Word-Embedding"><span class="toc-text">Todo: Word Embedding</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ELMO"><span class="toc-text">ELMO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BERT"><span class="toc-text">BERT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Masked-LM"><span class="toc-text">Masked LM</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Todo-Transformer"><span class="toc-text">Todo: Transformer</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Todo-BERT"><span class="toc-text">Todo: BERT</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/en/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly Theme Language Switch Guideline"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/lang-switch.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="Hexo - Butterfly Theme Language Switch Guideline"/></a><div class="content"><a class="title" href="/en/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly Theme Language Switch Guideline">Hexo - Butterfly Theme Language Switch Guideline</a><time datetime="2023-11-25T20:35:09.000Z" title="Created 2023-11-26 04:35:09">2023-11-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/mac-python.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="Spark and Pyspark Local Mode on Mac"/></a><div class="content"><a class="title" href="/en/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac">Spark and Pyspark Local Mode on Mac</a><time datetime="2023-11-18T05:55:54.000Z" title="Created 2023-11-18 13:55:54">2023-11-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/pyspark-basic/" title="Pyspark 的基本概念"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/python-spark2.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="Pyspark 的基本概念"/></a><div class="content"><a class="title" href="/en/posts/pyspark-basic/" title="Pyspark 的基本概念">Pyspark 的基本概念</a><time datetime="2023-11-17T15:47:06.000Z" title="Created 2023-11-17 23:47:06">2023-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/lstm-emotion.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="Twitter Dataset - 使用 LSTM 預測文章的情緒"/></a><div class="content"><a class="title" href="/en/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒">Twitter Dataset - 使用 LSTM 預測文章的情緒</a><time datetime="2023-11-16T06:30:45.000Z" title="Created 2023-11-16 14:30:45">2023-11-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/object-detection.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"/></a><div class="content"><a class="title" href="/en/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection">COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection</a><time datetime="2023-11-03T02:57:54.000Z" title="Created 2023-11-03 10:57:54">2023-11-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="Toggle Between Traditional Chinese And English">EN</button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/en/js/utils.js"></script><script src="/en/js/main.js"></script><script src="/en/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/ML/">https://shannonhung.github.io/posts/ML/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mechine-Learning/">Mechine Learning</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/ai-knowledge.jpeg" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/Design-Pattern-Hands-on/" title="Design Pattern - Day1: Introd to Design Pattern"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMxNTYwMg&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Design Pattern - Day1: Introd to Design Pattern</div></div></a></div><div class="next-post pull-right"><a href="/posts/PyTorch-Mac-GPU/" title="MAC OS - PyTorch 上如何啟用 GPU"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/mac_ai_gpu.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MAC OS - PyTorch 上如何啟用 GPU</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/object-detection.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-03</div><div class="title">COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection</div></div></a></div><div><a href="/posts/flower102-transfer-learning/" title="Flower102 Dataset - 使用 Transfer Learning 訓練 + 使用 Batch Normalization 於 CNN"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/flower-ml.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-31</div><div class="title">Flower102 Dataset - 使用 Transfer Learning 訓練 + 使用 Batch Normalization 於 CNN</div></div></a></div><div><a href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/lstm-emotion.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-16</div><div class="title">Twitter Dataset - 使用 LSTM 預測文章的情緒</div></div></a></div><div><a href="/posts/pytorch-CNN-TensorBoard/" title="CIFAR10 Dataset - 使用 Pytorch 搭建 CNN + 啟用 GPU + 結果展示至 TensorBoard"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/CNN-bg.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-24</div><div class="title">CIFAR10 Dataset - 使用 Pytorch 搭建 CNN + 啟用 GPU + 結果展示至 TensorBoard</div></div></a></div><div><a href="/posts/PyTorch-Mac-GPU/" title="MAC OS - PyTorch 上如何啟用 GPU"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/mac_ai_gpu.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-30</div><div class="title">MAC OS - PyTorch 上如何啟用 GPU</div></div></a></div><div><a href="/posts/pytorch-titanic-nn/" title="Titanic Dataset - 使用 Pytorch 搭建神經網路 + 測試 overfitting"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/mac_coding.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-11</div><div class="title">Titanic Dataset - 使用 Pytorch 搭建神經網路 + 測試 overfitting</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">22</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">我是臺灣科技大學-資管所的研究生，今年預計前往德國雙聯。開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nerual-Network"><span class="toc-text">Nerual Network</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Goal"><span class="toc-text">Goal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hidden-layer"><span class="toc-text">hidden layer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#output-layer"><span class="toc-text">output layer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%BA%E5%AE%9A%E7%9A%84%E5%8F%83%E6%95%B8"><span class="toc-text">決定的參數</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Epoch-Batch-size-Iteration"><span class="toc-text">Epoch, Batch size, Iteration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Learning-Rate"><span class="toc-text">Learning Rate</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Adagrad"><span class="toc-text">Adagrad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMSProp"><span class="toc-text">RMSProp</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Gradient-Descent"><span class="toc-text">Gradient Descent</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#momentum"><span class="toc-text">momentum</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Adam"><span class="toc-text">Adam</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Batch-Gradient-Descent-Batch-GD"><span class="toc-text">Batch Gradient Descent (Batch GD)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Stochastic-Gradient-Descent-SGD"><span class="toc-text">Stochastic Gradient Descent (SGD)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mini-batch-Gradient-Descent-Mini-batch-GD"><span class="toc-text">Mini-batch Gradient Descent (Mini-batch GD)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Back-Propagation"><span class="toc-text">Back Propagation</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Loss-of-classification"><span class="toc-text">Loss of classification</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Activation-Function"><span class="toc-text">Activation Function</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Sigmoid"><span class="toc-text">Sigmoid</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ReLU"><span class="toc-text">ReLU</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-need-ReLU"><span class="toc-text">Why need ReLU?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Problem-of-ReLU"><span class="toc-text">Problem of ReLU?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Leaky-Parametric-ReLU"><span class="toc-text">Leaky &#x2F; Parametric ReLU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maxout"><span class="toc-text">Maxout</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Maxout-implement-ReLU"><span class="toc-text">Maxout implement ReLU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#multi-activation-function"><span class="toc-text">multi activation function</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-Train"><span class="toc-text">How to Train</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Softmax"><span class="toc-text">Softmax</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CNN"><span class="toc-text">CNN</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#padding"><span class="toc-text">padding</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Feature-Normalization"><span class="toc-text">Feature Normalization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Batch-Normalization"><span class="toc-text">Batch Normalization</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Overfitting"><span class="toc-text">Overfitting</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Early-Stopping"><span class="toc-text">Early Stopping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Regularization"><span class="toc-text">Regularization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-do-Regularization"><span class="toc-text">How to do Regularization?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dropout"><span class="toc-text">Dropout</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-do-dropout"><span class="toc-text">How to do dropout?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-dropout-solve-overfitting"><span class="toc-text">Why dropout solve overfitting?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-not-use-dropout-in-testing"><span class="toc-text">Why not use dropout in testing?</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Transfer-Learning"><span class="toc-text">Transfer Learning</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#TargetData-Label-SourceData-Label"><span class="toc-text">TargetData Label &amp; SourceData Label</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Fine-Tuning"><span class="toc-text">Fine-Tuning</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Conservative-Training"><span class="toc-text">Conservative Training</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Layer-Transfer"><span class="toc-text">Layer Transfer</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Object-Detection"><span class="toc-text">Object Detection</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#R-CNN"><span class="toc-text">R-CNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8SPP-net"><span class="toc-text">使用SPP-net</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fast-R-CNN"><span class="toc-text">Fast R-CNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Faster-R-CNN"><span class="toc-text">Faster R-CNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Yolo"><span class="toc-text">Yolo</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Image-Segmentation"><span class="toc-text">Image Segmentation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Semantic-Segmentation-U-Net"><span class="toc-text">Semantic Segmentation: U-Net</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Instance-Segmentation-SegNet"><span class="toc-text">Instance Segmentation: SegNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Evaluation-Metrics"><span class="toc-text">Evaluation Metrics</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NLP"><span class="toc-text">NLP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RNN"><span class="toc-text">RNN</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Elman-v-s-Jordan-Network"><span class="toc-text">Elman v.s Jordan Network</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bidirectional-RNN"><span class="toc-text">Bidirectional RNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LSTM"><span class="toc-text">LSTM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Todo-Word-Embedding"><span class="toc-text">Todo: Word Embedding</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ELMO"><span class="toc-text">ELMO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BERT"><span class="toc-text">BERT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Masked-LM"><span class="toc-text">Masked LM</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Todo-Transformer"><span class="toc-text">Todo: Transformer</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Todo-BERT"><span class="toc-text">Todo: BERT</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置"><img src="/img/loading-icon.gif" data-original="/img/cover/lang-switch.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hexo - Butterfly 版本的語言切換功能設置"/></a><div class="content"><a class="title" href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置">Hexo - Butterfly 版本的語言切換功能設置</a><time datetime="2023-11-25T20:35:09.000Z" title="發表於 2023-11-26 04:35:09">2023-11-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac"><img src="/img/loading-icon.gif" data-original="/img/cover/mac-python.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spark and Pyspark Local Mode on Mac"/></a><div class="content"><a class="title" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac">Spark and Pyspark Local Mode on Mac</a><time datetime="2023-11-18T05:55:54.000Z" title="發表於 2023-11-18 13:55:54">2023-11-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-basic/" title="Pyspark 的基本概念"><img src="/img/loading-icon.gif" data-original="/img/cover/python-spark2.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pyspark 的基本概念"/></a><div class="content"><a class="title" href="/posts/pyspark-basic/" title="Pyspark 的基本概念">Pyspark 的基本概念</a><time datetime="2023-11-17T15:47:06.000Z" title="發表於 2023-11-17 23:47:06">2023-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img src="/img/loading-icon.gif" data-original="/img/cover/lstm-emotion.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twitter Dataset - 使用 LSTM 預測文章的情緒"/></a><div class="content"><a class="title" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒">Twitter Dataset - 使用 LSTM 預測文章的情緒</a><time datetime="2023-11-16T06:30:45.000Z" title="發表於 2023-11-16 14:30:45">2023-11-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"><img src="/img/loading-icon.gif" data-original="/img/cover/object-detection.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"/></a><div class="content"><a class="title" href="/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection">COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection</a><time datetime="2023-11-03T02:57:54.000Z" title="發表於 2023-11-03 10:57:54">2023-11-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
   if (typeof pangu === 'object') pangu.autoSpacingPage()
   else {
     getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
@@ -1085,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
       repo: 'shannonhung.github.io',
       owner: 'ShannonHung',
       admin: ['ShannonHung'],
-      id: 'fb57d0d377be09f31c702615671fe228',
+      id: '484948aa5c63555dd77f6bbb08335631',
       updateCountCallback: commentCount
     },null))
 
@@ -1114,11 +1114,11 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
   } else {
     window.loadOtherComment = loadGitalk
   }
-})()</script></div><script data-pjax src="/en/self/btf.js"></script><script data-pjax src="/en/self/tw_en.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+})()</script></div><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
 POWERMODE.shake = false;
 POWERMODE.mobile = false;
 document.body.addEventListener('input', POWERMODE);
-</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/en/js/search/local-search.js"></script></div></div>
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
         <style>
             [bg-lazy] {
                 background-image: none !important;
