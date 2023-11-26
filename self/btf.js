@@ -10,7 +10,9 @@
   
     const eventFn = (elements, includeEN) => {
       elements.forEach(item => {
+        console.log(`!includeEN || !isIncludeEN(item.href) = ${!includeEN || !isIncludeEN(item.href)}`)
         if (!includeEN || !isIncludeEN(item.href)) {
+          console.log(item.href)
           item.href = `javascript:loadFullPage('${item.href}');`
         }
       })
