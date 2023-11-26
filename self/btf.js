@@ -11,6 +11,7 @@
   const eventFn = (elements, includeEN) => {
     elements.forEach((item) => {
       if (!includeEN || !isIncludeEN(item.href)) {
+        console.log(item.href);
         item.href = `javascript:loadFullPage('${item.href}');`;
       }
     });
