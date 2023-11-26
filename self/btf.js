@@ -11,6 +11,7 @@
   const eventFn = (elements, includeEN) => {
     elements.forEach((item) => {
       if (!includeEN || !isIncludeEN(item.href)) {
+        console.log(item.href);
         item.href = `javascript:loadFullPage('${item.href}');`;
       }
     });
@@ -18,7 +19,7 @@
 
   const nowIncludeEN = isIncludeEN(window.location.href);
   const selector = nowIncludeEN
-    ? document.querySelectorAll('a[href^="https://shannonhung.github.io"]')
+    ? document.querySelectorAll('a[href^="https://ShannonHung.github.io"]')
     : document.querySelectorAll('a[href^="/en/"]');
 
   eventFn(selector, nowIncludeEN);
