@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
       : Number(saveToLocal.get("translate-en-cht"));
   let translateButtonObject;
   const isSnackbar = snackbarData !== undefined;
+
   const isIncludeEN = (item) => {
     const key = "/en/";
     return item.includes(key);
@@ -19,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const nowIncludeEN = isIncludeEN(window.location.href);
 
   function translatePage() {
-    console.log("translatePage trigger");
     let currentUrl = window.location.href;
 
     if (nowIncludeEN) {
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
       translateButtonObject.textContent = msgToEnglish;
       // 然後導向英文的網址 目前網址 /... => /en/...
       let newUrl = currentUrl.replace(/^(https?:\/\/[^\/]+)(\/)?/, "$1/en/");
-      console.log(`Redirect to ${newUrl}`);
       window.location.href = newUrl;
     }
   }
