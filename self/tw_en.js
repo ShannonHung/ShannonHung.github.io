@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
       : Number(saveToLocal.get("translate-en-cht"));
   let translateButtonObject;
   const isSnackbar = snackbarData !== undefined;
+
   const isIncludeEN = (item) => {
     const key = "/en/";
     return item.includes(key);
