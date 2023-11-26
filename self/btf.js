@@ -18,7 +18,7 @@
   
     const nowIncludeEN = isIncludeEN(window.location.href)
     const selector = nowIncludeEN
-      ? document.querySelectorAll('a[href^="https://ShannonHung.github.io"]')
+      ? document.querySelectorAll('a[href^="https://localhost:4000"]')
       : document.querySelectorAll('a[href^="/en/"]')
   
     eventFn(selector, nowIncludeEN)
