@@ -1,0 +1,1678 @@
+<!DOCTYPE html><html lang="zh-tw" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="前言 因為之前的篇幅NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險擔心太長，因此再建立一的新的Post來進行整理。 上一篇主要針對資料儲存基礎設施盤點相關的威脅、風險和攻擊面。 本篇則是主要整理儲存部署的安全建議。論文的貢獻可以在於強調可以滿足零信任要求與資料儲存相關安全標準SP800-209的相關措施。  4.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引">
+<meta property="og:url" content="https://shannonhung.github.io/posts/security-for-storage-infra-2/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="前言 因為之前的篇幅NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險擔心太長，因此再建立一的新的Post來進行整理。 上一篇主要針對資料儲存基礎設施盤點相關的威脅、風險和攻擊面。 本篇則是主要整理儲存部署的安全建議。論文的貢獻可以在於強調可以滿足零信任要求與資料儲存相關安全標準SP800-209的相關措施。  4.">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080">
+<meta property="article:published_time" content="2023-07-27T04:04:45.000Z">
+<meta property="article:modified_time" content="2023-08-17T03:06:47.213Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="碩士論文">
+<meta property="article:tag" content="Cloud Storage">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="NIST SP 800-209">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/security-for-storage-infra-2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XBNKVVH2P4');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"You have switched to Traditional Chinese","cht_to_chs":"You have switched to Simplified Chinese","day_to_night":"You have switched to Dark Mode","night_to_day":"You have switched to Light Mode","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-08-17 11:06:47'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">22</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-07-27T04:04:45.000Z" title="Created 2023-07-27 12:04:45">2023-07-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-08-17T03:06:47.213Z" title="Updated 2023-08-17 11:06:47">2023-08-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/">研究</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/Database/">Database</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/%E7%95%A2%E6%A5%AD%E8%AB%96%E6%96%87/">畢業論文</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/Security/">Security</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">23.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>73mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">Comments:</span><a href="/posts/security-for-storage-infra-2/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言">前言</h1>
+<p>因為之前的篇幅<a href="/security-for-storage-infra">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險</a>擔心太長，因此再建立一的新的Post來進行整理。</p>
+<div class="note info flat"><p>上一篇主要針對資料儲存基礎設施盤點相關的威脅、風險和攻擊面。<br>
+本篇則是主要整理儲存部署的安全建議。<code>論文的貢獻可以在於強調可以滿足零信任要求與資料儲存相關安全標準SP800-209的相關措施。</code></p>
+</div>
+<h1 id="4-儲存部署安全建議-Security-Guidelines-for-Storage-Deployments">4. 儲存部署安全建議 Security Guidelines for Storage Deployments</h1>
+<p>第4.1至4.12節提供了<strong>存儲基礎架構安全的安全建議和指南</strong>，透過其命名和編號方案旨在確保每個指南都有獨特的識別號。主要的唯一識別號採用“<strong>xx-SS-Ry</strong>”的形式。</p>
+<p>但是，因為本人的論文希望更著重在，AP(客戶端)與資料儲存裝置之間連線時和主機本身的安全措施，<code>因此本章節並不會列出所有的安全建議，僅列出與AP(客戶端)與儲存裝置之間，又或是「儲存基礎設施本身」的安全建議</code>。</p>
+<div class="note info flat"><ol>
+<li>“xx”是與節點標題相關的兩個字母組合：在第4.1節“物理存儲安全”中，主要識別號標記為PS-SS-R1，PS-SS-R2等</li>
+<li>“SS”代表“Storage Security”</li>
+<li>“y”是連續的數字識別號：如果有細項還會透過&quot;a&quot;, &quot;b&quot;表示，例如‘PS-SS-R1.a’（遵循NIST SP 800-53，第3.10節），‘PS-SS-R1.b’（供應鏈保護）等。</li>
+</ol>
+</div>
+<div class="note warning flat"><p>我的感想：<strong>這個章節可以用來整理，如果要檢查AP、AP Host本身、儲存裝置Host本身、儲存裝置之間的安全措施，根據這些安全建立來進行檢查，並作為檢查項目之一，以此來進行授權與存取控制，避免可能的安全威脅</strong>。</p>
+</div>
+<h1 id="4-1-PS-實體儲存安全-Physical-Storage-Security">4.1 (PS) 實體儲存安全 Physical Storage Security</h1>
+<p>實體安全是確保任何資訊科技「基礎建設安全」的「基本要素」。很多時候「<strong>儲存基礎建設的實體安全」要求與「其他基礎建設元素」</strong>（例如電腦和網路設備）<strong>相同（例如設施安全、監控、運輸等）</strong>。</p>
+<ul>
+<li><strong>基礎建設元素</strong>可以參考的相關標準包含：<code> NIST SP 800-53, Rev5 NIST SP 800-171</code> 。</li>
+<li>有關<strong>媒體處置和銷毀</strong>可以參考：<code>ISO 27040, NIST SP 800-88</code> 有更近一步的討論。</li>
+</ul>
+<div class="note info flat"><p>因此本章節主要提供針對<code>儲存基礎建設獨有的實體安全</code>，或其他刊物中較少強調的方面進行條例介紹。</p>
+</div>
+<details class="toggle" ><summary class="toggle-button" style="">要求：PS-SS-R1 確保媒體安全 Media security measures</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th><div style="width:100px"><code>PS-SS-R1</code></div></th>
+<th>確保媒體安全</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PS-SS-R1.a</code></td>
+<td>建議<strong>遵循NIST SP 800-53, Rev5</strong> 的一些特定指導措施，包括制定政策、限制訪問權限、標記敏感信息、安全存儲、安全傳輸、確保數據</td>
+</tr>
+<tr>
+<td><code>PS-SS-R1.b</code></td>
+<td>建議購買擁有<strong>足夠供應鏈保護的媒體</strong>。</td>
+</tr>
+<tr>
+<td><code>PS-SS-R1.c</code></td>
+<td>對於敏感數據，<strong>「備份實體」媒體儲存與「主要數據儲存」地點應該足夠遠</strong>。</td>
+</tr>
+<tr>
+<td><code>PS-SS-R1.d</code></td>
+<td><strong>整理敏感數據的清單</strong>，並應紀錄的內容包含：敏感級別、分類(與哪些應用和服務相關)、加密級別、如果數據破壞或丟失可能對系統造成的影響、應急的措施與程序、數據與其他應用之間的依賴關係。</td>
+</tr>
+<tr>
+<td><code>PS-SS-R1.e</code></td>
+<td>敏感的<strong>可移動媒體，應使用高級追蹤控制措施</strong>，例如RFID標籤、GPS追蹤設備、防竄改保護。</td>
+</tr>
+<tr>
+<td><code>PS-SS-R1.f</code></td>
+<td><strong>極度敏感</strong>的資訊，應考慮使用自我激活或遠程控制的<strong>自我毀滅機制</strong>，同時應仔細考慮如何保護這些功能以避免被攻攻擊者作為攻擊目標，觸發設備毀損機制。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：PS-SS-R2 保護所有敏感管理裝置 Protect all sensitive administrative equipment</summary><div class="toggle-content"><p>可以**對儲存設施進行存取的「管理工作站」**應該要有以下措施：</p>
+<ol>
+<li><code>有組織批准之安全控制</code>：對於可以「獲取儲存基礎設施」的「敏感工作站」應進行管理訪問，使用經組織批准的安全控制，包含訪問、監控和審計。</li>
+<li><code>與數據保護一樣嚴謹的安全等級</code>：保護「管理工作站」（包含家中所使用的工作站環境）的安全措施至少要與「保護數據」或「使用數據的系統」擁有一樣嚴格的安全措施。</li>
+</ol>
+</div></details>
+<details class="toggle" style="border: 1px solid  including non-obvious storage components"><summary class="toggle-button" style="background-color:  including non-obvious storage components;">要求：PS-SS-R3 資料消除方法應該包括儲存基礎設施中的各個元件 Data sanitization approach should cover storage infrastructure in detail</summary><div class="toggle-content"><ul>
+<li>資料消除方法應該包括儲存基礎設施中的各個元件，而這些元件可能包含敏感資訊，<strong>應確保儲存基礎設施中的元件間都納入組織的資料消除政策</strong>，這些元件包含以下：
+<ul>
+<li>非揮發性記憶體</li>
+<li>快取對象（儲存陣列、SAN交換器、路由器等）</li>
+<li>韌體/BIOS設定和HBA級別的設置</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<h1 id="4-2-DP-資料保護-Data-Protection">4.2 (DP) 資料保護 Data Protection</h1>
+<p>本章節主要探討資料保護的相關措施、角度、分離程度等進行探討。而相關要求應該要考慮到以下層次：</p>
+<details class="toggle" ><summary class="toggle-button" style="">資料保護不同角度</summary><div class="toggle-content"><p>在這個章節中，主要討論資料保護的目標和相關活動，從不同的角度進行控制，包含以下：</p>
+<ol>
+<li><strong>資料備份和恢復（Data backup and recovery）</strong>：這是確保資料在<code>意外故障或災難性事件後復原</code>的重要控制措施。</li>
+<li><strong>存檔（Archiving）</strong>：這是將資料保留在長期存儲中的控制措施，通常用於保存歷史資料或法規要求的資料。</li>
+<li><strong>複製技術（Replication technologies）</strong>：這是在不同位置或系統之間建立資料複製的控制措施，以確保在主要<code>系統故障時能夠使用備用系統</code>。</li>
+<li><strong>持續資料保護（Continuous data protection）</strong>：這是一種<code>持續監視資料變化</code>並<code>即時備份</code>的控制措施，能夠快速恢復到特定時間點的資料。</li>
+<li><strong>點對點拷貝和快照（Point-in-time copies and snapshots）</strong>：這是在特定時間點上複製資料的控制措施，以便在<code>需要時進行還原或查詢</code>。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">識別區分數據平面</summary><div class="toggle-content"><p>當我們談論儲存管理和保護數據時，<strong>區分不同的數據平面</strong>對於<strong>更好地理解和管理儲存系統至關重要</strong>。這是因為數據平面提供了一種方式來組織和區分數據相關的存取方法、協議、操作和授權，從而確保系統可以在不同層面上有效運作並滿足不同的需求。數據平面的主要類型包含：</p>
+<ol>
+<li><strong>數據消費平面</strong>：該平面涉及<code>執行I/O操作</code>的存取方法和協議，以及相關的網絡連接。這是用戶和應用程序進行數據讀取和寫入的平面。</li>
+<li><strong>數據管理平面</strong>：該平面<code>涉及創建、配置、映射設備</code>以及設備屬性的<code>管理</code>。它關注的是管理儲存系統中數據的元信息和配置信息。</li>
+<li><strong>數據保護平面</strong>：該平面涉及<code>數據的保護和備份</code>。它包括複製、快照、備份、存檔等操作，以確保數據的持久性和容災能力。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">資料平面分離程度</summary><div class="toggle-content"><p>通常情況下，<strong>增加資料平面的細粒度和分離程度可以積極地影響資料資產的安全性</strong>，而設計和實施可能極大地影響，而這些設計和實施包含：</p>
+<ol>
+<li><strong>網路層兩層分離</strong>：例如使用不同的<code>VLAN</code>增加分離程度。</li>
+<li><strong>網路邏輯分離</strong>：<code>獨立的IP子網路</code>增加分離程度。</li>
+<li><strong>過濾和訪問控制列表ACL</strong>：在資料的<code>消費平面添加ACL</code>防止管理操作，增加「消費」與「管理」平面的分離程度。</li>
+<li><strong>授權分離</strong>：限制每個角色的權限，<code>不同平面所使用的角色</code>不同。</li>
+</ol>
+</div></details>
+<div class="note info flat"><p>在該節中，也提供了針對上述每個控制措施的實施相關的嚴謹建議。而且，<code>其他相關的需求還包含在第4.7節“隔離”和第4.8節“還原保證”中，這些需求與資料保護密切相關</code>。</p>
+</div>
+<h2 id="4-2-1-資料備份、恢復和儲存-Data-Backup-and-Recovery-and-Archiving">4.2.1 資料備份、恢復和儲存 Data Backup and Recovery, and Archiving</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R1 建立資料保護計劃或政策的文件</summary><div class="toggle-content"><p>這份文件旨在確保在<strong>部署系統或資料存儲解決方案之前，組織有一個完整的、安全的資料保護計劃</strong>，以應對可能出現的數據損壞、故障或安全問題。這些措施將<code>有助於保護數據的完整性和可用性</code>，同時確保遵守相關的法規要求。</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:100px"><code>DS-SS-R1</code></div></th>
+<th>建立資料保護計劃或政策的文件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DP-SS-R1.a</code></td>
+<td>層級、頻率和備份數量規格，以滿足組織的恢復目標。應包含如下：<br> - 頻率和保留期：例如，每48小時快照、每日30份備份。<br> - 類型：例如，完整備份、增量備份、連續備份（如文件版本控制、日誌或日誌運送和存檔）、複製、點對點備份等。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R1.b</code></td>
+<td>要使用的媒體類型。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R1.c</code></td>
+<td><strong>加密要求</strong>應用於「備份數據」的加密方法應至少<strong>與「受保護數據」的加密程度相同</strong>。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R1.d</code></td>
+<td>其他保護要求，例如數位簽章、存檔、位置、設施安全（包括防火、防爆和磁干擾保護）、不可變性和鎖定、每個備份集的最低備份数量，以及這些備份的地理分佈。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R1.e</code></td>
+<td>引用適用的法規框架以及相應的控制措施。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R1.f</code></td>
+<td><strong>全面的生命周期管理</strong>，包括根據保護和保留政策跟踪數據副本和備份，包括積極刪除不再需要的數據副本。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R1.g</code></td>
+<td><strong>恢復程序</strong>。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R2 資料保護計劃或政策應盡可能「全面」</summary><div class="toggle-content"><p>資料保護計劃或政策應盡可能「全面」，要求如下：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:100px"><code>DS-SS-R2</code></div></th>
+<th>資料保護計劃或政策應盡可能「全面」</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DP-SS-R2.a</code></td>
+<td>應<strong>包含企業所有資料資產，無論是本地或雲端</strong>：儘管對於那些沒有重要性的資料，或可以從其他受保護資料來源中，重新建立的資料資產，可以不進行保護，但這樣的例外應有文件紀錄。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R2.b</code></td>
+<td>應<strong>以資料類型進行組織層級</strong>（第一層、第二層）。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R2.c</code></td>
+<td>應考慮<strong>應用程式和業務流程層面的資料完整性</strong>：若是有兩個元件使用相同之資料，進行恢復時需要恢復到相同的時間點才能正常運作，則應該針對這種情境實施「聯邦一致性機制」等解決方案。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R2.d</code></td>
+<td>應考慮到滿足業務或監管要求的<strong>恢復速度</strong>。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R3 對於備份相關的標準作業程序應包含的要求</summary><div class="toggle-content"><p>除了備份計畫或政策之外，與備份相關的標準作業程序應該包括以下內容：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:100px"><code>DS-SS-R3</code></div></th>
+<th>備份相關的標準作業程序要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DP-SS-R3.a</code></td>
+<td>應該<strong>定期檢查備份的執行情況</strong>，並在需要時通知相關人員。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R3.b</code></td>
+<td>定期測試備份：<br> 1. <strong>重要的資料備份可還原性</strong>：應至少每月一次，以驗證其完整性和可還原性。<br> 2. <strong>嚴格要求還原速度的應用程式可用性</strong>：應進行端對端測試環境（例如將數據集完整還原到一個模擬真實還原情況的測試環境中，稱為sandbox recovery environment）。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R3.c</code></td>
+<td>1. <strong>應保持最新的恢復目錄</strong>：追蹤每個副本（包括備份、複製、時間點副本等）的相關資訊，資訊包含防毒工作掃描結果。<br> 2. <strong>對於敏感資料，應定期使用防毒工具</strong>：掃描至少一個過去副本的子集識別是否有被感染的副本。目錄需求可參考CM-SS-R2。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R3.d</code></td>
+<td>定期審查（至少每年一次）<strong>備份計畫和操作程序</strong>，以確保其持續適應當前需求。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R3.e</code></td>
+<td><strong>維護一份審計記錄</strong>，提供必要的資訊以確保操作符合政策要求。</td>
+</tr>
+<tr>
+<td><code>DP-SS-R3.f</code></td>
+<td>應包含必要時所採取<strong>特殊控制措施</strong>（例如，將舊的、有風險的或不再支援的媒體複製到新的媒體中，等等）。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R4 資料保護配置管理的要求</summary><div class="toggle-content"><p>以下要求旨在<strong>確保資料保護配置的安全性、穩定性和一致性</strong>，同時保障系統的高可用性和容錯性。</p>
+<ol>
+<li><strong>集中式管理</strong>：所有與資料保護相關的配置，包括備份、點對點時間複製和複寫等，應該由一個中央管理系統或管理員來統一管理，以確保一致性和效率。</li>
+<li><strong>與資料使用層面分離</strong>：資料保護配置的管理應該與實際的資料使用層面分開。這意味著伺服器和客戶端不應該擁有更改自己資料保護配置的權限，這樣可以防止未經授權的變更和損害。</li>
+<li><strong>防止自我配置</strong>：資料保護系統應該禁止伺服器和客戶端對其自身的資料保護配置進行修改，以保證配置的穩定性和安全性。</li>
+<li><strong>不排除冗余機制</strong>：這項要求明確表示，雖然要集中管理和防止自我配置，但不排除使用冗余機制來保護系統免受單點故障的影響。這樣，即使一部分系統出現故障，其他冗余的部分還可以保持運作。</li>
+</ol>
+</div></details>
+<h2 id="4-2-2-複製和鏡像-Replication-and-Mirroring">4.2.2 複製和鏡像 Replication and Mirroring</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R5 主要與次要儲存的資料保護需一致</summary><div class="toggle-content"><ul>
+<li>同步和非同步「複製」都需要<strong>與主要儲存相同層次的資料保護</strong>。</li>
+<li>包括加密資料在靜止時，以及設定存取限制。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R6 消除不必要的儲存裝置間複製信任</summary><div class="toggle-content"><ul>
+<li>當陣列之間沒有共用複製的卷時，應<strong>禁用它們之間的複製信任</strong>關係。</li>
+<li>陣列之間有共用複製的卷時，應限制它們相互之間的特權，僅限於共用的卷上。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R7 資料在複製和鏡像「傳輸中」的保護</summary><div class="toggle-content"><ul>
+<li>複製和鏡像期間，資料在<strong>傳輸中</strong>的機密性和完整性需要<strong>使用加密保護</strong>。</li>
+<li>當適當的緩解控制措施存在時，可以放寬加密要求（例如在相同機櫃或伺服器房間內進行鏡像）。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R8 同步複製的自動I/O暫停</summary><div class="toggle-content"><ul>
+<li>次要儲存伺服器的同步進度落後於主要資料的更新時，應啟用<strong>自動I/O暫停功能</strong>，防止主要儲存裝置上的寫操作。如果繼續允許在主要儲存裝置上進行寫操作，可能會導致
+<ul>
+<li>資料不一致性、資料遺失風險。</li>
+</ul>
+</li>
+<li>但是<code>需注意</code>：<strong>啟用此功能增加主要儲存裝置受到攻擊的風險</strong>，因為敵對方可能攻擊複製網路路徑來觸發主要儲存裝置的拒絕服務。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R9 刪除過時複製品以減少攻擊面</summary><div class="toggle-content"><ul>
+<li>定期<strong>刪除過時的複製品</strong>，以減少攻擊面。</li>
+</ul>
+</div></details>
+<h2 id="4-2-3-時間點副本-Point-in-Time-Copies">4.2.3 時間點副本 Point-in-Time Copies</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R10 配置點對點複本時應滿足目標要求</summary><div class="toggle-content"><ul>
+<li>確保點對點複本（例如快照）的配置符合<code>目標數據集的恢復點目標（RPO）</code>要求。</li>
+<li>如果業務或合規標準要求在恢復時<strong>最多只能損失五分鐘的已提交數據</strong>，則<strong>快照間隔應為五分鐘或更短</strong>。
+<ul>
+<li>確保配置足夠數量的每小時快照以滿足保留要求。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R11 刪除過時快照和克隆</summary><div class="toggle-content"><p>定期<strong>刪除過時的快照和克隆</strong>，以減少攻擊面。</p>
+</div></details>
+<h2 id="4-2-4-持續資料保護-Continuous-Data-Protection">4.2.4 持續資料保護 Continuous Data Protection</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：DP-SS-R12 使用持續資料保護的安全考量</summary><div class="toggle-content"><ol>
+<li>功能上的優勢：改進的<strong>恢復點目標</strong>（RPO）、更<strong>細緻的保留策略</strong>。</li>
+<li>持續數據保護技術：包括持續數據保護（CDP）、在雲端檔案和對象存儲中對「源數據或副本」進行「<strong>版本控制</strong>」，以及「<strong>事務日誌運送</strong>」。</li>
+<li>協助<strong>改善敏感數據的取證</strong>：回溯到之前的版本可以幫助了解攻擊的特徵、時間等，但可能非常耗時。</li>
+</ol>
+</div></details>
+<h1 id="4-3-AC-身份驗證與數據訪問控制-Authentication-and-Data-Access-Control">4.3 (AC) 身份驗證與數據訪問控制 Authentication and Data Access Control</h1>
+<p><strong>管理用戶及其管理主機</strong>是攻擊者可以利用的攻擊面，特權使用者的不當使用可能導致存儲系統失敗或遭受侵害。實施&quot;<strong>最小權限模型</strong>&quot;並利用特定角色進行管理是重要的。</p>
+<p>根據ISO/IEC 27040標準，應該實施以下角色並在存儲技術中使用：安全管理員、存儲管理員和安全審計員，這些角色的設計有助於確保儲存技術的安全性，並限制特權訪問，降低了存儲系統受到攻擊的風險。<br>
+好的，我可以幫您做一個表格，來整理這些角色的擁有權限和工作內容。以下是表格的內容：</p>
+<details class="toggle" ><summary class="toggle-button" style="">安全管理員 Security Administrator</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th>擁有的權限</th>
+<th><div style="width:150px">工作內容</div></th>
+<th>不可做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>查看和修改權限</td>
+<td>- 建立和管理<code>帳戶</code><br>- 設置和管理用戶和管理操作的<code>角色和權限</code><br>- 制定與<code>驗證器、憑證和密鑰</code>相關的<code>政策</code><br>- 管理加密和密鑰<br>- 管理<code>審計和日誌記錄</code></td>
+<td>無</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">存儲管理員 Storage Administrator</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th>擁有的權限</th>
+<th><div style="width:150px">工作內容</div></th>
+<th>不可做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存儲管理員</td>
+<td>查看和修改權限</td>
+<td>- 訪問和管理存儲系統的所有方面</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">安全審計員 Security Auditor</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th>擁有的權限</th>
+<th><div style="width:150px">工作內容</div></th>
+<th>不可做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全審計員</td>
+<td>查看權限</td>
+<td>- 進行<code>授權審查</code><br>- <code>驗證安全參數</code>和配置<br>- 檢查<code>審計日誌</code></td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">存儲審核員 Storage Auditor</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th>擁有的權限</th>
+<th><div style="width:150px">工作內容</div></th>
+<th>不可做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全審計員</td>
+<td>查看權限</td>
+<td>- 進行<code>授權審查</code><br>- <code>驗證安全參數</code>和配置<br>- 檢查<code>審計日誌</code></td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<h2 id="4-3-1-身份驗證建議-Authentication-Recommendations">4.3.1 身份驗證建議 Authentication Recommendations</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R1 應確保使用者的唯一識別符號 Unique Identifier for all users</summary><div class="toggle-content"><ol>
+<li>所有使用者（包括管理員）應該擁有一個僅供個人使用的唯一識別符號。</li>
+<li>指派給管理員的識別符號，至少應該符合 NIST 文件 SP800-63A [35] 第 4.2 和 4.5 節中所指定的身份保證級別 3 (IAL 3)。</li>
+<li>唯一的例外是緊急使用帳戶，其安全使用方式在 AC-SS-R16 中有所規定。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R2 集中式認證解決方案 A centralized authentication solution</summary><div class="toggle-content"><ol>
+<li>在大型環境中，應該部署一個集中式認證解決方案（例如 Active Directory、輕量級目錄訪問協議 [LDAP]、單一登錄 [SSO]、經組織批准的雲認證服務），以便密切監控和控制使用者對存儲資源的訪問。</li>
+<li>確保組織的認證政策得到統一執行。</li>
+<li>應該避免使用內建的認證和權限管理功能，最好將其停用。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R3 認證伺服器的配置 Configuration of authentication servers</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th><div style="width:100px"><code>DS-SS-R3</code></div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC-SS-R3.a</code></td>
+<td><strong>嚴格控制執行認證服務的伺服器的指派</strong>：將執行認證服務（Authentication Service）的伺服器指定給特定的伺服器，並確保這樣的指派是經過嚴格管理和控制的。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R3.b</code></td>
+<td><strong>應該擁有多個認證伺服器</strong>：以確保可用性，避免單一故障點。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R4 安全連接到集中式身份驗證伺服器 Secure connection to centralized authentication server</summary><div class="toggle-content"><ol>
+<li>集中式身份驗證伺服器與驗證客戶端之間的通訊都應使用最新的安全協議</li>
+<li>例如Transport Layer Security (TLS) 1.2或更高版本。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R5 使用多因素驗證 Use of multi-factor authentication</summary><div class="toggle-content"><ol>
+<li>對於存儲重要數據的基礎架構組件的訪問配置，應該使用至少兩因素驗證</li>
+<li>這些驗證器至少應符合NIST文件SP800-63B [36]第5.1.9節中指定的要求。這項要求對於擔任安全管理員和存儲管理員角色的使用者的訪問應該是強制性的。</li>
+</ol>
+</div></details>
+<h2 id="4-3-2-密碼建議-Password-Recommendations">4.3.2 密碼建議 Password Recommendations</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R6 安全密碼政策應涵蓋服務帳戶 Secure password policies should cover service accounts</summary><div class="toggle-content"><ol>
+<li>個人張戶與服務帳戶應滿足安全的密碼政策：不僅應用於個人帳戶，還應應用於服務帳戶（例如，簡單網路管理協定（SNMP）、網路資料管理協定（NDMP））和自動化工具使用的帳戶。</li>
+<li>這些密碼<strong>至少應滿足NIST文件SP800-63B</strong> [36]中第5.1.1節所述的記憶的秘密memorized secrets的要求。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R7 密碼長度 Password Length</summary><div class="toggle-content"><ul>
+<li>一個好的密碼應該至少有15個字符，最好是20個字符。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R8 密碼複雜性 Password complexity</summary><div class="toggle-content"><ul>
+<li>一個好的密碼應該結合大寫和小寫字母、數字和特殊字符。它不應該與用戶名相似，也不應包含重複的字符序列。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R9 密碼到期 Password expiration</summary><div class="toggle-content"><ul>
+<li>所有密碼應該設置到期時間。管理員帳戶的到期時間應該比普通用戶帳戶更短。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R10 密碼重複使用 Password reuse</summary><div class="toggle-content"><ul>
+<li>用戶不應該重複使用最近的至少四個（或更多）密碼，根據組織風險因素來設定這樣的限制。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R11 密碼緩存 Password caching</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th><div style="width:100px">標準</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC-SS-R11.a</code></td>
+<td>密碼不應該被緩存在伺服器、桌面或任何其他系統中。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R11.b</code></td>
+<td>應該使用足夠短的生存時間(Time to Live, TTL)或等效的控制機制。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R12 儲存密碼 Saving Passwords</summary><div class="toggle-content"><ul>
+<li>密碼<strong>不應該明文保存在任何地方（例如文件）或腳本</strong>中。</li>
+<li>即使密碼以加密形式儲存，也絕<strong>不能啟用</strong>存儲管理應用程序來本地<strong>記住用戶和密碼以實現自動登錄</strong>，除非通過授權的中央身份驗證服務（如LDAP SSO）管理。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R13 刪除或更改默認密碼 Eliminate or change default passwords</summary><div class="toggle-content"><ul>
+<li>系統安裝或部署時附帶的默認密碼應該立即更改。</li>
+</ul>
+</div></details>
+<h2 id="4-3-3-帳戶管理建議-Account-Management-Recommendations">4.3.3 帳戶管理建議 Account Management Recommendations</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R14 不與系統使用者關聯的帳戶 Use of accounts not associated with system users</summary><div class="toggle-content"><ul>
+<li>應該<strong>禁用與任何無關聯的帳戶</strong>（例如不在Active Directory中的帳戶，如&quot;guest&quot;，“anonymous”，“nobody”）。</li>
+<li>它們的所有默認配置（例如密碼、權限）應該按照組織範圍的政策進行更改。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R15 帳戶鎖定 Account lockout</summary><div class="toggle-content"><ul>
+<li>在一<strong>定次數的失敗登錄嘗試</strong>後，應該<strong>將使用者鎖定</strong>。</li>
+<li>某些帳戶鎖定的實現包括<strong>在一定時間或電源循環後自動重置（帳戶解鎖）</strong>。</li>
+<li>在<strong>敏感的存儲系統上不應允許自動重置</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R16 用於緊急情況的本地使用者帳戶 A local user account for emergency purposes</summary><div class="toggle-content"><ul>
+<li>應該保留一個單獨的本地使用者帳戶，以便在「<strong>中央身份驗證系統」「不可用時」提供僅限緊急情況的存儲資源訪問</strong>。</li>
+<li>這個帳戶應該符合：
+<ul>
+<li>所有組織政策（例如密碼長度）</li>
+<li>它的使用應該僅限於特殊受保護的位置</li>
+<li>遵循完善的文件程序，其中包括<strong>相關利益相關者的適當批准和使用通知</strong>。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R17 消除或禁用預設使用者帳戶 Eliminate or disable default user accounts</summary><div class="toggle-content"><ul>
+<li>存儲系統安裝時附帶的<strong>預設使用者帳戶</strong>，如果有相關功能，<strong>應立即被消除或禁用</strong>。</li>
+<li>儘管消除或停用預設使用者帳戶功能不存在，或者有正當理由保留其中任何帳戶時，<strong>應滿足AC-SS-R18要求</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R18 – 限制本地和預設使用者帳戶 Limit local and default user accounts</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th><div style="width:100px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC-SS-R18.a</code></td>
+<td><strong>限制</strong>使用此類帳戶及其<strong>擁有的權限</strong>。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R18.b</code></td>
+<td><strong>密碼策略</strong>應適用於所有使用者、本地和預設帳戶，包括具有管理權限的帳戶。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<h2 id="4-3-4-權限和會話管理建議-Privilege-and-Session-Management-Recommendations">4.3.4 權限和會話管理建議 Privilege and Session Management Recommendations</h2>
+<details class="toggle" ><summary class="toggle-button" style="">AC-SS-R19 角色和責任配置</summary><div class="toggle-content"><ol>
+<li>至少應該對所有儲存資源的訪問實施<strong>ISO標準ISO/IEC 27040</strong> [10] 中的四個角色（即<strong>安全管理員，存儲管理員，安全審核員和存儲審核員</strong>）。</li>
+<li>要確保存儲產品在存儲敏感信息時，具備足夠細緻的角色控制機制，若存儲產品原本沒有這樣的功能，則可以透過補償控制方式來達到相似的效果。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R20 遵循“職責分離”原則</summary><div class="toggle-content"><p>遵循“職責分離”原則來分配特權給角色和將角色分配給用戶。應該至少包含以下：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:100px">標準</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC-SS-R20.a</code></td>
+<td>分配給「數據管理」的特權和「數據保護」的特權應分配給不同的角色，這兩個角色不應該指派給同一用戶。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R20.b</code></td>
+<td>分配給「數據管理」的特權和「主機管理」的特權應分配給不同的角色，這兩個角色不應該指派給同一用戶。</td>
+</tr>
+</tbody>
+</table>
+<p>此外：</p>
+<ul>
+<li>數據管理：創建新的儲存卷、或共享資源給用戶等<strong>讓儲存資源正常運作之權限</strong>。</li>
+<li>數據保護：配置、停止或刪除備份，確保<strong>儲存資料的安全與預防數據損失有關之權限</strong>。</li>
+<li>主機管理：在存儲控制器中創建/刪除對象等任務，<strong>管理存儲系統的硬體和基礎架構有關之權限</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R21 最小特權原則</summary><div class="toggle-content"><ul>
+<li>任何角色被指派的特權都應遵循&quot;最小特權&quot;原則</li>
+<li>分配給角色的權限不應該超過其執行的功能所需的權限。在這個情境中，這些權限涉及訪問特定存儲資源，例如塊設備、文件、對象等。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R22 - 安全的會話管理</summary><div class="toggle-content"><ul>
+<li>客戶端和存儲基礎架構系統之間的所有會話都應該根據所需的認證保證等級進行管理，符合[63B]第7節的要求，包括終止和自動登出。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AC-SS-R23 - 實施“每日消息”和“登錄橫幅”通知</summary><div class="toggle-content"><ul>
+<li>在通過用戶界面（UI）、命令行界面（CLI）或應用程序編程接口（API，如果適用）<strong>「登錄」到「任何存儲基礎架構組件」或「系統」之前，應該顯示“每日消息”或“登錄橫幅”通知</strong>。該消息應該包括法律聲明：
+<ul>
+<li>「<code>警告用戶正在訪問具有敏感數據的受限系統</code>」</li>
+<li>以及「根據組織的安全和隱私政策<code>提供任何其他警告和有意義的消息</code>。」</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<h2 id="4-3-5-SAN-特定建議-SAN-Specific-Recommendations">4.3.5 SAN 特定建議 SAN-Specific Recommendations</h2>
+<div class="note info flat"><ul>
+<li>SAN代表Storage Area Network，翻譯為「儲存區域網路」。簡單來說他用來連接儲存設備與伺服器之間的資料傳輸。</li>
+<li>通常由專門的硬體和軟體組成，並使用光纖通道（Fibre Channel）或者乙太網（Ethernet）等高速連接技術，以實現高效率、低延遲的資料傳輸。</li>
+<li>SAN的儲存資源在伺服器上被視為本地的硬碟，使得伺服器能夠透過SAN存取和管理這些儲存裝置。</li>
+</ul>
+</div>
+<p>與SAN相關的存取控制主題涉及多個方面。有些方面與<strong>網絡配置和管理訪問</strong>有重疊，在其他章節中已經涵蓋了。<br>
+為了避免重複討論，要全面了解所有存取控制方面，請參考這三節的內容。</p>
+<ul>
+<li>與「網絡基礎設施」（例如交換機、端口、主機緘閉器和網絡接口卡）以及「協議」相關的<strong>存取控制建議</strong>，可以參考第4.6節中有詳細討論</li>
+<li>資料在<strong>傳輸過程中的加密</strong>（存取控制的其中一種機制），可以參考第4.9節中有詳細討論。</li>
+<li><strong>管理訪問</strong>在第4.10節中有詳細討論。</li>
+</ul>
+<p>而本節主要討論「與資料相關」的「存取控制」，涵蓋塊「設備」相關的存取控制、「實施區劃」（zoning）以及加入「光纖通道」的存取控制規範。</p>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R24 - 區塊設備(HDD、SSD、etc)的存取控制</summary><div class="toggle-content"><p>一組主機對於一組存儲區域網（SAN）設備的存取應該透過zoning（軟體或硬體）和masking來限制，以達到最小所需存取權限。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R25 - 區塊設備複製和複本的存取控制</summary><div class="toggle-content"><ul>
+<li>一組主機對於一組經SAN複製的區塊設備、快照和其他類型的時間點複本的存取應該透過分區zoning和masing來限制，以達到最小所需存取權限。</li>
+<li>在許多情況下，被授予存取權限的主機不應該被允許存取複本。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R26 - 默認分區的權限</summary><div class="toggle-content"><ul>
+<li>默認zoning的權限（可能是產品特定的）應該始終配置為“全部拒絕”。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R27 - 分區實施</summary><div class="toggle-content"><p>分區應該在交換式SAN架構中基於合理的邏輯來實施，特別是與「環境」和「流量」類型的相關性，這些應該盡可能地分開：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:100px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC-SS-R27.a</code></td>
+<td>環境：開發、測試、生產等。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R27.b</code></td>
+<td>流量類型：數據存取、管理、複製、備份等。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R27.c</code></td>
+<td>主機類型：虛擬化、物理主機。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R27.d</code></td>
+<td>存儲設備類型：磁帶、磁碟。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R28 - 軟體分區實施</summary><div class="toggle-content"><p>當實施軟<strong>體分區時，只允許主機通過簡單名稱服務器（SNS）連接到存儲設備</strong>，通過查閱軟體分區表，而<strong>不是直接使用設備探索</strong>。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R29 - 控制可以加入SAN的裝置</summary><div class="toggle-content"><ul>
+<li>在SAN中，有一個政策規範的功能，可以「創建白清單」，<strong>列出可加入該存儲區域網的交換機、數據存儲設備以及主機</strong>，建議在適用的情況下充分利用這一功能。</li>
+</ul>
+</div></details>
+<h2 id="4-3-6-檔案和物件存取建議-File-and-Object-Access-Recommendations">4.3.6 檔案和物件存取建議 File and Object Access Recommendations</h2>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R30 - 限制所有類型的「物件存儲數據」到最低限度</summary><div class="toggle-content"><p>限制所有類型的物件存儲數據（例如，檔案、物件）遵循“最小權限”原則，包括：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:130px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC-SS-R30.a</code></td>
+<td>透過任何協議進行物件儲存數據的存取時，應該基於客戶端的IP和/或相關子網路進行限制，同時要求指定端口/協議。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R30.b</code></td>
+<td>使用更精細的存取控制機制（例如，按角色、ID、標籤、帳戶、虛擬私有雲（VPC）、VPC 端點等）。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R30.c</code></td>
+<td>存取權限只應授予集中管理的用戶和角色，例如企業<strong>目錄中的用戶</strong>或<strong>經批准的商業服務</strong>，而<code>不應授予特定系統的本地用戶</code>。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R30.d</code></td>
+<td>對於任何共享，**默認存取權限應設置為“全部拒絕”**或等效設置。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R30.e</code></td>
+<td><strong>默認共享應禁用或刪除</strong>。如果有特定用途需要使用它們，存取權限應限制為<strong>最低要求</strong>。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R30.f</code></td>
+<td>存取權限（例如讀取、寫入、執行、修改、刪除、查看ACL、更改ACL）應<strong>根據“Need to Know”原則進行個別分配</strong>。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R30.g</code></td>
+<td>如果可用，應使用定義物件存儲ACL的功能，以及使用本地操作系統的用戶、組或管理員權限模型。</td>
+</tr>
+<tr>
+<td><code>AC-SS-R30.h</code></td>
+<td>如果有定義文件級別存取模式的策略定義功能，應加以利用，並且應<strong>實現檢測違規模式的功能，可以發送通知</strong>。</td>
+</tr>
+</tbody>
+</table>
+<div class="note warning flat"><p>補充：“Need to know” 是一個信息安全原則，強調只有在某人必須知道或具有執行特定任務的需求下，他們才能取得相關的敏感信息或資源。這個原則適用於各種情況，包括數據存取權限、網絡訪問權限、機密文件存取等。</p>
+</div></div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R31 - 禁用需要驗證的用戶</summary><div class="toggle-content"><ul>
+<li><strong>需要驗證的用戶應該被禁用（例如，匿名、空、訪客或“公共訪問”用戶）</strong>。</li>
+<li>可以提供例外，以允許組織關鍵功能，例如網絡發現，但在這些情況下，這些用戶應映射到“nobody”用戶組，而不是“ID 0”。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R32 - 定期審核安全設置</summary><div class="toggle-content"><ul>
+<li>定期<strong>審核所有上述存儲數據的安全設置</strong>，包括各種類型的數據（例如文件、對象），以確保沒有偏離。</li>
+<li>審核結果應予以記錄。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R33 - 使用反惡意軟體掃描工具</summary><div class="toggle-content"><ul>
+<li>使用反惡意軟體工具對敏感信息文件進行掃描。</li>
+<li>每當「訪問」包含「敏感信息」的「文件」時，應首<strong>先使用經組織批准的反惡意軟體工具進行掃描</strong>，以確保文件未遭受破壞。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R34 - 進行細粒度的權限分配</summary><div class="toggle-content"><ul>
+<li>進行細粒度的權限分配：
+<ul>
+<li>對於文件和對象共享系統（例如NFS、CIFS、雲對象存儲），應採用<strong>較細粒度的權限授予</strong>。</li>
+<li>不應使用較粗粒度的方式（例如<strong>對文件或對象進行控制，而非對整個文件夾進行控制</strong>，或者對共享或存儲桶進行控制）。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R35 - 限制root訪問以保護NFS</summary><div class="toggle-content"><ul>
+<li>限制root訪問以保護NFS，這包括使用“nosuid”選項。</li>
+<li>避免使用“no_root_squash”來<strong>防止客戶端上的程序以root用戶身份運行</strong>。</li>
+<li>並且<strong>避免遠程root用戶修改共享文件</strong>。一般情況下，<code>不應允許</code>NFS客戶端在已導出的文件系統上<code>運行“suid”和“sgid”程序</code>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R36 - 設置noexec設定防止可執行文件執行</summary><div class="toggle-content"><ul>
+<li>要求確保那些被<strong>設置為&quot;read only&quot;模式的NFS共享</strong>，在其<code>掛載配置中添加&quot;noexec&quot;選項</code>，以<strong>防止在該共享上執行可執行文件</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R37 - 不允許導出管理文件系統</summary><div class="toggle-content"><ul>
+<li><strong>不允許導出管理文件系統</strong>：包括<code>‘/’文件系統</code>和<code>受限的操作系統</code>或<code>存儲數組系統文件夾</code>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R38 - 不應向任何用戶授予完全控制權限</summary><div class="toggle-content"><ul>
+<li>在使用CIFS時，不應向任何用戶授予“完全控制”權限，因為接收者可能使用該權限來修改權限，從而導致特權泄露。</li>
+</ul>
+<div class="note info flat"><p>CIFS代表Common Internet File System（通用互聯網文件系統）。它是一種用於在計算機網絡上分享文件和資源的協議。CIFS最初是由微軟開發的，用於Windows操作系統中的文件共享。</p>
+<p>CIFS協議允許不同的計算機之間進行文件共享，使得用戶可以在網絡上訪問和操作其他計算機上的文件，就像訪問本地文件一樣方便。這使得用戶能夠在不同的計算機之間共享資源，例如文檔、圖片、音頻和視頻等。</p>
+</div></div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：AC-SS-R39 - 使用對象保護來防止未經授權的刪除</summary><div class="toggle-content"><ul>
+<li>對於<strong>敏感信息</strong>，如果支持的話，應<code>使用高級控制</code>來防止<code>未經授權的對象刪除</code>。</li>
+<li>（例如對象<strong>刪除時需要多重身份驗證</strong>，或對對象進行鎖定防止刪除）。</li>
+</ul>
+</div></details>
+<h1 id="4-4-AL-審計日誌-Audit-Log">4.4 (AL) 審計日誌 Audit Log</h1>
+<p>儲存基礎架構元件會生成大量的交易或事件的事件日誌記錄。這些事件日誌記錄必須以某種方式進行記錄，以進行事件記錄。</p>
+<ul>
+<li>從<code>安全</code>或<code>合規性</code>的角度來看，重要的是捕獲那些必要的事件日誌記錄，以<strong>證明操作的證據</strong>。</li>
+<li><code>強制說明責任</code>和<code>可追溯性</code>，滿足證據要求，以及對系統進行充分監控。</li>
+</ul>
+<p>以下是與安全相關的審計日誌事件：</p>
+<ol>
+<li><code>管理事件</code> - 與系統權限管理相關知識間。
+<ul>
+<li>例如，重設使用者密碼，帳戶的創建/刪除，權限修改，角色變更，群組成員變更，特權操作，配置的建立/更改。</li>
+</ul>
+</li>
+<li><code>安全相關事件</code> - 系統安全費制的更改、授權錯誤訊息等可能導致安全事件發生的事件。
+<ul>
+<li>例如，使用者配置和安全配置的更改，對儲存的失敗/阻塞嘗試，被阻止的登錄嘗試。這些事件通常是有興趣的，儘管其中一些事件可能與管理事件重疊。</li>
+</ul>
+</li>
+<li><code>資料存取事件</code> - 資料存取的相關事件，存取信息對於監控敏感信息（例如，確定對手可能接觸了什麼）是有幫助的。</li>
+</ol>
+<p>以下是審制日誌不檔可能導致的後果：</p>
+<ul>
+<li>安全日誌和分析的不足，使攻擊者能夠隱藏其位置、惡意軟體以及在受害者機器上的活動。</li>
+<li>缺乏可靠的審計日誌，<strong>攻擊可能會長期不被察覺</strong>，而實際造成的損害可能是不可逆轉的。</li>
+<li>由於日誌分析流程的不善或不存在，攻擊者有時可以在目標組織中控制受害者的機器數月或數年，而目標組織中的任何人都不知道，即使可以在未審查的日誌文件中獲取攻擊的證據。</li>
+</ul>
+<p>基於事件日誌數據對於攻擊檢測和鑒識調查的關鍵性，以下是實施審計日誌功能的安全建議：</p>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AL-SS-R1 - 儲存基礎架構的組件應啟用審計記錄</summary><div class="toggle-content"><ul>
+<li>是一個資訊安全要求，指出<code>所有儲存基礎架構的組件應啟用審計記錄</code>，並且<strong>使用可靠的傳送方式和安全的通訊協議</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AL-SS-R2 - 可靠的外部時間同步的要求</summary><div class="toggle-content"><ul>
+<li>Network Time Protocol (NTP)服務對於時間同步至關重要。</li>
+<li>如果NTP服務被停用:
+<ul>
+<li>相依的系統可能會受到不準確的訊息、事件和警示的時間戳記</li>
+<li>不同裝置之間的時間不一致，以及因此無法進行日誌分析、相關性分析、異常檢測或取證。</li>
+</ul>
+</li>
+<li>在整個環境中建立和<code>使用一個共同且準確的時間來源</code>，有助於確保來自不同來源的事件記錄能夠相關聯。</li>
+<li>以下是有關部署和整合NTP與儲存相關裝置的建議：<br>
+| <div style="width:130px">要求</div> |  要求內容 |<br>
+|---------|----------|<br>
+| <code>AL-SS-R2.a</code> | 所有裝置（包括日誌伺服器和儲存基礎架構）都應<strong>啟用NTP服務</strong>。|<br>
+| <code>AL-SS-R2.b</code> | <strong>有裝置</strong>應配置為與<strong>時間來源伺服器</strong>（例如NTP伺服器）進行<strong>時間同步。</strong>|<br>
+| <code>AL-SS-R2.c</code> | 存取權限只應授予集中管理的用戶和角色，例如企業<strong>目錄中的用戶</strong>或<strong>經批准的商業服務</strong>，而<code>不應授予特定系統的本地用戶</code>。|<br>
+| <code>AL-SS-R2.d</code> | 建立<strong>至少三個地理位置不同的獨立時間伺服器</strong>，以確保即使其中某個伺服器發生故障或無法使用，其他伺服器仍能提供正確的時間資訊。|<br>
+| <code>AL-SS-R2.e</code> | 應<strong>使用憑證</strong>來驗證時間來源伺服器的身份已確保時間同步服務的安全性。|<br>
+| <code>AL-SS-R2.f</code> | - 可以利用存取控制選項，例如 “ntpd” 存取限制，來限制對時間來源伺服器的存取。<br> - 您可以設定存取控制清單，列出被允許或禁止存取時間伺服器的裝置。(例如設定<code>restrict 192.168.2.10</code>只允許此ip進行存取。)|</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AL-SS-R3 - 以集中的方式收集日誌並確保可靠性</summary><div class="toggle-content"><ul>
+<li>通過將日誌寫入<strong>中央日誌伺服器</strong>（例如，syslog 伺服器、雲端日誌服務），降低了日誌丟失或被更改的風險，因為它們在<strong>內部網路中更安全</strong>。以下是有關部署和集成與存儲相關設備的中央日誌記錄的建議：<br>
+| <div style="width:130px">要求</div> |  要求內容 |<br>
+|---------|----------|<br>
+| <code>AL-SS-R3.a</code> | 應「<code>定義</code>」存儲設備的組織日誌記錄「<code>標準</code>」並以<strong>指定所需的日誌記錄級別</strong>。（更具體的建議請參見AL-SS-R4）|<br>
+| <code>AL-SS-R3.b</code> | 「所有設備」應根據適用的「組織日誌記錄標準」，配置「<strong>傳輸日誌事件數據」至組織核准的「中央日誌伺服器</strong>」。|<br>
+| <code>AL-SS-R3.c</code> | 應在所有設備上<strong>監控中央日誌配置</strong>的<code>有效性</code>（例如，日誌服務保持啟動狀態、日誌記錄級別配置符合組織標準、每個設備都配置了經核准的日誌伺服器），對檢測到的異常進行高優先級處理。|<br>
+| <code>AL-SS-R3.d</code> | 應部署多個syslog伺服器，以<strong>實現連續記錄，並防止單一故障點</strong>。|<br>
+| <code>AL-SS-R3.e</code> | 每個日誌應至少<strong>保留一份離線副本</strong>。|<br>
+| <code>AL-SS-R3.f</code> | 為防止在停止並重新啟動所有記錄條目寫入之前丟失條目，應<strong>配置日誌記錄實時寫入磁碟</strong>，並且<strong>不使用緩衝區</strong>，並<strong>使用可靠的協議傳送</strong>。|</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AL-SS-R4 - 日誌記錄等級</summary><div class="toggle-content"><p>存儲審計日誌應包含（但不限於）與所有與「存儲相關」的object、sites和accounts的保護相關的以下事件：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:130px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AL-SS-R4.a</code></td>
+<td>敏感環境中，Read-only的API Calls。</td>
+</tr>
+<tr>
+<td><code>AL-SS-R4.b</code></td>
+<td>所有對服務、端口、文件、對象或設備的<code>拒絕訪問嘗試</code>應記錄下來。</td>
+</tr>
+<tr>
+<td><code>AL-SS-R4.c</code></td>
+<td>涵蓋整個<code>密鑰生命周期操作</code>（尤其是加密密鑰）的<code>加密密鑰管理操作</code>，例如密鑰生成、密鑰刪除、證書管理等，尤其是關於密鑰銷毀等事件皆應該紀錄。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AL-SS-R5 - 有關審計日誌保留和保護</summary><div class="toggle-content"><p>有關審計日誌保留和保護，應採取以下措施：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:130px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AL-SS-R5.a</code></td>
+<td>需要<strong>足夠長的時間保留日誌數據</strong>，因為通常需要一段時間才能察覺到已發生或正在發生的入侵事件。</td>
+</tr>
+<tr>
+<td><code>AL-SS-R5.b</code></td>
+<td><strong>分配足夠的存儲空間</strong>，主動監控日誌數據的剩餘空間和異常增長速率，<strong>以防止日誌目的地充滿</strong>。（已知的攻擊模式包括先<strong>充滿日誌以阻礙取證</strong>，適當的監控有助於即時識別此類攻擊。）</td>
+</tr>
+<tr>
+<td><code>AL-SS-R5.c</code></td>
+<td>涵存檔的日誌數據<code>應受到防篡改保護</code>（例如使用WORM或不可變存儲、對象鎖定、多因素身份驗證（MFA）批准刪除）。如果支持，中央日誌服務器也應使用這些存儲選項。</td>
+</tr>
+<tr>
+<td><code>AL-SS-R5.d</code></td>
+<td>通過<strong>指定角色和帳戶</strong>來限制對日誌數據和服務器的訪問。</td>
+</tr>
+<tr>
+<td><code>AL-SS-R5.e</code></td>
+<td><strong>啟用加密</strong>，因為訪問日誌數據可能會為攻擊者提供有關資產和可能攻擊向量的有價值的見解。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AL-SS-R6 - SIEM整合</summary><div class="toggle-content"><ul>
+<li>如果支持，應將<strong>存儲基礎架構日誌</strong>與安全信息和<strong>事件管理SIEM</strong>整合，以進行潛在的威脅檢測。</li>
+</ul>
+</div></details>
+<h1 id="4-5-IR-數據事件應急響應和網絡復原的準備-Preparation-for-Data-Incident-Response-and-Cyber-Recovery">4.5 (IR) 數據事件應急響應和網絡復原的準備 Preparation for Data Incident Response and Cyber Recovery</h1>
+<p>有關事件響應的作用與建立，可以參考NIST的架構來改進關鍵基礎設施的安全[40]。與<code>存儲相關</code>的事件應該作為<strong>組織事件響應流程的一部分來處理</strong>，其中包括隔離、根本原因分析、定義和管理響應計劃、測試以及定期流程審查和更新。以下的建議涵蓋了應考慮的特定方面，涉及存儲基礎設施和數據資產。</p>
+<div class="note info flat"><p>[40] National Institute of Standards and Technology (2018) Framework for Improving Critical Infrastructure Cybersecurity, Version 1.1. (National Institute of Standards and Technology, Gaithersburg, MD). <a target="_blank" rel="noopener external nofollow noreferrer" href="https://doi.org/10.6028/NIST.CSWP.04162018">https://doi.org/10.6028/NIST.CSWP.04162018</a></p>
+</div>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IR-SS-R1 – 開發針對儲存元件遭到入侵的響應計畫</summary><div class="toggle-content"><p>在組織風險分析、隔離、修復、恢復和測試程序中，應考慮以下要素：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:130px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IR-SS-R1.a</code></td>
+<td>整個<strong>存儲數組</strong>或整個<strong>基於雲的存儲資產</strong>（例如，SAN、NAS、對象存儲、彈性文件系統）的入侵。</td>
+</tr>
+<tr>
+<td><code>IR-SS-R1.b</code></td>
+<td><strong>備份系統</strong>的入侵響應計畫。</td>
+</tr>
+<tr>
+<td><code>IR-SS-R1.c</code></td>
+<td><strong>單個存儲元素</strong>（例如，共享、塊設備）的入侵響應計畫。</td>
+</tr>
+<tr>
+<td><code>IR-SS-R1.d</code></td>
+<td>FC SAN網絡的入侵（包括單個交換機和SAN服務）。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IR-SS-R2 – 在事件管理期間確保恢復資產不可變性</summary><div class="toggle-content"><ul>
+<li>結合下面第4.7節提供的有關<strong>保護網絡復原副本</strong>的建議，這些副本在<strong>事件管理期間</strong>應<code>保持隔離</code>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IR-SS-R3 – 驗證恢復的計算組件的衛生狀況</summary><div class="toggle-content"><ul>
+<li>確保在將恢復的可執行文件、應用程序、容器和操作系統映像<strong>部署到生產環境之前，它們是不受感染的</strong>。</li>
+</ul>
+</div></details>
+<h1 id="4-6-NC-網路設定指引-Guidelines-for-Network-Configuration">4.6 (NC) 網路設定指引 Guidelines for Network Configuration</h1>
+<p>與存儲相關的網絡主題涉及多個方面，其中一些與數據訪問控制、管理訪問和加密有重疊之處，這些已在其他部分中涵蓋。為了全面了解所有網絡配置方面，請參考所有節的內容。：</p>
+<ol>
+<li>第4.3節中，與<code>數據訪問控制</code>密切相關的某些網絡建議；</li>
+<li>第4.9節中，與<code>網絡和協議</code>相關的<code>加密建議</code>；</li>
+<li>第4.10節中，與<code>管理訪問</code>密切相關的某些網絡建議；</li>
+</ol>
+<div class="note info flat"><p>而本節主要涵蓋的<strong>網絡基礎設施（例如交換機、端口、HBA和NIC配置、分區指南等）和協議</strong>。</p>
+</div>
+<h2 id="4-6-1-FC-SAN-和-NVMEoF">4.6.1 FC SAN 和 NVMEoF</h2>
+<div class="note info flat"><ul>
+<li>FC SAN：是一種存儲區域網絡技術，它使用<strong>光纖通道協議</strong>來連接<strong>主機和存儲設備</strong>。它是一個高性能、可靠且擴展性良好的解決方案，通常用於連接企業級的存儲系統和主機。</li>
+<li>NVMEoF (NVME over Fabric)目的在使用NVMe協議通過網絡訪問遠程存儲設備，而無需通過本地線路直接連接。
+<ul>
+<li>NVMe（Non-Volatile Memory Express）是一種高效的存儲訪問協議，專門設計用於<strong>快閃存儲器（例如SSD）等非易失性存儲設備</strong>。</li>
+<li>NVMeoF 則是在現有網絡架構上<strong>將NVMe協議擴展到Fabrics</strong>（例如Ethernet或InfiniBand等）的技術。</li>
+<li>這樣，NVMeoF允許主機<strong>使用NVMe協議通過網絡訪問遠程存儲設備</strong>，而無需通過本地線路直接連接。</li>
+<li>這種技術可以在數據中心和雲環境中實現高效、低延遲的存儲訪問，並提供更好的可擴展性和靈活性。</li>
+</ul>
+</li>
+</ul>
+</div>
+<details class="toggle" ><summary class="toggle-button" style="">注意：NC-SS-R1 - 主機和交換機身份驗證</summary><div class="toggle-content"><ul>
+<li>每個<code>主機</code>和<code>存儲交換機</code>應該具有獨特的身份，在加入網絡之前應該<code>進行身份驗證</code>（例如，FC-SP-2 AUTH-A）。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：NC-SS-R2 - 使用經批准的PKI機制</summary><div class="toggle-content"><ul>
+<li>使用組織批准且經過認證的<strong>集中式PKI系統來管理交換機證書</strong>（例如，Fibre-Channel Certificate Authentication Protocol或FCAP），而<code>不是使用設備自簽名的證書</code>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">注意：NC-SS-R3 - 使用混合方法進行zoning</summary><div class="toggle-content"><p>實施一種結合不同類型區域劃分機制的方法，而不僅僅是使用單一類型的劃分（即主機、交換機和存儲設備）：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:130px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NC-SS-R3.a</code></td>
+<td>基於<code>主機</code>的分區機制，主機上的應用程式可以存取和看到可存取的設被或儲存資源有哪些。</td>
+</tr>
+<tr>
+<td><code>NC-SS-R3.b</code></td>
+<td>基於<code>交換機</code>的分區機制，這是指<strong>使用交換機</strong>來<strong>控制設備之間的通信</strong>，使得只有特定的設備可以與其他特定的設備進行交互。</td>
+</tr>
+<tr>
+<td><code>NC-SS-R3.c</code></td>
+<td>基於<code>存儲設備</code>的分區機制，這是指在儲存系統中，<strong>存儲陣列會根據特定的設定</strong>，決定哪些主機（或者更具體地說，哪些主機的HBA端口）可以訪問哪些塊設備，而<strong>其他未列出的主機將被拒絕訪問</strong>。</td>
+</tr>
+<tr>
+<td><code>NC-SS-R3.d</code></td>
+<td>基於<code>功能性</code>的分區機制，區域集合功能就像在存儲網絡中建立了幾個專用的區域，每個區域都有特定的用途，這樣就能更好地管理和控制存儲資源的訪問。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R4 - 遮罩建議</summary><div class="toggle-content"><ul>
+<li>遮罩指的是使block-device對<strong>主機可見或不可見</strong>。</li>
+<li>優先將<strong>遮罩放置在盡可能靠近數據的位置</strong>，盡可能<strong>遠離數據使用者或客戶端</strong>（例如，優先使用數組遮罩而不是交換器遮罩，核心交換器而不是邊緣交換器，以及交換器而不是HBA）。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R5 - 交換器配置數據備份</summary><div class="toggle-content"><ul>
+<li>創建<strong>交換器配置數據</strong>的備份，包括區域配置文件。</li>
+<li>該備份應保留在SAN交換器之外，以便在發生錯誤或惡意損壞或刪除時能夠<strong>重新部署</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R6 - 將交換器管理功能限制為最小必要</summary><div class="toggle-content"><table>
+<thead>
+<tr>
+<th><div style="width:130px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NC-SS-R6.a</code></td>
+<td>在實施SAN（Storage Area Network）結構時，應該<code>制定明確的政策</code>，指定並<code>最小化授權</code>用於分發配置數據的交換器集合（同時提供可接受的冗餘性）。</td>
+</tr>
+<tr>
+<td><code>NC-SS-R6.b</code></td>
+<td><code>不應啟用</code><strong>不必要的配置管理許可權</strong>和服務，例如密碼分發，將密碼發送給相應的用戶或設備的過程。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R7 - 使用軟性（Soft zoning）與硬性（Hard zoning）區域劃分的考慮</summary><div class="toggle-content"><ul>
+<li>軟性區域劃分：依靠主機的身份來限制存儲區域的訪問，相對不夠安全，但在跨設施且存在物理安全風險的情況下可能更合適。</li>
+<li>硬性區域劃分：則使用物理端口號碼，不依賴主機身份，較為安全，特別適用於物理訪問受到嚴格保護的情況。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R8 - 限制執行管理任務的特定的光纖通道埠</summary><div class="toggle-content"><ul>
+<li><code>限制</code>哪些儲存區域網路（SAN）的<code>光纖通道物理</code>和邏輯埠可以用於管理。</li>
+<li>只有<code>特定的光纖通道埠</code>能夠<code>執行管理任務</code>，例如設置、配置或監控SAN。其他的光纖通道埠則被關閉或限制其功能，以確保它們不能被用來進行管理任務。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R9 - 限制交換器之間的通信</summary><div class="toggle-content"><ul>
+<li>限制<strong>交換器之間的通信</strong>。</li>
+<li>確保只<strong>有必要的交換器之間可以相互通信</strong>。這有助於降低未經授權設備進入儲存區域網路的風險。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R10 - 停用未使用的儲存區域網路（SAN）埠</summary><div class="toggle-content"><ul>
+<li><strong>停用未使用的儲存區域網路</strong>（SAN）埠，以防止意外或有意連接未經授權的設備。</li>
+</ul>
+</div></details>
+<h2 id="4-6-2-IP-儲存網路-IP-Storage-Networking">4.6.2 IP 儲存網路 IP Storage Networking</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R11 – IP儲存網路分隔</summary><div class="toggle-content"><p>本節主要討論IP存儲網絡的分隔原則，旨在保障存儲相關通信在IP網絡上的安全性。以下是該段落的重點總結：</p>
+<ol>
+<li>在存儲相關通信中，應該根據不同的流量類型，在<strong>Network Layer第2層和第3層進行環境和流量的分隔</strong>，以保障安全。</li>
+<li>對於敏感環境，應該最大限度地進行分隔，分隔的依據包括以下：<br>
+| <div style="width:130px">要求</div> |  要求內容 |<br>
+|---------|----------|<br>
+| <code>NC-SS-R11.a</code> | 流量類型：數據訪問協議、管理、複製、備份、主機和應用網絡等。|<br>
+| <code>NC-SS-R11.b</code> | 進一步區分不同解決方案、供應商和技術的管理流量。如果使用了兩個或更多的存儲解決方案（例如不同的數組技術、基於伺服器的SAN產品、交換機技術、存儲虛擬化等），每個環境的管理流量應該與其他環境分隔。|<br>
+| <code>NC-SS-R11.b</code> | 數據訪問協議（例如iSCSI、NFS、特有供應商協議等）。|<br>
+| <code>NC-SS-R11.b</code> | 訪問數據的伺服器或主機類型：虛擬化主機 vs. 實體主機。|</li>
+</ol>
+<p>這些分隔原則旨在確保IP存儲網絡的安全性，使不同類型的流量和敏感信息在網絡中得到適當的隔離，從而減少潛在的安全風險。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R12 - 子網的分隔</summary><div class="toggle-content"><ul>
+<li>在SAN交換機的IP或是乙太網路管理ports應該要位於獨立的子網中，包含與主機和儲存之間的數據訪問子網，主機間通信子網都要分隔開。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R13 - 啟用設備IP訪問控制</summary><div class="toggle-content"><p>應啟用<code>設備IP訪問控制</code>，在存儲設備上配置相關的安全功能，例如內建防火牆規則、IP過濾和存取控制清單，以實現：</p>
+<table>
+<thead>
+<tr>
+<th><div style="width:130px">要求</div></th>
+<th>要求內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NC-SS-R13.a</code></td>
+<td>控制和限制<code>僅允許所需主機</code>或<code>應用</code>訪問其使用的存儲對象。</td>
+</tr>
+<tr>
+<td><code>NC-SS-R13.b</code></td>
+<td>獨立控制管理主機和管理應用程序之間的<code>IP流量</code>，以及相關的存儲管理界面。</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R14 - 在網絡層面應用IP訪問控制</summary><div class="toggle-content"><ul>
+<li>使用<strong>路由、防火牆、存取控制清單、虛擬私有雲（VPC）安全組</strong></li>
+<li>基於服務器的SAN客戶端來限制所有流量類型（如數據訪問和管理流量）僅限於允許的IP地址和TCP/UDP端口和協議之間：<br>
+| <div style="width:130px">要求</div> |  要求內容 |<br>
+|---------|----------|<br>
+| <code>NC-SS-R14.a</code> | 主機或應用程序和它們使用的存儲對象之間。|<br>
+| <code>NC-SS-R14.b</code> | 管理主機和應用程序與它們管理的相關存儲對象的存儲管理界面之間。|</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R15 - 封鎖網際網路或公網的訪問</summary><div class="toggle-content"><ul>
+<li>應封鎖從網際網路或其他公共網路對非公開存儲對象的訪問。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R16 - 對於需要公開訪問的存儲對象，應實施足夠的控制措施</summary><div class="toggle-content"><p>(a) 最小化訪問。<br>
+(b) 使用物理和邏輯上分隔的存儲子網，最好是與非公開存儲對象使用不同的存儲設備和池。<br>
+© 考慮防止拒絕服務攻擊。<br>
+(d) 緩存副本（例如使用內容傳遞網絡（CDN）、副本和代理），至少保留與源數據相同的安全特性。<br>
+(e) 考慮法規要求（例如機密性、存儲位置限制）。<br>
+(f) 任何其他適用的安全控制措施（例如加密、身份驗證）。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R17 - 配置SNMP時，所有流量應導向有效的組織內部IP地址作為目的地</summary><div class="toggle-content"><p>在配置SNMP時，所有流量應導向有效的組織內部IP地址作為目的地，應定期審查配置的有效性。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R17 - 考慮使用隔離的不可路由VLAN</summary><div class="toggle-content"><p>對於基於服務器的SAN部署，考慮使用隔離的不可路由VLAN，以保護數據存儲環境並減輕安全擔憂。</p>
+</div></details>
+<h2 id="4-6-3-Protocols-協定">4.6.3 Protocols 協定</h2>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R19 - 禁用不安全的檔案訪問協議版本</summary><div class="toggle-content"><ul>
+<li>需要封鎖過時、不推薦或不安全的協議版本，如SMB v1、NFS 1和2。</li>
+<li>建議在客戶端和伺服器端都停用這些協議，以增加安全性。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R20 - SNMP安全性設定</summary><div class="toggle-content"><p>(a) 如果不使用SNMP，應禁用它。<br>
+(b) 修改預設的已知社群字串，即使未啟用SNMP。所設定的字串應符合組織的密碼政策。<br>
+© 對於具有不同機密性的設備，使用不同的社群字串。<br>
+(d) 使用至少SNMP版本3。<br>
+(e) 強制執行SNMP的身份驗證和加密功能。<br>
+(f) 如果不是絕對必要，不要配置具有讀寫訪問權限的SNMP。如果確實需要，要限制和控制讀寫SNMP的使用。<br>
+(g) 使用存取控制清單來控制通過SNMP對設備的訪問。<br>
+(h) 定期驗證SNMP陷阱是發送到授權的管理者。<br>
+(i) 參考美國國土安全部(CISA)的TA17-156A指南，以獲得額外的指導。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R21 - 目錄、域和相似服務的真實性</summary><div class="toggle-content"><ul>
+<li>需要定期審查所有儲存元素（如設備、交換機、管理工作站、管理軟體）中服務的配置，確保只使用核准的配置，並修復任何不一致之處。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R22 - 使用標準和非標準的TCP/IP或UDP埠的考慮</summary><div class="toggle-content"><ul>
+<li>考慮使用非標準埠，可以<strong>隱藏應用程式或服務</strong>，使駭客難以找到正確的埠號。</li>
+<li>使用非標準埠的缺點是安全掃描工具<strong>可能無法識別非標準埠上的可疑活動</strong>，因為這些工具預期在標準埠上有特定行為。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R23 - 啟用FCoE初始化協議（FIP）監聽過濾器</summary><div class="toggle-content"><ul>
+<li>FIP監聽是<strong>防止未經授權的訪問和數據傳輸到FC網絡</strong>的安全機制。</li>
+<li>FCoE轉接器將FC發起器（伺服器）連接到FCoE轉發器（FCF）以啟用相關VLAN上的FIP欺騙。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R24 - 限制iSCSI埠</summary><div class="toggle-content"><p>需要防止iSCSI網絡上的主機訪問除該網絡上為iSCSI指定的TCP埠之外的任何TCP埠。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R25 - 使用iSCSI身份驗證</summary><div class="toggle-content"><ul>
+<li>在建立會話時，使用支援的方法對iSCSI發起者進行身份驗證（例如CHAP、SRP、Kerberos、SPKM1/2）。</li>
+<li>使用雙向驗證而不是單向驗證的CHAP。請注意，身份驗證不提供通道的加密或完整性保護。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R26 - 使用NDMP安全功能</summary><div class="toggle-content"><p>當使用NDMP時，應配置以下安全功能：<br>
+(a) 控制哪些主機可以啟動NDMP會話。<br>
+(b) 使用挑戰-回應身份驗證（不使用明文身份驗證選項）。<br>
+© 記錄NDMP連接嘗試。<br>
+(d) 符合組織密碼政策的NDMP密碼（例如，長度、複雜性等）。<br>
+(e) 僅需要使用者的受限NDMP相關權限。<br>
+(f) 加密的NDMP控制連接。<br>
+(g) 會話或伺服器的NDMP限流。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R27 - 在LDAP中使用TLS</summary><div class="toggle-content"><ul>
+<li>在設定儲存系統的Active Directory選項時，使用TLS來保護LDAP連接。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：NC-SS-R28 - 其他協議建議</summary><div class="toggle-content"><ul>
+<li>當使用其他協議（如SymAPI、SMI-S、GNS等）時，應考慮適應第4.6.2和4.6.3節中的建議。</li>
+<li>特別是：
+<ul>
+<li>(a) 將數據訪問和管理的流量與其他環境隔離。</li>
+<li>(b) 限制TCP和UDP埠。</li>
+<li>© 啟用加密。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<h1 id="4-7-IS-隔離-Isolation">4.7 (IS) 隔離 Isolation</h1>
+<p>當生產數據損壞或丟失時，組織應該能夠通過複製或備份的數據副本來恢復數據。如果損害是惡意攻擊的結果，攻擊者也能夠破壞備份數據副本，那麼對生產環境的攻擊將產生災難性影響，因為組織將無法進行恢復。為了提高備份副本的彈性，<strong>應確保數據資產及其恢復副本之間具有足夠的隔離</strong>。在這個背景下，組織應該區分至少兩種不同的數據保護場景：</p>
+<ol>
+<li><strong>非惡意恢復</strong> - 需要數據副本，以應對<code>自然災害、硬件故障、人為錯誤</code>等情況。這些可以包括本地副本（例如，在進行維護之前拍攝的快照）、災難恢復副本（DR副本）、備份以及長期存檔。這些副本與生產環境越接近，越有可能被映射到計算系統進行測試和災難恢復。</li>
+<li><strong>防止網絡攻擊的恢復</strong> - 需要<code>硬化、鎖定並保持隔離的數據副本</code>。設計應該努力實現這樣一個狀態，即這些副本不受任何影響，包括與其相關聯的生產數據卷或其他類型的副本已被破壞的情況。</li>
+</ol>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R1 – 儲存系統的分隔</summary><div class="toggle-content"><p>(a) 在<strong>私有雲中</strong>，應在指定的<strong>獨立儲存環境中建立防範網絡攻擊的備份副本</strong>。在<strong>公有雲</strong>中，則需要<strong>使用單獨的帳戶（或等效帳戶）來創建這些備份副本</strong>。<br>
+(b) 長期的備份和儲存系統應該與生產數據儲存系統分開。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R2 – 管理系統的分隔</summary><div class="toggle-content"><ul>
+<li>儲存系統中存儲網絡攻擊恢復副本的管理應該來自<strong>指定的管理系統</strong>，該系統<strong>與生產環境以及與生產相連的其他系統</strong>（包括數據保護機制）<code>分隔</code>。</li>
+<li>生產和常規備份不應該能夠訪問這些管理系統。該系統應該托管在一個僅與隔離網絡相連的專用環境中。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R3 – 網絡攻擊恢復系統和長期備份的存取限制</summary><div class="toggle-content"><p>(a) 對於敏感信息，網絡攻擊<strong>恢復副本</strong>及其系統<strong>不應該對常規的IT人員可見</strong>，<strong>僅應該讓單一人員（如CISO），或非常有限的高管或安全經理使用特別的憑證來訪問</strong>。這確保如果IT管理員的憑證被入侵，攻擊者無法使用這些憑證來訪問網絡攻擊恢復副本。這個受限制的團隊可以訪問網絡攻擊恢復副本，但管理權限只會授予更小的子集，用於授予其他使用者權限。<br>
+(b) 訪問長期備份的權限應該與用於執行其他儲存管理任務（例如SAN管理、儲存分配）的權限分開，並應包括使用不同的使用者ID、帳號和憑證。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R4 – 離線儲存</summary><div class="toggle-content"><ul>
+<li>網路攻擊恢復的備份應該<code>儲存在離線的地方</code>，而<strong>不是和生產數據存放在同一地點</strong>。</li>
+<li>這樣做可以確保即使攻擊者物理上進入生產地點，或者成功侵入物理位置，也無法訪問或破壞網路攻擊恢復的備份。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R5 – 獨立的完整基準備份</summary><div class="toggle-content"><ul>
+<li>備份系統通常使用增量備份，相對於基準備份捕獲數據的變化。這些增量備份在恢復時必須與基準備份一起使用。對於某些備份方案（如快照），只使用增量備份（即基準備份是生產數據本身）。</li>
+<li>為了正確處理恢復情景，必須**考慮備份之間的依賴關係，並保持不同類型備份之間的充分隔離。**具體來說：</li>
+<li>(a) 複製的災難恢復備份不應依賴於生產基準數據。</li>
+<li>(b) 網路攻擊恢復備份不應依賴於生產基準數據。只有在這些備份從生產基準數據中得到充分隔離並符合IS-SS-R1、IS-SS-R2和IS-SS-R3的建議時，才允許依賴於災難恢復基準數據。</li>
+<li>© <strong>長期儲存的歸檔數據</strong><code>不應依賴於生產和災難恢復基準數據</code>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R6 – 停用所有不必要的服務和協議</summary><div class="toggle-content"><p>在網路攻擊恢復儲存系統上應停用所有不必要的服務和協議。在只需要應用程序編程接口（API）或命令行界面（CLI）進行管理的環境中，建議也禁用任何交互式網頁界面。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R7 - 從主機或應用程式獨立</summary><div class="toggle-content"><p>(a) 在進行資料恢復時，不應將資料副本掛載、匯出或映射到主機或應用程式，而應該將其還原到隔離的臨時環境（例如離線環境），而不是直接還原到目標主機或應用程式。或者，較不安全的方法是允許目標主機或應用程式在還原過程中有有限的唯讀訪問權限（例如映射或掛載），但在還原完成後應立即移除此類訪問權限。<br>
+(b) 長期備份的資料副本不應直接掛載、匯出或映射到主機或應用程式。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R8 - 考慮設定空氣隔離 Air Gap</summary><div class="toggle-content"><ul>
+<li>組織應考慮在<code>敏感資料</code>的資料<strong>恢復副本</strong><code>周圍建立空氣隔離</code>（air gap）。</li>
+<li>嚴格的空氣隔離應提供完全的<strong>物理和網路層面分離</strong>。</li>
+<li>某些存儲技術引入較不嚴格的隔離技術，也被稱為&quot;空氣隔離&quot;，可在<strong>定期與生產系統進行同步時關閉數據端口並在有限的時間內打開</strong>。應根據資料的價值和對手的能力來衡量每種技術的有效性。選擇嚴格實施時，應注意繞過已知的空氣隔離系統漏洞，包括：</li>
+<li>(a) 防止空氣隔離系統與其他設備之間的視覺、聽覺和熱信號傳輸（例如保持足夠距離或使用減震和/或足夠的物理距離）。</li>
+<li>(b) 防止空氣隔離設備中的任何潛在無線傳輸功能。</li>
+<li>© 禁用暴露的數據端口（例如USB、網路）。</li>
+<li>(d) 使用電源調節或分離的電路。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R9 - 執行定期隔離審核</summary><div class="toggle-content"><p>應<strong>每年至少一次對上述隔離建議進行檢查</strong>，作為定期審計的一部分，以確保沒有可能犧牲資料恢復副本的隔離性的配置差距或偏差。對於敏感和高價值的存儲系統，可能需要至少每季審計一次，以及在每次重大更改後進行審計，視哪個較先發生。審計結果應該被記錄下來。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：IS-SS-R10 - 考慮使用不可變存儲技術</summary><div class="toggle-content"><p>考慮使用不可變存儲技術，這可以進一步隔離和保護恢復資料（例如保留鎖定、保險庫鎖定、不可變性策略）。</p>
+</div></details>
+<h1 id="4-8-RA-恢復保證-Restoration-Assurance">4.8 (RA) 恢復保證 Restoration Assurance</h1>
+<ul>
+<li>主要在談&quot;恢復保證&quot;，<strong>確保在業務中斷、災難恢復事件或資安攻擊後，能夠成功地復原。</strong></li>
+<li>僅僅擁有恢復流程是不夠的，組織還需要確保所有<code>關鍵資料元件都能夠被保護</code>，並能夠忠實、一致、完整地恢復。</li>
+<li><code>恢復的速度和更新程度</code>也應符合業務和監管要求。</li>
+<li>很多情況下，組織備份了重要系統，但並<strong>不經常檢查這些備份是否能夠實際恢復系統</strong>。然而，由於配置漂移、環境變化，甚至是惡意攻擊導致備份受到破壞，他們最終無法使用備份數據來進行恢復。以下是確保恢復保證的安全建議：</li>
+</ul>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R1 - 確保恢復副本的完整性</summary><div class="toggle-content"><p>所有包含關鍵資料元件的存儲元素應<code>受到保護並備份</code>，以支持災難恢復和資安攻擊恢復。這包括存儲卷、關鍵文件系統、數據庫、軟件映像、證書、加密密鑰、啟動文件、目錄信息、存取控制列表（ACLs）、虛擬化設置和配置文件。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R2 - 保護所有依賴元件</summary><div class="toggle-content"><ul>
+<li>依賴元件，例如<code>Active Directory和DNS，外部密鑰管理系統</code>，應受到保護，以實現完整恢復。</li>
+<li>如果使用自動化構建流程來配置存儲、源代碼存儲庫、構建環境和構建程序，這些應該也要受到保護。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R3 - 所有相關軟件和硬件元件的可用性</summary><div class="toggle-content"><p>用於運行系統的所有相關軟件和硬件元件（例如驅動程序、固件）都應該備份、保護並可供恢復操作使用。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R4 - 選擇備份和數據複製技術 應符合組織的RTO要求</summary><div class="toggle-content"><ul>
+<li>RTO是<code>恢復時間目標</code>，用來衡量期望的恢復速度。</li>
+<li>要全面考慮滿足RTO的能力，包括所有相關的組件（如數據恢復、配置文件、加密密鑰）。</li>
+<li>同時要平<strong>衡實際恢復所需的速度和調整所有相關組件以實現期望恢復速度所需的成本。</strong></li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R5 - 進行定期測試恢復以確保達到所需的RTO</summary><div class="toggle-content"><p>定期進行測試恢復操作，確保成功完成並滿足所需的時間範圍。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R6 - 設定回復點目標（RPO）</summary><div class="toggle-content"><ul>
+<li>為每個資料資產<code>設定回復點目標</code>，即在發生故障後可以容忍的資料損失量，以時間來衡量。</li>
+<li>備份和數據複製技術的設計和實施應該支持在這個目標下進行數據恢復。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R7 - 滿足組織的資料資產的數據保留和複製頻率需求</summary><div class="toggle-content"><p>應該確定<code>每個資料資產的數據保留和複製頻率需求</code>（詳見DP-SS-R1以獲取更多細節）。備份和數據複製技術的設計和實施應該支持這些需求。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R8 - 確保遠程副本備份和數據複製處於良好狀態</summary><div class="toggle-content"><ul>
+<li><code>定期驗證備份副本的狀態</code>。</li>
+<li>這包括<strong>檢查是否有相關的錯誤記錄</strong>，以及備份和數據複製媒體是否處於良好狀態。</li>
+<li>驗證頻率應該符合受保護數據的敏感性和價值，但<code>不應少於每年一次</code>。</li>
+<li>將樣本比率保持在備份頻率的1到1.5個數量級較低的範圍內，可以作為一個可靠的基準（例如，每小時備份的樣本每日驗證，每日備份每兩週到每月驗證等）。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R9 - 分離數據與應用程式的還原</summary><div class="toggle-content"><p>為了在還原數據時避免恢復受感染的代碼或軟體，應該<code>將數據與應用程式進行分離</code>。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R10 - 文件化災難復原計劃</summary><div class="toggle-content"><p>必須<strong>撰寫儲存基礎架構的災難復原計劃</strong>，包括所有資源、與正式生產環境的映射、流程和測試程序。同時也應備份這些文件。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R11 - 數據副本的網路安全措施</summary><div class="toggle-content"><ul>
+<li>對於關鍵任務的資訊，災難復原副本應該<code>使用各種反惡意軟體掃描工具進行掃描</code>，以檢測已知的漏洞和異常。</li>
+<li>最理想情況下，應<code>對所有副本進行掃描</code>。如果不可能，至少<code>對其中一部分副本進行掃描</code>，並記錄這些已經進行掃描且安全的副本。網路安全工具包括防病毒軟體、防惡意軟體、漏洞掃描和安全分析工具。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：RA-SS-R12 - 定期進行審計</summary><div class="toggle-content"><ul>
+<li>述建議應該作為<code>定期審計的一部分進行回顧</code>，以檢查副本的完整性、重新評估依賴性、軟體和硬體要求、支援復原速度的技術適用性、復原點目標 (RPO)、保存期限、健康檢查、災難復原計劃和網路安全措施。</li>
+<li>應該確定並追蹤問題，並進行修復。</li>
+<li>審計的頻率應與所保護數據的敏感性和價值相符，但不得少於每年一次。</li>
+<li>對於敏感和高價值的儲存系統，可能需要每季度進行審計，以及每次進行重大變更後進行審計 - 以先到者為準。</li>
+<li>審計結果應予以文件化。</li>
+</ul>
+</div></details>
+<h1 id="4-9-EN-加密-Encryption">4.9 (EN) 加密 Encryption</h1>
+<div class="note info flat"><p>加密是將數據從<code>可讀形式（明文）轉換為不易被未經授權的人理解的不可讀形式</code>（密文）的過程。這樣可以確保敏感信息不會被未經授權的人存取或理解。</p>
+</div>
+<p>在存儲系統中，加密應該實施<code>端到端</code>，包括：</p>
+<ol>
+<li><code>靜態數據（Data at rest）</code>：物理或邏輯進行儲存的相關設施（例如磁帶、磁盤、光盤等），其<strong>數據應該進行加密</strong>。這不僅包括數據本身，還應該加密元數據，如訪問權限、標籤、路徑和日誌信息等。</li>
+<li><code>數據傳輸（Data in transit）</code>：在<strong>存儲元素之間傳輸</strong>的數據，無論是客戶端讀寫、存儲設備或存儲池之間的複製，或在網絡中傳輸的數據，都應該進行加密，除非整個通信媒介都處於受保護的環境（例如數據中心）。</li>
+<li><code>管理訪問（Administrative access）</code>：包括通過標準和專有協議和API對<strong>存儲元素、存儲網絡和數據</strong>進行<strong>配置或控制</strong>的連接。</li>
+</ol>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R1 - TLS、雜湊 hashing 和 加密 encryption</summary><div class="toggle-content"><ul>
+<li>為了支援存儲客戶端與伺服器之間的加密通信，應該<strong>使用Transport Layer Security (TLS)協議</strong>。</li>
+<li>選擇和配置TLS協議的<strong>實現應遵循相關指南</strong>，包括TLS版本的選擇以及選擇雜湊和加密算法。
+<ul>
+<li>指南來源包括<code>NIST SP800-52 Rev2</code>和<code>SNIA TLS Specification for Storage Systems Version 1.1</code>。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R2 - 不應使用明文協議，如HTTP，Telnet，FTP或RSH</summary><div class="toggle-content"><ul>
+<li>明文協議容易遭受竊聽、攔截等攻擊，因為它們不加密流量或登錄詳細信息。</li>
+<li>在敏感的存儲環境中，<strong>不應允許將HTTP用於重定向到HTTPS的情況</strong>，除非只用於處理錯誤輸入的URL。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R3 - 存儲管理 API 會話加密</summary><div class="toggle-content"><ul>
+<li>應該對所有API和CLI客戶端會話進行加密，可以利用<code>管理軟件</code>或<code>API/CLI軟體組件內的特定配置</code>選項來實現加密。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R4 - 管理員訪問會話的加密</summary><div class="toggle-content"><ul>
+<li>使用HTTP的管理員會話應該<code>使用TLS（HTTPS）來進行加密</code>。</li>
+<li><code>命令列介面（CLI）</code>訪問應該<code>使用SSH而不是Telnet進行加密</code>。</li>
+<li>API訪問期間的身份驗證不應使用明文，<strong>會話本身也應該進行加密</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R5 - 在FIPS環境中啟用FIPS模式</summary><div class="toggle-content"><ul>
+<li>FIPS 140-3規定加密模塊應該是一組硬體、軟體、韌體或其組合，用於實現加密功能或過程，包括加密算法，並可選擇性地進行金鑰生成，並且在定義的加密邊界內。</li>
+<li><strong>FIPS規定某些加密算法是安全</strong>的，並確定在加密模塊稱為符合FIPS標準時<strong>應該使用哪些算法</strong>。</li>
+<li>符合FIPS標準的組織應確保在其符合FIPS標準的存儲基礎設施組件中啟用FIPS模式。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R6 - 敏感數據的靜態加密</summary><div class="toggle-content"><p>靜態加密保護數據免受各種與數據相關的風險（包括未經授權的訪問，媒體丟失或被盜等）。對於敏感數據應該啟用靜態加密。應考慮以下幾點：</p>
+<ol>
+<li><code>使用基礎設施加密</code>：<strong>使用磁碟、存儲陣列或雲存儲提供的內建加密功能</strong>，無論使用供應商提供的金鑰還是組織提供的金鑰，可以保護免受設備丟失、錯置或被盜的威脅。但是，這並不能對抗以下情況：
+<ol>
+<li><strong>帶內攻擊</strong> - 當攻擊者入侵到已經與存儲關聯的主機（或當可以通過合法方式將存儲映射到未經授權的主機）。</li>
+<li><strong>權限升級攻擊</strong> - 管理員或攻擊者獲得高級權限後可能關閉加密或解密數據。</li>
+</ol>
+</li>
+<li><code>使用端到端加密</code>：數據在其源頭（例如應用程序、數據庫、卷）處進行加密，對存儲基礎設施和管理員只呈現密文。這顯著增加了安全性，但有時會帶來相當大的成本：
+<ol>
+<li><strong>數據減少機制受影響</strong> - 例如，壓縮和去重可以變得非常不有效。</li>
+<li><strong>管理更加複雜</strong>。</li>
+</ol>
+</li>
+<li><code>使用雙獨立層加密</code>：在可能的情況下，應考慮對敏感數據存儲使用雙獨立層加密。這種配置提高了金鑰被破壞時的韌性，尤其是如果使用不同的加密服務。</li>
+<li><code>應考慮數據保留要求</code>：如果<strong>加密數據被備份或存檔，相關的金鑰應該受到保護</strong>，保護時間應與數據相似。或者，備份數據應重新生成新的密鑰。無論哪種情況，<strong>數據和加密金鑰不應保持在一起</strong>。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R7 - 在傳輸過程中的資料加密</summary><div class="toggle-content"><ul>
+<li>(a) <code>Fibre-Channel上的區塊傳輸</code>：儘管在ANSI/INCITS 545-2019標準中有定義Fibre-Channel的連結加密，但目前大多數主機緘點適配器（HBA）和存儲供應商並不支援。<strong>針對敏感信息，應該使用端到端（主機到存儲）加密</strong>。</li>
+<li>(b) <code>IP區塊傳輸</code>：IP存儲流量面臨與常規IP網絡相同的安全風險。默認情況下，IP區塊傳輸協議不會為每個數據包提供數據保密性、完整性或驗證。類似於連結加密，雖然有IP存儲流量加密的技術規範，但目前的技術並不原生支援。在使用IP區塊傳輸協議（例如iSCSI、FCIP、專有協議）時，應<strong>考慮使用IPsec隧道對暴露在網絡上的段進行保護</strong>。此外，針對敏感信息，應該使用端到端（主機到存儲）加密。</li>
+<li>© <code>檔案和對象存儲訪問</code>：應該在支援的情況下為備份系統和遠程複製啟用傳輸時的資料加密。對於檔案訪問，應該使用SMB加密等機制來加密敏感數據，還可以利用由雲服務提供商提供的NFS加密選項，或者<strong>使用通道加密（例如 ‘stunnel’）的NFS over TLS。確保對象通過HTTPS與TLS進行訪問</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R8 - 存儲系統組件之間的通信應該加密</summary><div class="toggle-content"><ul>
+<li>應該審查<strong>存儲系統組件的交互作用</strong>，並<strong>使用可用的加密選項</strong>。</li>
+<li>應該使用加密來保護存儲<strong>節點和管理器之間的通信</strong>，主動存儲節點與見證設備之間的通信，以及與策略伺服器和防病毒伺服器之間的通信。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：EN-SS-R9 - 加密金鑰管理要求</summary><div class="toggle-content"><ul>
+<li>遵循<code>NIST SP 800-57</code>部分1-3中的一般建議進行金鑰管理，特別是:
+<ul>
+<li>壽命</li>
+<li>金鑰可以保護的最大數據量</li>
+<li>金鑰管理基礎設施</li>
+<li>重新生成金鑰</li>
+<li>審計</li>
+<li>金鑰的備份和恢復。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<h1 id="4-10-AA-管理者訪問權限-Administrative-Access">4.10 (AA) 管理者訪問權限 Administrative Access</h1>
+<ul>
+<li>這一節重點關注儲存元素的<code>管理者訪問權限</code>，包括<strong>陣列、網路和架構、管理工具、備份、複寫和雲端儲存</strong>等。</li>
+<li>管理者訪問可以通過<code>直接連接到儲存元件</code>或者<code>透過管理軟體</code>來實現。這兩種連接方式都可以使用不同的界面，包括管理用戶介面（UI）、命令列介面（CLI）和應用程式介面（API）等。</li>
+</ul>
+<p>這一章的某些其他節點涵蓋了與管理者訪問重疊的方面。為了避免重複，額外的相關建議可以在以下兩個部分找到：</p>
+<ul>
+<li>在上面的第4.9 Encryption 中，涉及到加密的相關建議。</li>
+<li>在上面的第4.3 Authentication and Data Access Control 中，涉及到與資料相關的訪問控制，其中的一部分可能也適用於管理者訪問。</li>
+</ul>
+<p>此節提供了有關管理訪問配置的安全指南，以下是重點摘要：</p>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R1 - 限制對SAN交換機管理端口的網絡訪問</summary><div class="toggle-content"><ul>
+<li>將對<code>SAN交換機管理端口</code>的<strong>網絡訪問</strong>限制在<strong>特定指派的設備和管理員</strong>上，通過訪問控制清單（ACL）等機制實現。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R2 - 控制和限制具有管理權限的設備和組件至最低限度</summary><div class="toggle-content"><p>包括CLI服務器、管理控制台、API閘道、見證主機和具有控制權限的存儲設備。特別是：<br>
+(a) 積極發現具有存儲管理權限的組件，<strong>確保只有被授權的組件擁有這些權限</strong>。如果發現不必要的組件，應立即移除並彙報。<br>
+(b) 從<strong>被授權的設備中移除不必要的權限和能力</strong>。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R3 - 實施最小權限原則</summary><div class="toggle-content"><ul>
+<li>將<code>擁有管理權限的用戶</code>的<strong>權限限制到最低限度</strong>。</li>
+<li>這包括用戶可以執行的最小操作，並且將這些權限的範圍限制在僅涵蓋相關系統或區域。</li>
+<li>完全的管理權限應僅授予需要這些權限的用戶。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R4 - 限制服務帳戶的訪問權限</summary><div class="toggle-content"><ul>
+<li>服務帳戶（例如<code>監控工具使用的帳戶</code>）應限制為<code>僅具有read-only</code>和<code>僅metadata-only訪問權限</code>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R5 - 對所有CLI/API訪問進行身份驗證和授權</summary><div class="toggle-content"><ul>
+<li>對<code>CLI/API</code>使用應<code>進行身份驗證和授權</code>。</li>
+<li>如果無法進行身份驗證或授權，則應通過額外的安全措施保護未經授權的訪問，例如使用特權管理工具來限制控制到最低必要的命令和對象。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R6 – 優先使用API存取控制，而非CLI/shell存取控制</summary><div class="toggle-content"><ul>
+<li>應該<code>優先使用API存取控制</code>，因為<strong>CLI/shell存取具有訪問作業系統和檔案系統</strong>（包括配置文件）的能力。</li>
+<li>若<strong>只有CLI/shell存取選項</strong>，則應<strong>使用安全協定，如SSH</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R7 – 限制管理控制台的作業系統權限</summary><div class="toggle-content"><ul>
+<li>只能通過指定的存儲帳戶提供對管理控制台的訪問，<code>不能使用作業系統管理帳戶</code>（另見AC-SS-R20）。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R8 – 管理Web使用者介面</summary><div class="toggle-content"><ul>
+<li>提供管<code>理控制台訪問的 Web</code> 服務應該得到強化，以<strong>滿足或超過組織中其他 Web 應用程序服務器的最低標準</strong>。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R9 – 限制主機存儲控制權限</summary><div class="toggle-content"><ul>
+<li>在某些共享數據計算集群配置中（例如集群、地理集群、規模集或存儲虛擬化基礎設施），主機被授予存儲的管理權限，以便控制共享集群數據資源的分配和行為。</li>
+<li>當需要此管理訪問時，應限制授予主機的範圍和權限，僅限於主機需要控制的特定元素（例如LUN、共享、檔案、物件）和需要執行的特定操作。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R10 – 命令裝置或閘控配置</summary><div class="toggle-content"><p>某些存儲數組<strong>允許主機對具有訪問特殊區塊設備的控制權</strong>（例如某些供應商稱為「命令裝置」和「閘控」的設備）進行管理控制。當使用時，<strong>建議遵循以下安全指南</strong>：<br>
+(a) <code>限制對控制裝置的使用</code>：如果可行，應完全<strong>消除對這些裝置的使用（例如改用API存取）</strong>。如果不能消除，則應<strong>確保它們僅映射到必要的主機（例如管理主機）</strong>。<br>
+(b) <code>掃描控制裝置</code>：進行網<strong>路掃描以發現控制裝置，並確保它們僅映射到必要且經授權的主機</strong>。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R11 – 禁用或限制call home 或 遠端存取</summary><div class="toggle-content"><p>通常call home 或 remote access 被用於收集遙測和診斷數據，供製造商分析和解決技術問題，以及進行自動軟件更新。然而，這些功能也可能成為黑客攻擊的目標，因此<code>如果不需要的話應該禁用</code>，<strong>如果需要的話則應該限制和控制</strong>。<br>
+(a) 修改默認憑據 - 改變遠端連接的默認憑據。<br>
+(b) 限制權限 - 只授予必要的最低權限。<br>
+© 強制加密 - 使用TLS/SSH/IPSEC等安全協議，並使用FIPS批准的加密算法。<br>
+(d) 使用&quot;允許清單&quot;限制訪問 - 使用允許清單限制特定IP和特定用戶的訪問。<br>
+(e) 完整記錄遠端訪問 - 為了審計目的，應該完整記錄所有遠端訪問。<br>
+(f) 啟用內建數據混淆功能 - 對於允許混淆敏感數據（如IP地址，WWN，設備名稱和用戶名）的存儲設備，應該啟用此功能。<br>
+(g) 限制發送的數據範圍 - 將發送的數據範圍限制為最低要求。<br>
+(h) 定期審查和批准 - 定期評估定期或自動發送給供應商的數據，確保其中不包含敏感信息，如IP地址，用戶名或實際存儲設備的內容。同時，審查確保連接是通往有效的供應商IP地址的。<br>
+(i) 授權每個連接 - 如果可能，實施一個在允許每個連接之前請求許可的機制。<br>
+(j) 限制對網關系統的訪問 - 當供應商通過網關設備、服務器或設備進行遠程訪問時，特別注意保護和限制對網關系統的訪問。<br>
+(k) 禁用供應商遠程訪問鏈路上的軟件更新 - 在敏感環境中，不應該允許通過供應商遠程連接鏈路進行軟件組件和更新的下載和部署（無論是手動還是自動）。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R12 - 管理網路訪問的限制 Limit network access for management</summary><div class="toggle-content"><ol>
+<li>建議將<code>管理網路與其他流量分開</code>（參見第4.6節和第4.7節）。</li>
+<li>進一步<code>加強管理網路的存取控制</code>，可使用以下機制：<br>
+(a) 虛擬私人網路（VPN）、IPsec或一個或多個「跳板伺服器」：使用VPN、IPsec或一個或多個「跳板伺服器」或「登入代理伺服器」，這些是位於管理網路中的專用伺服器，只能從網路外部訪問，並且在經過適當的身份驗證和授權後，可以用於連接其他伺服器。<br>
+(b) 增強日誌記錄和追蹤功能，例如會話記錄。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R13 - 安全保護核心儲存管理檔案和執行檔</summary><div class="toggle-content"><ol>
+<li>儲存管理軟體通常包含<code>配置檔案</code>，<strong>用於控制儲存系統的運作方式</strong>，包括未記載的選項。</li>
+<li>這些敏感目錄和檔案應該具有適當的<code>限制權限</code>，並<code>擁有正確的擁有者和群組成員</code>。</li>
+<li>包括以下內容：
+<ul>
+<li><code>配置檔案</code>：記錄用戶和角色、網路設定、一致性群組、裝置群組和其他儲存選項。定義一致性和裝置群組的配置檔案通常會從中央管理主機自動傳播到連接到受管理儲存系統的其他主機。因此，如果遭到入侵，可能會影響多個系統。</li>
+<li><code>腳本</code>：用於控制啟動、監控和停止儲存管理服務和守護程序，以及本身的執行檔。應將這些腳本及其他重要的管理相關檔案進行安全保護。</li>
+</ul>
+</li>
+<li>應對配置檔案、腳本和其他重要的管理相關檔案採取以下控制措施：<br>
+(a) <code>限制存取和權限</code>，並控制關鍵目錄和檔案的擁有權。<br>
+(b) 對於敏感環境，應考慮<code>監控這些檔案的內容變化</code>，以防止未經授權的更改。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：AA-SS-R14 - 使用經核准的PKI機制進行管理訪問</summary><div class="toggle-content"><ul>
+<li>在儲存設備管理和儲存管理控制台方面，建議使<code>用經組織核准並經認證的集中式PKI系統</code>，而不是使用設備或軟體自簽名憑證。</li>
+</ul>
+</div></details>
+<h1 id="4-11-CM-配置管理-Configuration-Management">4.11 (CM) 配置管理 Configuration Management</h1>
+<p>配置管理的目的是在「整個儲存設備」<code>生命周期</code>內提供對<strong>設定、行為、以及實體和邏輯屬性的可見性和控制</strong>。在儲存安全的背景下，這包括以下內容：</p>
+<ul>
+<li>維護全面且即時的<code>清單</code>，<code>管理變更</code>，以及<code>確保配置</code><strong>持續符合組織的安全基線和目前業界最佳實踐</strong>，同時確保其不受已知風險的影響。</li>
+</ul>
+<p>為了實現這一目標，需要適當的控制、政策、流程和工具。IT 配置管理的全面指南可參考 <code>NIST Special Publication (SP) 800-53</code> [28]。以下段落包含適用於儲存基礎架構的建議。</p>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R1：建立全面的存儲設備清單，包括識別以下所有存儲組件的名稱、地址、位置和軟件、固件或驅動程序版本</summary><div class="toggle-content"><ol>
+<li>數組(Array)</li>
+<li>存儲虛擬化系統(Storage virtualization systems)</li>
+<li>管理控制台(Management consoles)</li>
+<li>監控存儲遠程網絡連接狀態的主機（例如Witness主機）</li>
+<li>安裝了存儲管理軟件或插件的主機</li>
+<li>數據保護設備(Data protection appliances)</li>
+<li>備份客戶端和伺服器(Backup clients and servers)</li>
+<li>存儲網路交換機(Storage network switches)</li>
+<li>存儲適配器或&quot;主機總線適配器 (HBA)&quot;</li>
+<li>I/O多路徑軟件(I/O multipathing software)</li>
+<li>主存儲系統和（複製）目標存儲系統的配對情況</li>
+<li>指定的主機備份伺服器或離地備份的情況</li>
+<li>磁帶庫和磁帶驅動器</li>
+<li>磁碟驅動器和可移動媒體</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R2：建立全面的資料和配置資產清單，包括通過以下資產識別邏輯數據組件和數據訪問配置</summary><div class="toggle-content"><ol>
+<li>存儲池、LUNs、遮罩和分區</li>
+<li>發起者和發起者組</li>
+<li>文件共享和存取控制列表(ACLs)</li>
+<li>物件存儲池、桶等</li>
+<li>備份複本和快照(Replicas and snapshots)</li>
+<li>備份目錄和訪問權限</li>
+<li>備份集（本地、存檔、雲端虛擬化、磁帶、存檔設備等）</li>
+<li>用戶、群組、角色和權限</li>
+<li>主機訪問配置到存儲資產（例如LUNs、文件共享、全局文件系統、物件存儲）</li>
+<li>存儲軟件、虛擬設備等的映像</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R3 - 創建全面的存儲安全策略</summary><div class="toggle-content"><ul>
+<li>存儲安全策略可以作為專用策略，或者作為組織安全策略的一部分。</li>
+<li>策略應基於以下來源：
+<ul>
+<li>來自該出版物和<code>引用來源</code>的建議。</li>
+<li>內部組織相關的存儲相關安全標準。</li>
+<li>相關供應商的<code>最佳安全實踐</code>。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R4 - 保持存儲安全策略的更新</summary><div class="toggle-content"><ul>
+<li>存儲安全策略應該<code>定期進行審查和更新</code>（至少每年一次）。</li>
+<li>安全基線應根據可用的存儲系統和/或特定存儲設備的<code>最新供應商和行業建議進行更新</code>（最好每季度進行，至少也要每年）。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R5 - 定期主動評估存儲安全策略的配置合規性</summary><div class="toggle-content"><ul>
+<li>(a) 確保實際配置<code>符合存儲安全基線</code>，並識別差距。</li>
+<li>(b) 及時<code>追蹤差距</code>的整改。</li>
+<li>© 考慮制定基於數據類型、組織功能和敏感性的存儲安全基線合規性的關鍵績效指標（KPI）。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R6 - 創建「存儲變更」管理流程</summary><div class="toggle-content"><ul>
+<li>可以作為專用流程或組織的一般變更管理流程的一部分。</li>
+<li>涵蓋：</li>
+<li>(a) 規劃、審查和批准存儲配置變更。</li>
+<li>(b) 更新環境文檔和庫存（例如基礎設施、數據、配置）。</li>
+<li>© 在對敏感存儲環境進行任何變更後評估合規性。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">CM-SS-R7 - 檢測未經授權的存儲安全變更</summary><div class="toggle-content"><ul>
+<li>應建立<code>檢測未經授權的存儲配置變更的流程</code>，可以使用日誌記錄、將配置存儲資產與過去狀態進行比較，或者與組織批准的基線進行比較。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R8 - 軟體更新和修補</summary><div class="toggle-content"><p>(a) <code>確保儲存軟體版本更新</code>：應建立定期更新儲存軟體至最新穩定且安全版本的流程。這包括管理軟體、API和CLI套件、數組和HBA固件版本以及作業系統驅動程式。<br>
+(b) <code>安裝重要的安全更新和修補程式</code>：應建立主動且頻繁地安裝重要和緊急的儲存安全修補程式的流程。<br>
+© <code>無法取得修補程式的緩解計劃</code> - 如果某些儲存組件存在重要漏洞，而供應商尚未提供更新或修補程式，應暫停使用這些組件，除非可以定義適當的緩解計劃。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R9 - 網路拓撲文件</summary><div class="toggle-content"><p>保持儲存相關的網路文件最新，包括光纖通道（FC）和IP的繪圖。</p>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">要求：CM-SS-R10 - 審核FC SAN安全配置</summary><div class="toggle-content"><p>隨著時間推移，某些安全變更可能無法可靠地傳播到整個光纖通道交換機(fabric)。</p>
+<ul>
+<li><code>應定期審核FC SAN</code>（就像IP和以太網網路一樣），以評估其安全性，識別和優先處理漏洞，並<code>定義改進計劃</code>。</li>
+<li><code>安全審核</code>應至少每年進行一次，在敏感環境中，至少每季進行一次或在任何重大更改後進行 - 以先到者為準。</li>
+<li>審核結果應予以記錄。</li>
+</ul>
+</div></details>
+<h1 id="4-12-ST-存儲安全培訓-Training">4.12 (ST) 存儲安全培訓 Training</h1>
+<details class="toggle" ><summary class="toggle-button" style="">ST-SS-R1：存儲安全培訓計畫</summary><div class="toggle-content"><p>應制定一個存儲安全培訓計畫，並<strong>納入現有的組織培訓活動和時間表</strong>，以滿足以下目標受眾：</p>
+<ol>
+<li><code>資訊安全專業人員</code>：為他們提供存儲安全的基本背景知識。</li>
+<li><code>存儲管理員</code>：讓他們熟悉存儲安全原則，以及組織的政策和安全基準。</li>
+<li><code>管理者</code>：理解數據保護的基本原則。</li>
+</ol>
+</div></details>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/security-for-storage-infra-2/">https://shannonhung.github.io/posts/security-for-storage-infra-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener external nofollow noreferrer" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Database/">Database</a><a class="post-meta__tags" href="/tags/%E7%A2%A9%E5%A3%AB%E8%AB%96%E6%96%87/">碩士論文</a><a class="post-meta__tags" href="/tags/Cloud-Storage/">Cloud Storage</a><a class="post-meta__tags" href="/tags/Security/">Security</a><a class="post-meta__tags" href="/tags/NIST-SP-800-209/">NIST SP 800-209</a></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/security-for-storage-infra/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險</div></div></a></div><div class="next-post pull-right"><a href="/posts/zta-survey/" title="適用於AP與DB之間的零信任架構(ZTA)原則"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">適用於AP與DB之間的零信任架構(ZTA)原則</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/posts/security-for-storage-infra/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-13</div><div class="title">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險</div></div></a></div><div><a href="/posts/interupt-connection-pool/" title="Day10 - 如何介入 Connection Pool？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-10</div><div class="title">Day10 - 如何介入 Connection Pool？</div></div></a></div><div><a href="/posts/about-jdbc-connection-pool/" title="淺入淺出 JDBC, Connection Pool"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1483736762161-1d107f3c78e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMyMjU0NQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-08</div><div class="title">淺入淺出 JDBC, Connection Pool</div></div></a></div><div><a href="/posts/DLP-Survay-Paper/" title="DLP - Data Leakage Protection 的論文 Survey"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-21</div><div class="title">DLP - Data Leakage Protection 的論文 Survey</div></div></a></div><div><a href="/posts/ZTA-survey-AP-DB-summary/" title="適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇</div></div></a></div><div><a href="/posts/zta-survey/" title="適用於AP與DB之間的零信任架構(ZTA)原則"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-03</div><div class="title">適用於AP與DB之間的零信任架構(ZTA)原則</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">22</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">我是臺灣科技大學-資管所的研究生，今年預計前往德國雙聯。開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E5%84%B2%E5%AD%98%E9%83%A8%E7%BD%B2%E5%AE%89%E5%85%A8%E5%BB%BA%E8%AD%B0-Security-Guidelines-for-Storage-Deployments"><span class="toc-text">4. 儲存部署安全建議 Security Guidelines for Storage Deployments</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-1-PS-%E5%AF%A6%E9%AB%94%E5%84%B2%E5%AD%98%E5%AE%89%E5%85%A8-Physical-Storage-Security"><span class="toc-text">4.1 (PS) 實體儲存安全 Physical Storage Security</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-2-DP-%E8%B3%87%E6%96%99%E4%BF%9D%E8%AD%B7-Data-Protection"><span class="toc-text">4.2 (DP) 資料保護 Data Protection</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-1-%E8%B3%87%E6%96%99%E5%82%99%E4%BB%BD%E3%80%81%E6%81%A2%E5%BE%A9%E5%92%8C%E5%84%B2%E5%AD%98-Data-Backup-and-Recovery-and-Archiving"><span class="toc-text">4.2.1 資料備份、恢復和儲存 Data Backup and Recovery, and Archiving</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-2-%E8%A4%87%E8%A3%BD%E5%92%8C%E9%8F%A1%E5%83%8F-Replication-and-Mirroring"><span class="toc-text">4.2.2 複製和鏡像 Replication and Mirroring</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-3-%E6%99%82%E9%96%93%E9%BB%9E%E5%89%AF%E6%9C%AC-Point-in-Time-Copies"><span class="toc-text">4.2.3 時間點副本 Point-in-Time Copies</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-4-%E6%8C%81%E7%BA%8C%E8%B3%87%E6%96%99%E4%BF%9D%E8%AD%B7-Continuous-Data-Protection"><span class="toc-text">4.2.4 持續資料保護 Continuous Data Protection</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-3-AC-%E8%BA%AB%E4%BB%BD%E9%A9%97%E8%AD%89%E8%88%87%E6%95%B8%E6%93%9A%E8%A8%AA%E5%95%8F%E6%8E%A7%E5%88%B6-Authentication-and-Data-Access-Control"><span class="toc-text">4.3 (AC) 身份驗證與數據訪問控制 Authentication and Data Access Control</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-1-%E8%BA%AB%E4%BB%BD%E9%A9%97%E8%AD%89%E5%BB%BA%E8%AD%B0-Authentication-Recommendations"><span class="toc-text">4.3.1 身份驗證建議 Authentication Recommendations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-2-%E5%AF%86%E7%A2%BC%E5%BB%BA%E8%AD%B0-Password-Recommendations"><span class="toc-text">4.3.2 密碼建議 Password Recommendations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-3-%E5%B8%B3%E6%88%B6%E7%AE%A1%E7%90%86%E5%BB%BA%E8%AD%B0-Account-Management-Recommendations"><span class="toc-text">4.3.3 帳戶管理建議 Account Management Recommendations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-4-%E6%AC%8A%E9%99%90%E5%92%8C%E6%9C%83%E8%A9%B1%E7%AE%A1%E7%90%86%E5%BB%BA%E8%AD%B0-Privilege-and-Session-Management-Recommendations"><span class="toc-text">4.3.4 權限和會話管理建議 Privilege and Session Management Recommendations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-5-SAN-%E7%89%B9%E5%AE%9A%E5%BB%BA%E8%AD%B0-SAN-Specific-Recommendations"><span class="toc-text">4.3.5 SAN 特定建議 SAN-Specific Recommendations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-6-%E6%AA%94%E6%A1%88%E5%92%8C%E7%89%A9%E4%BB%B6%E5%AD%98%E5%8F%96%E5%BB%BA%E8%AD%B0-File-and-Object-Access-Recommendations"><span class="toc-text">4.3.6 檔案和物件存取建議 File and Object Access Recommendations</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-4-AL-%E5%AF%A9%E8%A8%88%E6%97%A5%E8%AA%8C-Audit-Log"><span class="toc-text">4.4 (AL) 審計日誌 Audit Log</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-5-IR-%E6%95%B8%E6%93%9A%E4%BA%8B%E4%BB%B6%E6%87%89%E6%80%A5%E9%9F%BF%E6%87%89%E5%92%8C%E7%B6%B2%E7%B5%A1%E5%BE%A9%E5%8E%9F%E7%9A%84%E6%BA%96%E5%82%99-Preparation-for-Data-Incident-Response-and-Cyber-Recovery"><span class="toc-text">4.5 (IR) 數據事件應急響應和網絡復原的準備 Preparation for Data Incident Response and Cyber Recovery</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-6-NC-%E7%B6%B2%E8%B7%AF%E8%A8%AD%E5%AE%9A%E6%8C%87%E5%BC%95-Guidelines-for-Network-Configuration"><span class="toc-text">4.6 (NC) 網路設定指引 Guidelines for Network Configuration</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-1-FC-SAN-%E5%92%8C-NVMEoF"><span class="toc-text">4.6.1 FC SAN 和 NVMEoF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-2-IP-%E5%84%B2%E5%AD%98%E7%B6%B2%E8%B7%AF-IP-Storage-Networking"><span class="toc-text">4.6.2 IP 儲存網路 IP Storage Networking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-3-Protocols-%E5%8D%94%E5%AE%9A"><span class="toc-text">4.6.3 Protocols 協定</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-7-IS-%E9%9A%94%E9%9B%A2-Isolation"><span class="toc-text">4.7 (IS) 隔離 Isolation</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-8-RA-%E6%81%A2%E5%BE%A9%E4%BF%9D%E8%AD%89-Restoration-Assurance"><span class="toc-text">4.8 (RA) 恢復保證 Restoration Assurance</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-9-EN-%E5%8A%A0%E5%AF%86-Encryption"><span class="toc-text">4.9 (EN) 加密 Encryption</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-10-AA-%E7%AE%A1%E7%90%86%E8%80%85%E8%A8%AA%E5%95%8F%E6%AC%8A%E9%99%90-Administrative-Access"><span class="toc-text">4.10 (AA) 管理者訪問權限 Administrative Access</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-11-CM-%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86-Configuration-Management"><span class="toc-text">4.11 (CM) 配置管理 Configuration Management</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-12-ST-%E5%AD%98%E5%84%B2%E5%AE%89%E5%85%A8%E5%9F%B9%E8%A8%93-Training"><span class="toc-text">4.12 (ST) 存儲安全培訓 Training</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置">Hexo - Butterfly 版本的語言切換功能設置</a><time datetime="2023-11-25T20:35:09.000Z" title="Created 2023-11-26 04:35:09">2023-11-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac"><img src="/img/loading-icon.gif" data-original="/img/cover/mac-python.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spark and Pyspark Local Mode on Mac"/></a><div class="content"><a class="title" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac">Spark and Pyspark Local Mode on Mac</a><time datetime="2023-11-18T05:55:54.000Z" title="Created 2023-11-18 13:55:54">2023-11-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-basic/" title="Pyspark 的基本概念"><img src="/img/loading-icon.gif" data-original="/img/cover/python-spark2.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pyspark 的基本概念"/></a><div class="content"><a class="title" href="/posts/pyspark-basic/" title="Pyspark 的基本概念">Pyspark 的基本概念</a><time datetime="2023-11-17T15:47:06.000Z" title="Created 2023-11-17 23:47:06">2023-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img src="/img/loading-icon.gif" data-original="/img/cover/lstm-emotion.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twitter Dataset - 使用 LSTM 預測文章的情緒"/></a><div class="content"><a class="title" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒">Twitter Dataset - 使用 LSTM 預測文章的情緒</a><time datetime="2023-11-16T06:30:45.000Z" title="Created 2023-11-16 14:30:45">2023-11-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"><img src="/img/loading-icon.gif" data-original="/img/cover/object-detection.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"/></a><div class="content"><a class="title" href="/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection">COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection</a><time datetime="2023-11-03T02:57:54.000Z" title="Created 2023-11-03 10:57:54">2023-11-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="Toggle Between Traditional Chinese And English">繁</button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      id: '7fec81bde50e3415716ac3d55d15800b',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
