@@ -23,7 +23,14 @@ p {
 /* 粗體字 特效 */
 strong {
   color: rgba(0, 153, 255);
+  padding: 0.3rem;
   font-size: 18px;
+  /* background: linear-gradient(180deg, transparent 50%, #fdda5a 0); */
+}
+em {
+  /* bold */
+  font-weight: bold;
+  background: linear-gradient(180deg, transparent 50%, #fdda5a 0);
 }
 /* 鼠標樣式 */
 body {
