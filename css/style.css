@@ -27,9 +27,11 @@ strong {
   font-size: 18px;
   /* background: linear-gradient(180deg, transparent 50%, #fdda5a 0); */
 }
+/* 斜線 */
 em {
   /* bold */
   font-weight: bold;
+  font-size: 15px;
   background: linear-gradient(180deg, transparent 50%, #fdda5a 0);
 }
 /* 鼠標樣式 */
