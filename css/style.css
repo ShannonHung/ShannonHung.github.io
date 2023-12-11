@@ -23,16 +23,25 @@ p {
 /* 粗體字 特效 */
 strong {
   color: rgba(0, 153, 255);
-  padding: 0.3rem;
+  padding: 0 0.2rem;
   font-size: 18px;
   /* background: linear-gradient(180deg, transparent 50%, #fdda5a 0); */
 }
 /* 斜線 */
-em {
+[data-theme="light"] em {
   /* bold */
+  padding: 0.3rem;
   font-weight: bold;
   font-size: 15px;
   background: linear-gradient(180deg, transparent 50%, #fdda5a 0);
+}
+[data-theme="dark"] em {
+  /* bold */
+  padding: 0 0.2rem;
+  font-weight: bold;
+  font-size: 15px;
+  color: black;
+  background: linear-gradient(180deg, transparent 0%, #fdda5a 0%);
 }
 /* 鼠標樣式 */
 body {
