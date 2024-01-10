@@ -1,0 +1,305 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Spark UI 觀察日誌 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Introduction  Ref: [看图说话] 基于Spark UI性能优化与调试——初级篇 Ref: 理解spark中的job、stage、task  本篇主要會記錄使用Spark的一些觀察日誌，希望可以了解以下問題：  Q: stage, task, job, partition 之間的關係？ Q: 何時會需要 Shuffle? Shuffle 是如何運作的？   簡單來說，一個 Spar">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark UI 觀察日誌">
+<meta property="og:url" content="https://shannonhung.github.io/posts/pyspark-monitoring-ui/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="Introduction  Ref: [看图说话] 基于Spark UI性能优化与调试——初级篇 Ref: 理解spark中的job、stage、task  本篇主要會記錄使用Spark的一些觀察日誌，希望可以了解以下問題：  Q: stage, task, job, partition 之間的關係？ Q: 何時會需要 Shuffle? Shuffle 是如何運作的？   簡單來說，一個 Spar">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://shannonhung.github.io/img/cover/mac-python.jpeg">
+<meta property="article:published_time" content="2024-01-08T15:48:54.000Z">
+<meta property="article:modified_time" content="2024-01-09T23:54:04.854Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="spark">
+<meta property="article:tag" content="Debugging">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shannonhung.github.io/img/cover/mac-python.jpeg"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/pyspark-monitoring-ui/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XBNKVVH2P4');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Spark UI 觀察日誌',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-10 07:54:04'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">23</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/mac-python.jpeg')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Spark UI 觀察日誌</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2024-01-08T15:48:54.000Z" title="發表於 2024-01-08 23:48:54">2024-01-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-01-09T23:54:04.854Z" title="更新於 2024-01-10 07:54:04">2024-01-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Tech/">Tech</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Tech/Spark/">Spark</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>6分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Spark UI 觀察日誌"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽次數:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/pyspark-monitoring-ui/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Introduction">Introduction</h1>
+<ul>
+<li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://zhuanlan.zhihu.com/p/59461521">[看图说话] 基于Spark UI性能优化与调试——初级篇</a></li>
+<li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://zhuanlan.zhihu.com/p/50752866">理解spark中的job、stage、task</a></li>
+</ul>
+<div class="note info flat"><p>本篇主要會記錄使用Spark的一些觀察日誌，希望可以了解以下問題：</p>
+<ul>
+<li><strong>Q: stage, task, job, partition 之間的關係？</strong></li>
+<li><strong>Q: 何時會需要 Shuffle? Shuffle 是如何運作的？</strong></li>
+</ul>
+</div>
+<p>簡單來說，一個 Spark Application 被提交之後，會<em>根據 Action 的觸發產生 Job，每個 Job 根據 Shuffle 的分界點，又會被分成多個 Stage，而每個 Stage 預設會根據核心大小、資料大小，區分成多個 Partition</em>，也就是Task，以加快運算。大概是以下這種感覺：<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/bcimzba.png" alt=""></p>
+<h2 id="Job">Job</h2>
+<p>首先，Spark 中的數據都是由 RDD 組成的，而 RDD 是由 partition 組成的，每個 partition 代表一個數據塊。RDD 支援兩種操作分別是 Transformation 和 Action，<em>Transformation 並不會讓程式馬上執行，而是會返回一個新的 RDD，而 Action 則會讓程式馬上執行，並返回一個結果</em>。</p>
+<ul>
+<li>常見的Transformation如：map、mapPartitions、flatMap、filter、union、groupByKey、repartition、cache等。</li>
+<li>常見的Action如：reduce、collect、show、count、foreach、saveAsTextFile等。</li>
+</ul>
+<p>因此，<em>一個 Job 需要由 Action 執行所觸發</em>，而一個 Action 會觸發一個或多個 Transformation，也就代表 <em>一個 Job 會有多個運算子操作（Tansformation）</em>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 舉例來說，當執行以下程式時，UI才會顯示出一個Job，因為他使用read這個action</span></span><br><span class="line">ecommerce = spark.read\</span><br><span class="line">    .option(<span class="string">&quot;inferSchema&quot;</span>, <span class="string">&quot;true&quot;</span>)\</span><br><span class="line">    .option(<span class="string">&quot;header&quot;</span>, <span class="string">&quot;true&quot;</span>)\</span><br><span class="line">    .csv(root)</span><br></pre></td></tr></table></figure>
+<p>每個 Job 都是一系列的運算子操作，但是這些運算會有兩種情況：</p>
+<ol>
+<li><strong>窄依賴（Narrow Dependency）</strong>：你可以想像，<em>前一個 RDD 中的數據，只需要經過一次轉換，就可以進入下一個 RDD 中</em>，只會被使用一次，就可以進入下一個 RDD。</li>
+<li><strong>寬依賴（Wide Dependency</strong>）：<em>前一個 RDD 中的數據，需要經過多次轉換，才能進入下一個 RDD 中</em>，簡單來說就是前一個RDD會被使用多次，才能進入下一個 RDD。</li>
+</ol>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/irD8tgY.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/MdmTT8p.png" alt=""></p>
+<div class="note danger flat"><p>需要注意的是如果使用cache，在下一個Action這個cache的內容被釋放掉的話，該數據並沒有被緩存，而是需要重新計算。</p>
+</div>
+<h2 id="Task">Task</h2>
+<p>Task是Spark最細的執行單元，<em>Task的數量就是Stage的併行度</em>，Task的數量由SparkContext的spark.default.parallelism設定，默認值是CPU核數。以Mac為例，透過輸入<code>sysctl hw.physicalcpu</code>可以得到CPU核數，而該CPU數量是一次Task可以執行的量。舉例來說，<em>我的核心如果是10，因此從下圖可以看到一次執行10個Parallel Task</em>。</p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/5Qv8Agx.png" alt=""></p>
+<p>RDD 在計算的過程中，可能會分成多個 Partition，而每個 Partition 會被一個 Task 執行，<em>一個 Task 只會執行一個 Partition</em>。因此 <em>RDD 的 Partition 數量決定了所有的 Task 數量總數</em>。</p>
+<div class="note warning flat"><p>需要注意的是，如果使用 map 不會影響 Partition 數量，但是在 Reduce RDD的聚合階段（將數據減少為一個單一的結果），因為 Reduce 操作會在 Cluster 的 Parition 上執行，將各 Partition 的結果匯總起來，導致會觸發Shuffle操作，</p>
+<p>聚合後的RDD其Partition數量跟操作有關，如果使用 <code>repartition()</code> 就會聚合成指定的 Partition 數量。但如果使用 <code>coalesce</code> 同樣可以改變 Partition 數量，但是他不會觸發 Shuffle，而是會將 Partition 數量減少到指定的數量，因此會導致資料不均勻，而且會導致資料移動，因此效率較差。</p>
+</div>
+<h2 id="Stage">Stage</h2>
+<p><em>一個 Job 可能會包含多個 Stage</em>，通常一個 Job 觸發多個 Stage ，而這些 <em>Stage 的劃分是根據 Shuffle 所產生的，Shuffle依賴於兩個 Stage 的分界點</em>。而 Shuffle 也是任務中最消耗資源的部分，因為數據可能保存在不同的節點，所以下一個 Stage (也就是下一個 shuffle) 要執行前，需要先等待上一個 Stage 的 shuffle 完成，然後把上一個 Stage 的結果從不同節點上拉取過來，這會增加Network和I/O。</p>
+<h2 id="Shuffle">Shuffle</h2>
+<ul>
+<li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.bing.com/ck/a?!&amp;&amp;p=3e87c923202af04fJmltdHM9MTcwNDc1ODQwMCZpZ3VpZD0zMWM5MGY5NS0yMTg3LTY0YzEtMmFjMy0xYzc5MjA5NzY1NjAmaW5zaWQ9NTUxMg&amp;ptn=3&amp;ver=2&amp;hsh=3&amp;fclid=31c90f95-2187-64c1-2ac3-1c7920976560&amp;psq=spark+shuffle+%e5%8e%9f%e7%90%86&amp;u=a1aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC8xNDA3NjYyMjkjOn46dGV4dD0lRTUlOUMlQThzaHVmZmxlJUU3JTlBJTg0JUU2JTk3JUI2JUU1JTgwJTk5JUU0JUJDJTlBJUU2JTlDJTg5JUU0JUI4JTgwJUU0JUI4JUFBJUU1JUFFJTlBJUU2JTk3JUI2JUU1JTk5JUE4JUVGJUJDJThDJUU0JUI4JThEJUU1JUFFJTlBJUU2JTlDJTlGJUU3JTlBJTg0JUU1JThFJUJCJUU0JUJDJUIwJUU3JUFFJTk3JUU4JUJGJTk5JUU0JUI4JUFBJUU1JTg2JTg1JUU1JUFEJTk4JUU3JUJCJTkzJUU2JTlFJTg0JUU3JTlBJTg0JUU1JUE0JUE3JUU1JUIwJThGJUVGJUJDJThDJUU1JUJEJTkzJUU1JTg2JTg1JUU1JUFEJTk4JUU3JUJCJTkzJUU2JTlFJTg0JUU0JUI4JUFEJUU3JTlBJTg0JUU2JTk1JUIwJUU2JThEJUFFJUU4JUI2JTg1JUU4JUJGJTg3NU0lRTYlOTclQjYlRUYlQkMlOEMlRTYlQUYlOTQlRTUlQTYlODIlRTclOEUlQjAlRTUlOUMlQTglRTUlODYlODUlRTUlQUQlOTglRTclQkIlOTMlRTYlOUUlODQlRTQlQjglQUQlRTclOUElODQlRTYlOTUlQjAlRTYlOEQlQUUlRTQlQjglQkE1LjAxTSVFRiVCQyU4QyVFOSU4MiVBMyVFNCVCOSU4OCVFNCVCQiU5NiVFNCVCQyU5QSVFNyU5NCVCMyVFOCVBRiVCNzUuMDElMkEyLTUlM0Q1LjAyTSVFNSU4NiU4NSVFNSVBRCU5OCVFNyVCQiU5OSVFNSU4NiU4NSVFNSVBRCU5OCVFNiU5NSVCMCVFNiU4RCVBRSVFNyVCQiU5MyVFNiU5RSU4NCVFMyU4MCU4MiwlRTUlQTYlODIlRTYlOUUlOUMlRTclOTQlQjMlRTglQUYlQjclRTYlODglOTAlRTUlOEElOUYlRTQlQjglOEQlRTQlQkMlOUElRTglQkYlOUIlRTglQTElOEMlRTYlQkElQTIlRTUlODYlOTklRUYlQkMlOEMlRTUlQTYlODIlRTYlOUUlOUMlRTclOTQlQjMlRTglQUYlQjclRTQlQjglOEQlRTYlODglOTAlRTUlOEElOUYlRUYlQkMlOEMlRTglQkYlOTklRTYlOTclQjYlRTUlODAlOTklRTQlQkMlOUElRTUlOEYlOTElRTclOTQlOUYlRTYlQkElQTIlRTUlODYlOTklRTclQTMlODElRTclOUIlOTglRTMlODAlODI&amp;ntb=1">詳細的Shuffle機制</a></li>
+</ul>
+<p><strong>Q: 何時會需要 Shuffle? Shuffle 是如何運作的？</strong><br>
+Shuffle 是 Spark 中最耗資源的操作，這個過程會涉及到磁盤的讀寫，以及網路的傳輸(Network bound)，因此會消耗大量的資源。以 <code>reduceByKey()</code> 為例，他會將上一個RDD 中的每個 Key 對應的所有 Value 聚合成一個 Value，然後生成一個新的 RDD，類似 <code>&lt;key, value&gt;</code>的形式。但是問題來了，<em>當我們準備把上一個 RDD 中的 Key 其 Value 進行聚合的時候，這些 Key 不見得都在同一個 Partition 中（可能在別的 Node），這時候就需要進行 Shuffle</em>。</p>
+<p><strong>Q: 如何聚合？（這裡的聚合就是Shuffle）</strong><br>
+聚合的過程中會牽涉到兩種操作：</p>
+<ul>
+<li><em>Shuffle Write</em>: 把上一個 RDD <em>執行玩的內容（但是不同Partition）其 Key 寫到 Parition File</em>，這個 File 會被存在硬碟中（暫時的之後會gc處理掉），這麼做的目的是為了下一個 RDD 執行工作時，可以根據 Partition File 去不同的 Partition 獲取自己所需的 Value。</li>
+<li><em>Shuffle Read</em>：這個步驟就是下*一個 RDD 去讀取上一個 RDD 的 Partition File，*然後根據自己的 Key 去獲取 Value。</li>
+</ul>
+<p><strong>Q: 具體是怎麼執行 Shuffle Write 跟 Shuffle Read 的？</strong><br>
+因為 Spark 有兩種不同的 Shuffle 類型，分別是 HashShuffle 和 SortShuffle，而這兩種 Shuffle 的差別在於 Shuffle Write 的時候，<em>HashShuffle 會把 Key 進行 Hash 後，根據 Hash 後的值去決定寫到哪個 Partition File，而 SortShuffle 則是根據 Key 的值去決定寫到哪個 Partition File</em>。而 Shuffle Read 的時候，<em>HashShuffle 會根據 Key 的 Hash 值去決定從哪個 Partition File 讀取，而 SortShuffle 則是根據 Key 的值去決定從哪個 Partition File 讀取</em>。</p>
+<p>而一般進行HashShuffle的機制是，Map Task 有獨立自己的 Buffer，如下:<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/6qqixGD.png" alt=""></p>
+<ol>
+<li>每一個 map task 執行完後將 value 寫到 buffer 中，下一個 Stage 有多少個 Task 就會有多少個 Butter (=多少個 block file)，buffer 的大小可以通過 <code>spark.shuffle.file.buffer</code> 設定，默認為32KB。</li>
+<li>每個 buffer 會對應到一個磁碟小文件（也就是shuffle write的過程）。</li>
+<li>最後，在執行 reduce task 時，會根據 map task 的數量，來決定 reduce task 要拉取多少個 map task 的輸出文件（也就是shuffle read的過程）。</li>
+</ol>
+<p>產生的Block File(磁碟檔案)數量是：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>×</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">M \times R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span></span></span></span><br>
+where R is the number of reduce tasks and M is the number of map task</p>
+<p><strong>Q: Shuffle 可能會導致的問題？</strong><br>
+你可以從上面的問題發現，執行Shuffle Writing 會產生很多磁碟小文件（Block File）當磁碟小文件過多時可能會導致以下問題：</p>
+<ol>
+<li>Shuffle Read 的故城中會需要讀取很多 Block File (磁碟小文件)對象。因此在 JVM 堆內存中對象過多會<em>造成頻繁的 gc</em>，當gc因為內存不夠時，會導致 OOM （Out Of Memory）。</li>
+<li>在數據傳輸過程中會需要平凡的 Network Bound，這可能會提高通信故障的可能性，一旦通信故障，就會導致 Task 失敗發生 <code>Shuffle file cannot find</code>這個錯誤，TaskScheduler 不負責重試，由DAGScheduler負責重試 Stage。</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/pyspark-monitoring-ui/">https://shannonhung.github.io/posts/pyspark-monitoring-ui/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/spark/">spark</a><a class="post-meta__tags" href="/tags/Debugging/">Debugging</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/mac-python.jpeg" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/lang-switch.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Hexo - Butterfly 版本的語言切換功能設置</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/pyspark-basic/" title="Pyspark 的基本概念"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/python-spark2.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-17</div><div class="title">Pyspark 的基本概念</div></div></a></div><div><a href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/mac-python.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-18</div><div class="title">Spark and Pyspark Local Mode on Mac</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">23</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">我是臺灣科技大學-資管所的研究生，今年預計前往德國雙聯。開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Job"><span class="toc-text">Job</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stage"><span class="toc-text">Stage</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shuffle"><span class="toc-text">Shuffle</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-monitoring-ui/" title="Spark UI 觀察日誌"><img src="/img/loading-icon.gif" data-original="/img/cover/mac-python.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spark UI 觀察日誌"/></a><div class="content"><a class="title" href="/posts/pyspark-monitoring-ui/" title="Spark UI 觀察日誌">Spark UI 觀察日誌</a><time datetime="2024-01-08T15:48:54.000Z" title="發表於 2024-01-08 23:48:54">2024-01-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置"><img src="/img/loading-icon.gif" data-original="/img/cover/lang-switch.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hexo - Butterfly 版本的語言切換功能設置"/></a><div class="content"><a class="title" href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置">Hexo - Butterfly 版本的語言切換功能設置</a><time datetime="2023-11-25T20:35:09.000Z" title="發表於 2023-11-26 04:35:09">2023-11-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac"><img src="/img/loading-icon.gif" data-original="/img/cover/mac-python.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spark and Pyspark Local Mode on Mac"/></a><div class="content"><a class="title" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac">Spark and Pyspark Local Mode on Mac</a><time datetime="2023-11-18T05:55:54.000Z" title="發表於 2023-11-18 13:55:54">2023-11-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-basic/" title="Pyspark 的基本概念"><img src="/img/loading-icon.gif" data-original="/img/cover/python-spark2.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pyspark 的基本概念"/></a><div class="content"><a class="title" href="/posts/pyspark-basic/" title="Pyspark 的基本概念">Pyspark 的基本概念</a><time datetime="2023-11-17T15:47:06.000Z" title="發表於 2023-11-17 23:47:06">2023-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img src="/img/loading-icon.gif" data-original="/img/cover/lstm-emotion.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twitter Dataset - 使用 LSTM 預測文章的情緒"/></a><div class="content"><a class="title" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒">Twitter Dataset - 使用 LSTM 預測文章的情緒</a><time datetime="2023-11-16T06:30:45.000Z" title="發表於 2023-11-16 14:30:45">2023-11-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      id: '0150c7a70267b654e2d7d3cec9673330',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>

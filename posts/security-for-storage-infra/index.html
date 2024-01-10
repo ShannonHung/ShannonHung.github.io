@@ -1,54 +1,54 @@
-<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NIST SP 800-209 Security Guidelines for Storage (1) Threats and Risks | Shannon's Blog 🐟 Tech | Life | Travel</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="References  NIST SP800-209 Security Guidelines for Storage Infrastructure OWASP API Top 10, 2023 OWASP Top 10, 2021 OWASP Top 10, 2021: Summary by others with concise content. OWASP Top 10, 2021: Pres">
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="參考資料  NIST SP800-209 Security Guidelines for Storage Infrastructure OWASP API Top 10, 2023 OWASP Top 10, 2021 OWSP Top 10,2021：別人整理的，內容簡短。 OWSP Top 10,2021：簡報更加清楚裡面的具體採取措施與威脅。  前言 根據上一篇的內容和研究議題，應該要先了解">
 <meta property="og:type" content="article">
-<meta property="og:title" content="NIST SP 800-209 Security Guidelines for Storage (1) Threats and Risks">
-<meta property="og:url" content="https://shannonhung.github.io/en/posts/security-for-storage-infra/">
-<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 Tech | Life | Travel">
-<meta property="og:description" content="References  NIST SP800-209 Security Guidelines for Storage Infrastructure OWASP API Top 10, 2023 OWASP Top 10, 2021 OWASP Top 10, 2021: Summary by others with concise content. OWASP Top 10, 2021: Pres">
-<meta property="og:locale" content="en_US">
+<meta property="og:title" content="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險">
+<meta property="og:url" content="https://shannonhung.github.io/posts/security-for-storage-infra/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="參考資料  NIST SP800-209 Security Guidelines for Storage Infrastructure OWASP API Top 10, 2023 OWASP Top 10, 2021 OWSP Top 10,2021：別人整理的，內容簡短。 OWSP Top 10,2021：簡報更加清楚裡面的具體採取措施與威脅。  前言 根據上一篇的內容和研究議題，應該要先了解">
+<meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080">
 <meta property="article:published_time" content="2023-07-13T07:04:45.000Z">
-<meta property="article:modified_time" content="2023-12-10T14:26:19.318Z">
+<meta property="article:modified_time" content="2023-08-17T03:06:47.213Z">
 <meta property="article:author" content="Shannon Hung">
 <meta property="article:tag" content="Database">
-<meta property="article:tag" content="Master&#39;s Thesis">
+<meta property="article:tag" content="碩士論文">
 <meta property="article:tag" content="Cloud Storage">
 <meta property="article:tag" content="Security">
 <meta property="article:tag" content="NIST SP 800-209">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><link rel="shortcut icon" href="/en/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/en/posts/security-for-storage-infra/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/en/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/security-for-storage-infra/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-XBNKVVH2P4');
 </script><script>const GLOBAL_CONFIG = {
-  root: '/en/',
+  root: '/',
   algolia: undefined,
-  localSearch: {"path":"/en/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
-  translate: {"defaultEncoding":3,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
   noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
   highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
   copy: {
-    success: 'Copy Successful',
-    error: 'Copy Error',
-    noSupport: 'Browser Not Supported'
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
   },
   relativeDate: {
     homepage: false,
     post: false
   },
-  runtime: 'days',
+  runtime: '天',
   dateSuffix: {
-    just: 'Just now',
-    min: 'minutes ago',
-    hour: 'hours ago',
-    day: 'days ago',
-    month: 'months ago'
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
   },
   copyright: undefined,
   lightbox: 'fancybox',
-  Snackbar: {"chs_to_cht":"You have switched to Traditional Chinese","cht_to_chs":"You have switched to English","day_to_night":"You have switched to Dark Mode","night_to_day":"You have switched to Light Mode","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
   infinitegrid: {
     js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
-    buttonText: 'Load More'
+    buttonText: '載入更多'
   },
   isPhotoFigcaption: true,
   islazyload: false,
@@ -59,12 +59,12 @@ gtag('config', 'G-XBNKVVH2P4');
   },
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'NIST SP 800-209 Security Guidelines for Storage (1) Threats and Risks',
+  title: 'NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險',
   isPost: true,
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2023-12-10 22:26:19'
+  postUpdate: '2023-08-17 11:06:47'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -161,864 +161,872 @@ gtag('config', 'G-XBNKVVH2P4');
         }
       }
       detectApple()
-    })(window)</script><link rel="stylesheet" href="/en/css/style.css"><link rel="stylesheet" href="/en/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/en/img/loading-icon.gif" data-original="/en/img/dudu-me.png" onerror="onerror=null;src='/en/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/en/archives/"><div class="headline">Articles</div><div class="length-num">11</div></a><a href="/en/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/en/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/en/"><i class="fa-fw fas fa-home"></i><span> Home Page</span></a></div><div class="menus_item"><a class="site-page" href="/en/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categroies</span></a></div><div class="menus_item"><a class="site-page" href="/en/about/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div><div class="menus_item"><a class="site-page" href="/en/link/"><i class="fa-fw fas fa-link"></i><span> Links</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> Find Posts</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/tags/"><i class="fa-fw fas fa-tags"></i><span> By Tags</span></a></li><li><a class="site-page child" href="/en/archives/"><i class="fa-fw fas fa-archive"></i><span> By Posts</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> Language</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="https://shannonhung.github.io/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080')"><nav id="nav"><span id="blog-info"><a href="/en/" title="Shannon's Blog 🐟 Tech | Life | Travel"><span class="site-name">Shannon's Blog 🐟 Tech | Life | Travel</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/en/"><i class="fa-fw fas fa-home"></i><span> Home Page</span></a></div><div class="menus_item"><a class="site-page" href="/en/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categroies</span></a></div><div class="menus_item"><a class="site-page" href="/en/about/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div><div class="menus_item"><a class="site-page" href="/en/link/"><i class="fa-fw fas fa-link"></i><span> Links</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> Find Posts</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/tags/"><i class="fa-fw fas fa-tags"></i><span> By Tags</span></a></li><li><a class="site-page child" href="/en/archives/"><i class="fa-fw fas fa-archive"></i><span> By Posts</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> Language</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="https://shannonhung.github.io/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NIST SP 800-209 Security Guidelines for Storage (1) Threats and Risks</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-07-13T07:04:45.000Z" title="Created 2023-07-13 15:04:45">2023-07-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-12-10T14:26:19.318Z" title="Updated 2023-12-10 22:26:19">2023-12-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/en/categories/Research/">Research</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/en/categories/Research/Database/">Database</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/en/categories/Research/Security/">Security</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/en/categories/Research/Graduation-Thesis/">Graduation Thesis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">6.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>42mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NIST SP 800-209 Security Guidelines for Storage (1) Threats and Risks"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">Comments:</span><a href="/en/posts/security-for-storage-infra/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="References">References</h1>
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">23</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-07-13T07:04:45.000Z" title="發表於 2023-07-13 15:04:45">2023-07-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2023-08-17T03:06:47.213Z" title="更新於 2023-08-17 11:06:47">2023-08-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/">研究</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/Database/">Database</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/%E7%95%A2%E6%A5%AD%E8%AB%96%E6%96%87/">畢業論文</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A0%94%E7%A9%B6/Security/">Security</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">12.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>39分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽次數:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/security-for-storage-infra/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="參考資料">參考資料</h1>
 <ul>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://csrc.nist.gov/publications/detail/sp/800-209/final">NIST SP800-209 Security Guidelines for Storage Infrastructure</a></li>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://owasp.org/API-Security/editions/2023/en/0x11-t10/">OWASP API Top 10, 2023</a></li>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://owasp.org/Top10/">OWASP Top 10, 2021</a></li>
-<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://ithelp.ithome.com.tw/m/articles/10294214">OWASP Top 10, 2021</a>: Summary by others with concise content.</li>
-<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://s.itho.me/ccms_slides/2022/9/29/6f51c8e9-67ba-4267-913d-d4461bba3894.pdf">OWASP Top 10, 2021</a>: Presentation with clearer details on specific measures and threats.</li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://ithelp.ithome.com.tw/m/articles/10294214">OWSP Top 10,2021</a>：別人整理的，內容簡短。</li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://s.itho.me/ccms_slides/2022/9/29/6f51c8e9-67ba-4267-913d-d4461bba3894.pdf">OWSP Top 10,2021</a>：簡報更加清楚裡面的具體採取措施與威脅。</li>
 </ul>
-<h1 id="Introduction">Introduction</h1>
-<p>Based on the previous content and research topics, it is essential to first understand that the main purpose of this article is to organize:</p>
+<h1 id="前言">前言</h1>
+<p>根據上一篇的內容和研究議題，應該要先了解，本篇主要目的在整理：</p>
 <ul>
-<li>[x] <code>What are the relevant threats and risks of data storage?</code></li>
-<li>[ ] How to prevent these threats and risks with a zero-trust approach?</li>
+<li>[x] <code>資料儲存的相關威脅與風險有哪些？</code></li>
+<li>[ ] 零信任怎麼預防這些威脅與風險？</li>
 </ul>
 <hr>
-<p>To be able to organize the relevant threats and risks of storage security, I have compiled the relevant security standards for Cloud Storage published by NIST, NIST SP 800-209. This document outlines:</p>
+<p>為了能夠整理儲存安全的相關威脅與風險，我整理了NIST所發布針對Cloud Stoage的相關安全標準，NIST SP 800-209的本文檔概述了：</p>
 <ul>
-<li><em>The evolution of storage technology landscape, current security threats, and the resulting risks</em>.</li>
-<li>It primarily provides <em>a comprehensive set of security recommendations</em> to address threats, covering…
+<li><strong>存儲技術格局的演變、當前的安全威脅以及由此產生的風險</strong>。</li>
+<li>並主要提供<strong>一套全面的安全建議</strong>來應對威脅，涵蓋…
 <ul>
-<li>Common security management areas of Information Technology (IT) infrastructure: such as physical security, identity authentication and authorization, change management, configuration control, and incident response and recovery.</li>
-<li>Security management areas specific to storage infrastructure: such as storage infrastructure, data protection, isolation, recovery assurance, and encryption.</li>
+<li>信息技術 (IT) 基礎設施常見的安全管理領域: 例如物理安全、身份驗證和授權、變更管理、配置控制以及事件響應和恢復）</li>
+<li>存儲基礎設施特有的安全管理領域: 例如存儲基礎設施、數據保護、隔離、恢復保證和加密。</li>
 </ul>
 </li>
 </ul>
-<div class="note warning flat"><p>I will only organize data that I find useful or available, and I will include some personal observations or statements. Therefore, this article is for reference only, and the <em>correct content should be primarily referenced from NIST SP800-209</em>.</p>
+<div class="note warning flat"><p>我只會挑<code>我覺得有用或是可用的資料進行整理，不會放全部的內容上來，並且會有一些個人的觀點或說法</code>，因此本篇參考即可，<strong>正確內容還是請參考NIST SP800-209為主</strong>。</p>
 </div>
-<h1 id="Key-Summary">Key Summary</h1>
-<p>Below is my key summary for this chapter, if you want to quickly understand, you can read this section.</p>
+<h1 id="重點整理">重點整理</h1>
+<p>以下也是我針對這個章節的重點整理，如果想要快速了解，可以閱讀這個章節即可。</p>
 <blockquote>
-<p>Mapping Threats and Risks - Summary of Chapter 3</p>
+<p>Mapping Threats and Risks 總結第三章內容</p>
 </blockquote>
 <table>
 <thead>
 <tr>
-<th><div style="width:130px">Threat</div></th>
-<th>Possible Risks</th>
-<th>Threat Level</th>
+<th><div style="width:130px">威脅</div></th>
+<th>可能的風險</th>
+<th>威脅程度</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Backdoors and Unpatched Vulnerabilities</td>
-<td>- Different risks depending on the type of <em>vulnerability</em>.<br> - Risks apply depending on whether <em>credentials are stolen or leaked</em>.</td>
-<td>High</td>
+<td><code>後門和未修補的漏洞</code></td>
+<td>- 依據「<strong>弱點類型</strong>」不同有不同風險。<br> -「<strong>憑證被盜或洩露</strong>」威脅所帶來的風險都適用。</td>
+<td>高</td>
 </tr>
 <tr>
-<td>Privilege Escalation</td>
-<td>- Risks depend on whether <em>administrator</em> or <em>user credentials are stolen or leaked</em>.</td>
-<td>High</td>
+<td><code>特權升級</code></td>
+<td>- 依據「管理者」或「使用者」憑證是否被盜或洩露。 <br>  -「<strong>憑證被盜或洩露</strong>」威脅所帶來的風險都適用。</td>
+<td>高</td>
 </tr>
 <tr>
-<td>Human Error and Intentional Configuration Mistakes</td>
-<td>- Different risks based on the <em>type</em> and <em>scope</em> of human or configuration errors.<br> - If it is a misconfiguration, <em>all risks in section 3.2</em> may occur.</td>
-<td>High</td>
+<td><code>人為錯誤與故意配置失誤</code></td>
+<td>- 依據人為或配置錯誤的「<strong>種類</strong>」和「<strong>影響範圍</strong>」造成的風險不同。 <br> - 如果是錯誤的配置，<strong>章節3.2所有風險</strong>皆可能發生。</td>
+<td>高</td>
 </tr>
 <tr>
-<td>Physical Theft of Media</td>
-<td>- Different risks depending on the <em>scope</em> of theft.<br> - Risks include <em>data disclosure and exposure</em>, <em>data destruction</em>, <em>backup compromise</em>, and <em>data unavailability and service disruption</em> due to theft.</td>
-<td>Medium</td>
+<td><code>實體媒體的物理偷竊</code></td>
+<td>- 依據竊盜「<strong>範圍</strong>」有不同的風險。<br> - 「<strong>資料洩露和資料曝露</strong>」、「<strong>資料損毀</strong>」、「<strong>備份受損</strong>」、「<strong>數據不可用和阻斷服務</strong>」為可能因偷竊導致的風險。</td>
+<td>中</td>
 </tr>
 <tr>
-<td>Insecure Images, Software, and Firmware</td>
-<td>- Different risks based on the <em>type</em> and <em>scope</em> of impacts.<br> - If it is an insecure configuration, <em>all risks in section 3.2</em> may occur.</td>
-<td>High</td>
+<td><code>不安全的映像、軟體和韌體</code></td>
+<td>- 依據影響「<strong>種類</strong>」和「<strong>影響範圍</strong>」造成的風險不同。<br>  - 如果是錯誤的配置，<strong>章節3.2所有風險</strong>皆可能發生。</td>
+<td>高</td>
 </tr>
 <tr>
-<td>Malware and Ransomware Infection</td>
-<td>- Malware can lead to <em>privilege elevation</em>, <em>credentials being stolen or leaked</em>, and other threats.<br> - Depending on where malware <em>appears</em>, such as in application systems or management systems, it can affect the occurrence of <em>all risks in section 3.2</em>.</td>
-<td>High</td>
+<td><code>惡意軟體與勒索軟體的感染</code></td>
+<td>- 惡意軟體可能導致「<strong>權限提權</strong>」、「<strong>憑證被盜或洩露</strong>」威脅。<br> - 依據惡意軟體「<strong>出現的地點</strong>」像是應用系統或是管理系統，都可以影響導致<strong>章節3.2所有風險</strong>皆可能發生。</td>
+<td>高</td>
 </tr>
 <tr>
-<td>Cryptographic Compromise</td>
-<td>- May lead to <em>data disclosure and exposure</em> in (a) static data, (b) data in transit, and © data in user/administrator sessions.</td>
-<td>Medium</td>
+<td><code>加密破解</code></td>
+<td>- 可能導致「<strong>數據洩露和暴露</strong>」於 (a) 靜態數據、(b) 傳輸中的數據和 © 用戶/管理員會話中的數據</td>
+<td>中</td>
 </tr>
 <tr>
-<td>Credentials Stolen or Leaked</td>
-<td>1. <em>Application System</em>: Risks may include <em>data disclosure and exposure</em>, <em>unauthorized data changes and additions</em>, <em>data destruction</em>, etc.<br> 2. <em>Administrative System</em>: Risks include <em>backup compromise</em>, <em>ransomware attack</em>, <em>data unavailability and service disruption</em>, <em>tampering with storage-related logs and audit data</em>, and insecure storage configuration parameters.</td>
-<td>High</td>
+<td><code>憑證被盜或洩露</code></td>
+<td>1. <strong>應用系統</strong>(Application System)：「資料洩露和暴露」、「未經授權的數據更改和新增」、「資料損毀」等風險皆有可能。<br> 2. <strong>管理系統</strong>(Administrative System)：「備份損毀」(Compromise of existing and future backups)、「惡意數據混淆和加密」(ransomware attack)、「數據不可用和阻斷服務」(DDOS Attack)、「存儲相關日誌和審計數據的篡改」、不安全的儲存設定參數，皆有可能發生。</td>
+<td>高</td>
 </tr>
 </tbody>
 </table>
-<h1 id="2-11-Storage-and-Data-Management">2.11 Storage and Data Management</h1>
-<p>As mentioned earlier, the following content primarily focuses on other aspects of storage and data management, rather than directly addressing “information security” control measures. Therefore, we will only provide a brief overview of the content briefly mentioned in NIST SP 800-209.</p>
-<div class="note info flat"><p>My thoughts: What is significant in the above is “data protection.” The three aspects mentioned can be explored in the context of information assurance/security. Consider the integration of “data classification” and “data protection.” For example, using data classification for access control in data protection.</p>
+<h1 id="2-11-儲存和資料管理-Storage-and-Data-Management">2.11 儲存和資料管理 Storage and Data Management</h1>
+<p>在裡面提到了，以下的內容，<strong>主要關注的是儲存和資料管理的其他方面，而不是直接涉及「資訊安全」的控制措施</strong>。因此只會簡單介紹一下，以下內容在NIST SP 800-209稍微提到的內容。</p>
+<div class="note info flat"><p>我的感想：上述中，有探討意義的是「資料保護」，裡面提到的三個面向，在information assurance/security的部分可以好好探討。也可以思考「資料分類」與「資料保護」的結合。像是，透過資料分類，來進行存取控制的資料保護。</p>
 </div>
-<details class="toggle" ><summary class="toggle-button" style="">Storage Resource Configuration and Resource Management</summary><div class="toggle-content"><ul>
-<li>Content: This section mainly explains key points to consider in the lifecycle of storage resource configuration or management. It covers areas such as managing and controlling “physical devices,” coordinating changes across multiple “assets,” performance management and optimization, asset management, and event management.</li>
-<li>Thoughts: Not the main focus of the paper.</li>
+<details class="toggle" ><summary class="toggle-button" style="">儲存資源配置和資源管理 Storage Resource Configuration and Resource Management</summary><div class="toggle-content"><ul>
+<li>內容：主要說明進行儲存資源配置或管理時生命週期要注意的點，像是針對「物理裝置」的管理與控制，跨多「資產」的變更協調、效能管理和最佳化、資產的管理、事件管理，都是被歸類於此。</li>
+<li>感想：非論文主軸</li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Data Classification or Categorization</summary><div class="toggle-content"><ul>
-<li>It mentions referencing data regulations like PII, PCI-DSS, HIPAA, etc., to classify data more granularly and apply different protections to different types of data.</li>
-<li>It can be categorized into several main types:
+<details class="toggle" ><summary class="toggle-button" style="">資料分類或分類 Data Classification or Categorization</summary><div class="toggle-content"><ul>
+<li>提到可以參考資料法規像是PII, PCI-DSS, HIPAA等，針對資料做更細緻的分類，並且針對不同的資料做不同的保護。</li>
+<li>主要可以分以下幾類：
 <ul>
-<li>Sensitivity (e.g., sensitive vs. non-sensitive).</li>
-<li>Frequency (e.g., frequently accessed vs. infrequently accessed).</li>
-<li>Environment (e.g., production environment vs. development environment vs. test environment vs. demo environment).</li>
+<li>敏感性（例如，敏感 vs. 非敏感）</li>
+<li>頻率（例如，經常訪問 vs. 不經常訪問）</li>
+<li>環境（例如，生產環境 vs. 開發環境 vs. 測試環境 vs. 演示環境）。</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Data Sanitization</summary><div class="toggle-content"><ul>
-<li>It explains the need to use appropriate data sanitization methods based on the type and specifics of the data.</li>
-<li>It mentions that data sanitization can primarily be divided into the following categories:
+<details class="toggle" ><summary class="toggle-button" style="">資料消除 Data Sanitization</summary><div class="toggle-content"><ul>
+<li>說明需要根數據的類型和特定，使用適當的資料消除方式。</li>
+<li>提到，資料消除主要可以分以下幾類：
 <ul>
-<li>Clean: For example, overwriting existing data.</li>
-<li>Purge: For example, using strong magnetic fields for demagnetization in magnetic media or using cryptographic erasure for encrypted data.</li>
-<li>Destruct: For example, physically destroying media, such as burning or shredding.</li>
+<li>Clearn：例如，覆蓋現有數據；</li>
+<li>Purge：例如，對於磁性媒體，使用強磁場進行消磁，對於加密數據，使用密碼擦除；</li>
+<li>Destruct：例如，對媒體進行物理破壞，如燃燒，粉碎等。</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Data Retention</summary><div class="toggle-content"><ul>
-<li>It explains that in certain situations, specific data may need to be retained for a short-term, medium-term (i.e., less than 10 years), or long-term duration.</li>
-<li>Data retention is typically achieved by backing up data copies to some medium. This might be done to fulfill operational, legal, regulatory, or statutory requirements.</li>
+<details class="toggle" ><summary class="toggle-button" style="">資料保留 Data Retention</summary><div class="toggle-content"><ul>
+<li>說明在某些情況下，可能需要將特定資料保存一段短期、中期（即少於10年）或長期的時間。</li>
+<li>資料保留通常是透過將資料副本備份至某個媒介來實現的。這可能是為了滿足運營、法律、監管或法定要求。</li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Data Protection</summary><div class="toggle-content"><ul>
-<li>It is a comprehensive term referring to all activities that ensure data is accessible, available, undamaged, and usable for all authorized purposes and meets acceptable performance levels.</li>
-<li>These activities must comply with regulatory requirements, including privacy protection, and involve all physical, managerial, and technical means to ensure data is not accidentally or unauthorizedly disclosed, modified, or destroyed.</li>
-<li>Data protection involves various lifecycle stages, including:
+<details class="toggle" ><summary class="toggle-button" style="">資料保護 Data Protection</summary><div class="toggle-content"><ul>
+<li>是一個綜合性術語，指的是所有「確保資料可訪問、可用、不受損壞、並可供所有經授權的目的使用，且性能達到可接受水平的活動」。</li>
+<li>這些活動需要符合合規要求，包括隱私保護，以及所有物理、管理和技術手段，以確保資料不會被意外或未經授權地洩露、修改或破壞。</li>
+<li>資料保護所涉及的生命周期。這些階段包括：
 <ul>
-<li>(Storage) Static data on endpoints - data stored on servers or client devices.</li>
-<li>(In transit) Data in transit - data transferred between storage devices, client to server, or server to server.</li>
-<li>(In use) Data in use - data being viewed, modified, or synchronized between devices.</li>
-<li>(Out of secure boundaries) Data outside secure boundaries - data during downloads, physical media transport, etc.</li>
+<li>（儲存）靜態資料／端點上的資料 - 存儲於伺服器或用戶端設備上的資料。</li>
+<li>（傳輸過程）過程中的資料 - 在存儲設備之間、用戶端到伺服器或伺服器之間傳輸的資料。</li>
+<li>（正在使用）使用中的資料 - 在查看、修改或在設備之間進行同步時的資料。</li>
+<li>（離開安全範圍）超越安全範圍的資料 - 下載、物理媒體運送等過程中的資料。</li>
 </ul>
 </li>
-<li>Data protection can be divided into three aspects:
+<li>資料保護可以分為三個面相：
 <ol>
-<li>Storage: Mainly discussing protection related to “storage” itself, such as backup, recovery, replication, immutability, continuous data protection, snapshots, etc.</li>
-<li>Privacy: Mainly discussing the “privacy of data” itself, but this varies by region, and it’s not discussed here.</li>
-<li>Information assurance/security: Mainly technical control measures, each of which requires a dedicated section to discuss its details, so it’s not discussed here.</li>
+<li>storage: 主要探討「儲存」本身的相關保護，像是備份、恢復、複製、不可變、持續資料保護、snapshot等。</li>
+<li>privacy: 主要探討「資料本身的隱私」但是這個每個地區規則不同，在此不討論。</li>
+<li>information assurance/security: 主要是技術控制措施，每個措施都需要專門的部分來討論其細節。所以也先不討論。</li>
 </ol>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Data Reduction</summary><div class="toggle-content"><ul>
-<li>There are two common methods of data reduction, and these methods can be used in combination.
+<details class="toggle" ><summary class="toggle-button" style="">資料壓縮 Data Reduction</summary><div class="toggle-content"><ul>
+<li>資料壓縮有兩個常見的方法，這兩種方法可以結合使用。
 <ul>
-<li>Data Deduplication: Data deduplication attempts to replace multiple data copies with references pointing to a shared copy. It’s like having the same file, so you don’t need to copy multiple identical data.</li>
-<li>Data Compression: Data is encoded using known algorithms to generate a data representation that takes up less storage space than the unencoded representation.</li>
+<li>資料去重：資料去重試圖將多個資料副本替換為指向共享副本的引用。有點像是都是相同檔案的話，就把他們指向同一個source就不用複製多個相同的資料了。</li>
+<li>資料壓縮：使用已知的演算法對資料進行編碼，以產生一種使用比未編碼表示法更少的儲存空間的資料表示形式</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<h1 id="3-Threats-Risks-and-Attack-Surfaces-Related-to-Storage-Infrastructure">3. Threats, Risks, and Attack Surfaces Related to Storage Infrastructure</h1>
-<div class="note info flat"><p>Threat - The cause of potential unwanted events that may harm systems or organizations.</p>
+<h1 id="3-儲存基礎設施的相關威脅-Threats-Risks-and-Attack-Surfaces">3. 儲存基礎設施的相關威脅 Threats, Risks, and Attack Surfaces</h1>
+<div class="note info flat"><p>威脅 - 潛在引起不需要的事件的原因，可能對系統或組織造成損害。</p>
 </div>
-<p>Chapter three primarily provides background information about “security threats,” “risks,” and “attack surfaces” (methods that may be used) related to storage system infrastructure.</p>
-<h2 id="3-1-Threats">3.1 Threats</h2>
-<p>Nine threats that Storage Infrastructure may encounter are primarily discussed:</p>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.1 Credential Theft or Compromise</summary><div class="toggle-content"><ul>
-<li>The most common and <em>easily exploited is the theft of login credentials</em>.</li>
-<li>The text mentions that effective credential theft involves “<em>directly obtaining the user’s password, rather than guessing</em>,” so relying solely on password length and complexity is often insufficient to protect the system from attacks. For example, the following scenarios do not depend on password complexity:
+<p>第三章節主要提供有關存儲系統「安全威脅」、「風險」和「攻擊面」（可能使用的手段手段）的背景資訊。</p>
+<h2 id="3-1-Threat-威脅">3.1 Threat 威脅</h2>
+<p>主要提到九個威脅是Storage Infrastruture可能會碰到的：</p>
+<details class="toggle" ><summary class="toggle-button" style="">3.3.1 憑證被盜或洩露 Credential Theft or Compromise</summary><div class="toggle-content"><ul>
+<li>最常用且<strong>最容易被入侵的是登錄密碼證書</strong>。</li>
+<li>內文指出，有效的憑證盜用都是「<strong>直接取得使用者的密碼，而非猜測</strong>」，因此僅僅依靠密碼的長度和複雜性通常不足以保護系統免受攻擊。舉例來說以下情境皆不適用密碼的複雜度：
 <ul>
-<li>Modern ransomware often collects passwords from the data it captures.</li>
-<li>Keylogging is also a form of credential theft unaffected by password complexity, where malicious software can virtually monitor user-entered passwords[23].</li>
+<li>現代勒索軟件通常會從其捕獲的數據集中收集密碼。</li>
+<li>鍵盤記錄也是一種不受密碼複雜性影響的證書盜竊方法，其中恶意软件可以虛擬地監視使用者輸入密碼[23]。</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.2 Cracking Encryption</summary><div class="toggle-content"><ul>
-<li>Encryption key generation uses “randomness” to create keys. However, various vulnerabilities exist, from “weak encryption algorithms” and “weak key generators” to “server-side vulnerabilities,” key leakage, fundamental design flaws or vulnerabilities, and backdoors, etc. [24].</li>
-<li>In simple terms, it’s essential to use strong encryption methods and protect encryption keys properly. Actively changing encryption keys can be a strategy to prevent key cracking or insufficient strength. In key generation, key strength, quality, and entropy play vital roles, and keys should not be reused.</li>
+<details class="toggle" ><summary class="toggle-button" style="">3.3.2 加密破解 Cracking Encryption</summary><div class="toggle-content"><ul>
+<li>加密金鑰生成利用「隨機性」來建立金鑰。但是仍有各種弱點，從「<strong>弱的加密算法」和「弱的金鑰生成器」到「服務器端的漏洞」、金鑰泄露、基本設計缺陷或漏洞</strong>，以及後門等等 [24]。</li>
+<li>簡單來說就是要注意：使用強大的加密方法很重要，同時也要妥善保護加密金鑰。積極更換加密金鑰可以成為一種策略，以防止金鑰被破解或不夠強大。在金鑰生成方面，金鑰的強度、質量和熵都起著重要作用，且金鑰不應重複使用。</li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.3 Infection of Malware and Ransomware</summary><div class="toggle-content"><ul>
-<li>The text mentions that attacks on “storage management systems” are often easier than attacks on the “storage devices” themselves.</li>
-<li>Therefore, <em>malware may cause harm when installed on storage management hosts</em>, such as stealing credentials, privilege escalation, data corruption, loss or alteration, and compromising future backups, among others.</li>
+<details class="toggle" ><summary class="toggle-button" style="">3.3.3 惡意軟體與勒索軟體的感染 Infection of Malware and Ransomware</summary><div class="toggle-content"><ul>
+<li>文中提到，往往攻擊「存儲管理系統」比攻擊「存儲裝置」本身更容易。</li>
+<li>因此<strong>惡意軟體可能因安裝在存儲管理主機上</strong>，造成傷害，如竊取憑證、提升特權、資料損壞、損失或更改，以及破壞未來的備份等。</li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.4 Backdoors and Unpatched Vulnerabilities</summary><div class="toggle-content"><ul>
-<li>Backdoors are typically software mechanisms or features intentionally created by suppliers, individual contributors (in rare cases, possibly state or malicious actors), often considered reasonable by the authors (e.g., for support, debugging, national security, etc.).</li>
-<li>Since backdoors have the potential for harm, they are not documented in official documents, and only a limited set of people are aware of their existence. However, over time, the existence of backdoors may be deliberately or inadvertently disclosed or discovered by the public.</li>
+<details class="toggle" ><summary class="toggle-button" style="">3.3.4 後門未修補的漏洞 Backdoors and Unpatched Vulnerabilities</summary><div class="toggle-content"><ul>
+<li>後門：通常是軟體機制或功能，由供應商、個別貢獻者（在罕見情況下，可能是國家或惡意行為者）故意創建，原因通常被作者認為是合理的（例如為了改進支援、調試、國家安全等）。</li>
+<li>由於門後具有潛在的危害性，它們並不在官方文檔中記錄，只有被限定的一組人才知道其存在。然而，隨著時間的推移，門後的存在可能會被故意或無意間洩露或被公眾發現。</li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.5 Privilege Escalation</summary><div class="toggle-content"><ul>
-<li>Privilege escalation exploits software vulnerabilities, design or deployment flaws, or configuration errors to gain access rights to protected resources in applications or user contexts.</li>
-<li>Privilege escalation is highly associated with backdoor vulnerabilities. Privilege escalation comes in two forms:
+<details class="toggle" ><summary class="toggle-button" style="">3.3.5 特權升級 Privilege Escalation</summary><div class="toggle-content"><ul>
+<li>特權升級只利用軟體漏洞、設計或部署缺陷，或是配置錯誤，以至於<strong>獲得對於應用程式或使用者取得受保護資源的訪問權限</strong>。</li>
+<li>特權升級與後門漏洞有很高的關聯，特權升級有兩種形式：
 <ol>
-<li>Vertical privilege escalation (privilege elevation): Low-privilege users or applications accessing the functionality or content of high-privilege users or applications.</li>
-<li>Horizontal privilege escalation: Ordinary users accessing functionality or content reserved for other ordinary users.</li>
+<li>垂直特權升級（特權提升）：<strong>低特權</strong>使用者或應用程式訪問<strong>高特權</strong>使用者或應用程式的功能或內容。</li>
+<li>水平特權升級：<strong>普通</strong>使用者訪問為其他<strong>普通</strong>使用者所保留的功能或內容。</li>
 </ol>
 </li>
-<li>Impact on databases:
+<li>對資料庫的影響：
 <ul>
-<li>In storage systems, this threat may lead to various risks, including data corruption, data alteration, data loss, etc.</li>
-<li>For example, an attacker may use escalated privileges to enter the storage system, delete volumes, and modify access configurations.</li>
-<li>This type of attack may also jeopardize data backup copies (e.g., synchronous/asynchronous replicas, snapshots) or the generation of future backups.</li>
-<li>Privilege escalation can occur at various levels, such as storage components (e.g., storage arrays, hosts, or clients), network devices, or management systems.</li>
+<li>在儲存系統中，這種威脅可能導致各種風險，包括資料損壞、資料更改、資料丟失等。</li>
+<li>例如，攻擊者可以使用提升的特權來進入儲存系統，刪除儲存卷，並修改訪問配置。</li>
+<li>這種攻擊還可能危及資料的備份副本（例如，同步/非同步複本、快照）或未來備份的生成。</li>
+<li>特權升級本身可以在各種級別上發生，例如儲存元件（例如，儲存陣列、主機或客戶端）、網路設備或管理系統。</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.6 Human Error and Deliberate Misconfiguration</summary><div class="toggle-content"><ul>
-<li>Even with security controls in place, users may make technically supported storage configuration changes that still pose unacceptable risks.</li>
-<li>Possible human errors include:
+<details class="toggle" ><summary class="toggle-button" style="">3.3.6 人為錯誤與故意配置失誤 Human Error and Deliberate Misconfiguration</summary><div class="toggle-content"><ul>
+<li>即使存在安全控制，<strong>使用者可能會進行技術上支援的儲存配置更改</strong>，但仍然會造成無法接受的風險。</li>
+<li>可能的人為錯誤包含以下：
 <ul>
-<li>Typographical errors.</li>
-<li>Lack of understanding or familiarity with internal security standards and vendor best practices.</li>
-<li>Communication errors between individuals or teams.</li>
-<li>Errors related to storage infrastructure guidance or automation:
+<li>打字錯誤。</li>
+<li>缺乏對內部安全基準和供應商最佳實踐的了解或熟悉。</li>
+<li>個人或團隊之間的溝通失誤。</li>
+<li>儲存基礎架構的指導或自動化相關的錯誤：
 <ul>
-<li>Direct errors, such as defects in scripts and configuration files.</li>
-<li>Indirect errors, such as unnoticed software dependencies.</li>
+<li>直接錯誤，例如腳本和配置文件中的缺陷。</li>
+<li>間接錯誤，例如未意識到的軟體依賴性。</li>
 </ul>
 </li>
-<li>Mapping restricted object storage pools to public networks, stopping replication or backup for maintenance but failing to re-enable them afterward.</li>
-</ul>
-</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.7 Physical Theft of Storage Media</summary><div class="toggle-content"><ul>
-<li>All data is ultimately stored on one or more physical media, making them vulnerable to theft.</li>
-<li>These media, whether online or offline, may be removed from their designated (fixed) locations or stolen during physical transportation processes, such as archiving media used for backups during transport, or during storage device shipment as part of a data center migration project.</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">3.3.8 Network Eavesdropping</summary><div class="toggle-content"><ul>
-<li>Data may be intercepted when transmitted.</li>
-<li>Transmission can involve many components: network cards (wired or wireless), transmission cables (power or optical), relays, switches, routers, etc. Any of these components may be compromised, and many forms of compromise are difficult or impossible to detect using state-of-the-art tools and methods.</li>
-<li>Possible actions related to data include:
-<ul>
-<li>Some transmission compromises may involve data interception (also known as passive eavesdropping).</li>
-<li>It may also involve the insertion, deletion, or modification of data, metadata, or control traffic during transmission.</li>
+<li>將受限制的物件儲存池映射到公共網路，停止複製或備份進行維護，卻未在之後重新啟用</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" style="border: 1px solid  Software"><summary class="toggle-button" style="background-color:  Software;color:  and Firmware">3.3.9 Insecure Images</summary><div class="toggle-content"><ul>
-<li>Adversaries may attempt to interfere with the software distribution, updates, or installation processes of storage devices to introduce incorrect, outdated, or maliciously modified code (e.g., binary files, images, firmware, drivers, etc.).</li>
-<li>The software update process may rely on complex delivery chains: each link in the chain may become a target for introducing tampered software.
-<ul>
-<li><em>Publishers (e.g., vendors, third parties, open-source communities)</em>: Publishers may be penetrated to infect source code repositories, gain access to registered software or device access, and release modified, signed binary files on download sites or update servers.</li>
-<li><em>Delivery methods (e.g., transmission or download, transportation of installation media, file copying by vendor staff)</em>.</li>
-<li><em>Locally retained copies of organizations (e.g., proxy servers, internal file servers)</em>, etc.</li>
-</ul>
-</li>
-<li>Affected storage components include: disk drives, tape drives and libraries, network cards and controllers (e.g., HBA, network interface cards or NIC, FCoE adapters, etc.), switches and other network devices, storage enclosures and arrays, storage operating systems, storage components of client operating systems, and more.</li>
+<details class="toggle" ><summary class="toggle-button" style="">3.3.7 實體媒體的物理偷竊 Physical Theft of Storage Media</summary><div class="toggle-content"><ul>
+<li>所有的<strong>數據最終都儲存在一個或多個實體媒體上，而這些媒體容易受到偷竊的威脅</strong>。</li>
+<li>這些媒體，無論是在線或離線，都可能被從其指定的（固定）位置上移除，或者在實體運輸過程中被竊取（例如，正在運輸用於備份的媒體進行歸檔，或者作為數據中心遷移項目的一部分而運送存儲設備。</li>
 </ul>
 </div></details>
-<h2 id="3-2-Risk">3.2 Risk</h2>
-<p>This chapter describes the definition of security risks. The difference compared to 3.1 Threat can be summarized as follows:</p>
-<div class="note warning flat"><p>Threat: It represents the potential locations for attacks or possible causes of Risk that have not yet resulted in harm to users or the organization (Risk).</p>
-<p>Risk: It is the degree of threat to an entity (which could be an organization, system, or information). These risks mainly encompass the aspects of confidentiality, integrity, and availability that they might affect. This can impact an organization’s mission, reputation, assets, and other related interests.</p>
-<p>For example, Threats include factors like “weak passwords” and “human configuration errors” (Threat) that can result in “data leakage” (Risk).</p>
+<details class="toggle" ><summary class="toggle-button" style="">3.3.8 網路竊聽資料 Network Eavesdropping</summary><div class="toggle-content"><ul>
+<li><strong>資料在傳輸時可能會被攔截</strong>。</li>
+<li>傳輸可以涵蓋許多組件：網路卡（有線或無線）、傳輸電纜（傳輸電力或光線）、中繼器、交換器、路由器等。這些<strong>組件中的任何一個都可能受到破壞</strong>，而且很多形式的破壞是難以或不可能用最先進的工具和方法來檢測的。</li>
+<li>可能針對資料的相關工作：
+<ul>
+<li>某些傳輸破壞可能可以進行資料的截取（也稱為被動竊聽）</li>
+<li>還可能涉及對傳輸的資料、元數據或控制流量進行插入、刪除或修改</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">3.3.9 不安全的映像、軟體和韌體 Insecure Images Software and Firmware</summary><div class="toggle-content"><ul>
+<li>對手可能試圖<strong>干擾儲存設備的軟體分發、更新或安裝過程</strong>，以引入不正確、過時或惡意修改的程式碼（例如二進位檔案、映像、韌體、驅動程式等）。</li>
+<li>軟體更新過程可能依賴於複雜的傳遞鏈路：鏈路中的每個環節都可能成為引入被篡改軟體的目標。
+<ul>
+<li><strong>發行者（例如供應商、第三方、開源社區）</strong>: 發行者可能被滲透，以感染源碼庫、獲取註冊軟體或設備的存取權限，將經過修改的簽署二進位檔案發布在下載站點或更新伺服器上，</li>
+<li><strong>傳遞方法（例如傳輸或下載、安裝媒體的運送、供應商員工的檔案複製）</strong></li>
+<li>**個別組織保存的本地副本（例如代理伺服器、內部檔案伺服器）**等。</li>
+</ul>
+</li>
+<li>受影響的儲存元件包括: 磁碟驅動器、磁帶驅動器和磁帶庫、網路卡和控制器（例如HBA、網路介面卡或NIC、FCoE適配器等）、交換機和其他網路設備、儲存機箱和陣列、儲存作業系統、用戶端作業系統的儲存元件等。</li>
+</ul>
+</div></details>
+<h2 id="3-2-Risk-風險">3.2 Risk 風險</h2>
+<p>這這章節描述了安全風險的定義，這邊與3.1 Threat相比的差異像是：</p>
+<div class="note warning flat"><p>Threat: 是一些可能會發生的攻擊的地方，或是造成Risk的可能原因，還沒做出傷害使用者或組織名譽的行為（Risk）。<br>
+Risk: 對資料的機密性 完整性 可用性 已經造成損害，而影響組織的使命、形象、資產和其他相關利益。</p>
+<p>舉例來說，<strong>Threat包含一些「弱密碼、人為設定錯誤」（Threat）等，來造成「資料外洩」（Risk）</strong>。</p>
 </div>
-<div class="note info flat"><p>Security risk is defined as the degree of threat to an entity (which could be an organization, system, or information) from potential situations or events (impact x probability). These risks mainly cover the aspects of confidentiality, integrity, and availability that they might affect. This can impact an organization’s mission, reputation, assets, and other related interests.</p>
+<div class="note info flat"><p>安全風險被定義為：一個<strong>實體（可能是組織、系統或資訊）受到潛在情況或事件的威脅的程度（影響x機率）</strong>。而這些風險主要涵蓋了<strong>機密性、完整性和可用性</strong>三個方面，這些風險可能影響到。<strong>組織的使命、形象、資產和其他相關利益</strong></p>
 </div>
-<p>Some relevant security risks are as follows:</p>
-<details class="toggle" ><summary class="toggle-button" style="">Data Breach and Data Exposure</summary><div class="toggle-content"><ul>
-<li>Data Breach refers to incidents involving <em>sensitive and protected information being copied, transmitted, accessed, intentionally exposed to the public, or used by unauthorized individuals or entities</em>. The impact of data breaches can range from inconvenience to users to exposing sensitive or confidential data, resulting in irreversible damage to an organization’s reputation and operational health.</li>
-<li>Data breaches can be caused by two main sources:
+<p>相關的安全風險有以下幾點：</p>
+<details class="toggle" ><summary class="toggle-button" style="">資料洩露和資料曝露 Data Breach and Data Exposure</summary><div class="toggle-content"><ul>
+<li>資料洩露是指涉及<strong>敏感且受保護的資訊被複製、傳輸、查閱、故意</strong>向公眾公開，或被未經授權的個人或實體使用的事件。料洩漏的影響可以是廣泛的，從給使用者帶來不便，到將敏感或機密數據暴露出來，導致對組織的聲譽和運營健康造成不可挽回的損害。</li>
+<li>資料洩漏可能是由以兩種所引起：
 <ul>
-<li><em>External sources</em>, such as hackers or cybercriminals.</li>
-<li><em>Internal personnel</em>, such as malicious insiders or disgruntled employees.</li>
+<li><strong>外部來源</strong>引起的，例如黑客或網絡犯罪分子。</li>
+<li><strong>內部人員</strong>引起的，比如惡意內部人員或不滿的員工。</li>
 </ul>
 </li>
-<li>Possible root causes include some of the Threats mentioned earlier:
+<li>可能的根本原因包括：上述的Threat就有一些包含在內。
 <ul>
-<li>Weak encryption (or no encryption) during storage or transmission.</li>
-<li>Software vulnerabilities.</li>
-<li>Loss of removable media.</li>
-<li>Theft of media.</li>
-<li>Incorrect or overly permissive access controls.</li>
-<li>Incorrect or incomplete data sanitization practices (including object deletion, retirement, or media reuse).</li>
-<li>Sending information to the wrong recipients.</li>
-<li>Uploading data in an incorrect manner (e.g., uploading protected data to public data repositories).</li>
-</ul>
-</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Unauthorized Data Alteration and Addition</summary><div class="toggle-content"><ul>
-<li><em>Attackers gain access to data storage infrastructure</em> in a way that allows them to <em>modify data</em> in a manner that affects future application transactions or other uses of the data.</li>
-<li>Unauthorized data alteration and addition can come from external or internal sources and may be done in a covert or easily detectable manner.</li>
-<li>This risk can be achieved using a “salami attack” method, where attackers steal small amounts of data or funds from a large number of transactions over an extended period.</li>
-<li>The impact of data alteration and addition can range from financial losses to permanent damage to reputation and trust.</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Data Corruption</summary><div class="toggle-content"><ul>
-<li>Data Corruption refers to data that is damaged or altered unexpectedly during writing, reading, storage, transmission, or processing. It results in unexpected outcomes (exceptions) when objects containing the corrupted data are accessed in the system or related applications.</li>
-<li>Typically, when Data Corruption occurs, it leads to unexpected outcomes when objects containing the data are accessed in the system or related applications. These outcomes can range from minor data loss to system crashes.</li>
-<li>Specific scenarios include:
-<ul>
-<li>If a file is corrupted, users may not be able to open it, or it may open with some or all of its data rendered unreadable.</li>
-<li>Some types of malicious software may intentionally corrupt or destroy files by overwriting their contents with invalid or garbage code or by securely erasing their content in a security-conscious way.</li>
+<li>資料在儲存或傳輸過程中的弱加密（或完全未加密）</li>
+<li>軟體漏洞</li>
+<li>可拆卸媒體的遺失</li>
+<li>媒體的被竊</li>
+<li>錯誤或過於寬鬆的訪問限制</li>
+<li>不正確或不完整的資料清除實施（包括刪除的物件、退休或重新利用的媒體等）</li>
+<li>將資訊發送給錯誤的收件人</li>
+<li>將資料以不正確的方式上傳（例如，將受保護的資料上傳至公開的資料儲存庫）。</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Compromising Backups</summary><div class="toggle-content"><ul>
-<li>Data backups are essential, including <em>retaining copies of data, snapshots, etc</em>. Backups allow us to recover these assets in case of data corruption or loss.</li>
-<li>There are several considerations for backups:
+<details class="toggle" ><summary class="toggle-button" style="">未經授權的數據更改和新增 Unauthorized Data Alteration and Addition</summary><div class="toggle-content"><ul>
+<li><strong>攻擊者獲取了訪問數據存儲基礎設施的權限</strong>，以一種影響未來應用交易或影響數據其他用途的方式<strong>修改數據</strong>。</li>
+<li>數據更改和新增可能來自外部或內部來源，並且可能以隱蔽或容易識別的方式進行。</li>
+<li>這種風險可以使用 “salami attack” 方法實現: 即攻擊者在長時間內從大量交易中偷取少量數據或資金。</li>
+<li>數據更改和新增的影響可能從損失資金到對聲譽和信任的永久損害不等。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">資料損壞 Data Corruption</summary><div class="toggle-content"><ul>
+<li>資料損壞指的是在<strong>寫入、讀取、儲存、傳輸或處理過程中，資料遭受損壞或產生錯誤，導致原始資料出現意外變化</strong>。</li>
+<li>通常情況下，當<strong>資料損壞發生</strong>時，包含該資料的物件在<strong>系統或相關應用程式存取時會產生意外結果(Exception)</strong>。
 <ul>
-<li><em>Data Consistency</em>: Backups must be “correctly generated” and have appropriate “retention frequencies” and “update frequencies.”</li>
-<li><em>Backup Security</em>: The storage of backups must also be secure to prevent unauthorized access.</li>
+<li>這些結果可能從輕微的資料損失到系統崩潰不等。</li>
 </ul>
 </li>
-<li>Failure modes for backups include:
+<li>具體的情境如下：
 <ul>
-<li>Lack of consideration for consistency or integrity of write order during backups, which can lead to incorrect configurations.</li>
-<li>Insufficient retention periods or infrequent backup updates, which may result in the inability to recover certain old or new data.</li>
-</ul>
-</li>
-<li>Attack strategies:
-<ul>
-<li><em>Disruption of the Backup Process</em>: When existing backups cannot be compromised, another viable attack strategy is to <em>disrupt the backup process itself, gradually “poisoning” future backups</em>. By the time the only available backups are too outdated, it becomes impossible to fully recover data.</li>
-<li><em>Targeting Backup Copies of Specific Systems or Applications</em>: For example, operating system images, software packages, firmware, source code repositories, etc. This way, when attempting to respond to an infection by rebuilding individual components or entire environments, at least some malicious code is reintroduced into the environment, allowing the attacker to quickly regain control of the system or cause more damage.</li>
+<li>如果一個文件檔案遭受損壞，使用者可能無法打開它，或者它可能打開時其中一部分或全部資料變得無法理解。</li>
+<li>有些類型的惡意軟體可能會故意損壞或摧毀檔案，通常是透過覆寫檔案內容為無效或垃圾程式碼，或以其他安全方式擦除其內容。</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Malicious Data Obfuscation and Encryption</summary><div class="toggle-content"><ul>
-<li><em>Reversible data obfuscation and/or encryption makes data “unavailable” to users or organizations unless restored using keys held exclusively by attackers</em>.</li>
-<li>This type of risk is commonly used in ransomware attacks, where victims’ data is encrypted, and a ransom is demanded to regain access to the data.</li>
-<li>Recent developments have expanded from targeting data or files on user devices or enterprise servers to other storage components such as NAS and backup devices.</li>
-<li>Impact: These attacks are typically designed to be identified, and they often come with threats and ransom demands. The impact of data obfuscation and encryption can range from financial losses to permanent damage to reputation and trust.</li>
+<details class="toggle" ><summary class="toggle-button" style="">備份受損 Compromising Backups</summary><div class="toggle-content"><ul>
+<li>資料備份是非常重要的，這包括<strong>保存資料的複本、快照等。透過備份</strong>，當資料損壞或丟失時，我們能夠恢復這些資產。</li>
+<li>備份有幾點是要注意的：
+<ul>
+<li><strong>資料一致性：備份必須「正確生成」，並且要有適當的「保留頻率」和「更新頻率」</strong>。</li>
+<li><strong>備份安全性：備份的存儲也必須安全，以防止未經授權的存取</strong>。</li>
+</ul>
+</li>
+<li>備份不檔可能造成的故障原因如下。
+<ul>
+<li>若備份時未考慮到一致性或寫入順序的完整性，可能會導致不正確的配置。</li>
+<li>而保留期限不足或備份更新不及時，可能導致某些舊或新資料無法復原。</li>
+</ul>
+</li>
+<li>攻擊策略：
+<ul>
+<li><strong>干擾備份過程</strong>：當現有的備份無法受到威脅時，另一種可行的攻擊策略是<strong>干擾備份過程本身，逐漸&quot;毒化&quot;未來的備份</strong>。此時唯一可用的備份已經太老舊，導致無法完全恢復資料。</li>
+<li><strong>專門感染系統或應用程式的備份複本</strong>：例如操作系統映像、軟體套件、韌體，甚至源代碼庫。這樣，當我們嘗試通過重建單個元件或整個環境來應對感染時，至少部分惡意程式碼會被還原到環境中，使攻擊者能夠迅速重新控制系統，或造成更多損害。</li>
+</ul>
+</li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Data Unavailability and Denial of Service</summary><div class="toggle-content"><ul>
-<li><em>Data customers are unable to access some or all of their data</em>. While such damage may be reversible (e.g., by restoring altered or deleted configurations), it can result in prolonged downtime and service interruptions.</li>
-<li>Risks of data unavailability interruptions may be caused by:
+<details class="toggle" ><summary class="toggle-button" style="">惡意數據混淆和加密 Malicious Data Obfuscation and Encryption</summary><div class="toggle-content"><ul>
+<li><strong>「可逆的數據混淆和/或加密」會使「數據」對用戶或組織「變得不可用」</strong>，除非使用僅由攻擊者持有的密鑰進行還原。</li>
+<li>這種風險<strong>通常在勒索軟體攻擊中使用</strong> - 一種將受害者的數據進行加密並要求贖金來恢復對數據的訪問權限的惡意軟體。</li>
+<li>近況：隨然最初是針對用戶裝置或企業伺服器上的數據或文件，但是最近已經發展到其他存儲組件，例如NAS和備份設備[30]。</li>
+<li>影響：這些攻擊通常旨在被識別，並且通常伴隨威脅和贖金指示。數據混淆和加密的影響可能從損失資金到永久損害聲譽和信任。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">數據不可用和阻斷服務 Data Unavailability and Denial of Service</summary><div class="toggle-content"><ul>
+<li><strong>數據客戶無法獲得對其部分或全部數據的訪問</strong>。儘管此類損害可能是可逆的（例如，通過還原被更改或刪除的設置），但它可能會導致系統或服務長時間的中斷和停機。</li>
+<li>數據可用性中斷風險可能原因：
 <ul>
-<li>Damage to “communication paths” or “access configurations,” intentionally or unintentionally.</li>
-<li>Physical damage, such as interruptions in communication paths.</li>
-<li>Logical damage:
+<li>由於有意或無意地對「通信路徑」或「訪問配置」造成的損害。</li>
+<li>物理性損害：例如通信路徑中斷。</li>
+<li>邏輯性損害：
 <ul>
-<li>Endpoint configuration errors of network components.</li>
-<li>Modification or deletion of access control (SAN) settings by attackers.</li>
-<li>Suspension of exports in NFS (Network File System) preventing clients from accessing their data.</li>
+<li>網絡組件的端點配置錯誤。</li>
+<li>攻擊者可以修改或刪除塊存儲設備的存取控制（SAN）掩碼設置</li>
+<li>暫停 NFS（Network File System）中的導出設置，以致客戶無法訪問其數據。</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Tampering of Storage-Related Log and Audit Data</summary><div class="toggle-content"><ul>
-<li>It refers to attackers deleting or modifying log data (e.g., timestamps) to <em>prevent effective audit trails, cover up attacks (real-time or post-event), or provide false information to investigators</em>.</li>
-<li>Attack behaviors:
+<details class="toggle" ><summary class="toggle-button" style="">存儲相關日誌和審計數據的篡改 Tampering of Storage-Related Log and Audit Data</summary><div class="toggle-content"><ul>
+<li>指攻擊者刪除或修改日誌數據（例如時間戳記），以<strong>阻止有效的審計軌跡，以掩蓋攻擊（實時或事後），或者向調查攻擊的人提供虛假信息</strong>。</li>
+<li>攻擊行為：
 <ul>
-<li><em>Disabling Logging Systems</em>: Attackers may attempt to temporarily or permanently disable the logging function of the target system, making their activities untraceable and their attacks less likely to be discovered and traced.</li>
-<li><em>Filling All Available Space with Bogus Information</em>: Attackers may write a large amount of false log information to fill the available log space, making it difficult to correctly record and store real log data, confusing investigators and tracking.</li>
-<li><em>Redirecting Log Data to Rogue Log Servers</em>: Attackers may use social engineering or deceptive means against clients or users to have them send valuable log data to rogue or fake log servers controlled by the attackers, making it easier for the attackers to gain control of sensitive information.</li>
+<li><strong>禁用日誌系統</strong>：攻擊者可能試圖暫時或永久地關閉目標系統的日誌功能，從而讓其活動不留痕跡，使其攻擊行為更加不容易被發現和跟蹤。</li>
+<li><strong>將所有空閒空間填滿合成信息</strong>：攻擊者可能會寫入大量的虛假日誌信息，將空閒的日誌空間填滿，使真實的日誌數據無法被正確記錄和存儲，以混淆安全人員的調查和追蹤。</li>
+<li><strong>將日誌數據發送到流氓日誌服務器</strong>：攻擊者可能針對客戶或使用者進行社交工程或欺騙手段，讓客戶將寶貴的日誌數據發送到攻擊者控制的偽冒或流氓日誌服務器，使得攻擊者能夠更容易地掌控敏感信息。</li>
 </ul>
 </li>
-<li>Impact: The goal of these actions is to disrupt, confuse, and conceal attack activities to protect the attacker’s identity and hinder security personnel from tracking and investigating the attack event.</li>
+<li>影響：這些行為的目的都是為了干擾、混淆和遮蓋攻擊活動，以保護攻擊者的身份，並阻礙安全人員對攻擊事件進行追蹤和調查。</li>
 </ul>
 </div></details>
-<details class="toggle" style="border: 1px solid  Firmware and Images"><summary class="toggle-button" style="background-color:  Firmware and Images;">Compromising Storage OS or Binaries</summary><div class="toggle-content"><ul>
-<li>Attacks on storage software, including the operating system, firmware, images of storage devices, etc., resulting in adverse consequences that provide attackers with means for remote access, reading, copying, altering, or destroying data and its copies, changing security settings, exposing data, altering storage infrastructure behavior, etc.</li>
-<li>Possible outcomes:
+<details class="toggle" ><summary class="toggle-button" style="">儲存作業系統、二進位檔案、韌體和映像的侵入 Compromising Storage OS or Binaries、 Firmware and Images</summary><div class="toggle-content"><ul>
+<li>針對儲存軟體的侵入，包括「<strong>儲存設備」的作業系統、韌體、映像等，所導致的不良後果，提供攻擊者進行遠端訪問的手段</strong>，讀取、複製、更改或摧毀數據及其副本，改變安全設定，暴露數據，改變儲存基礎架構的行為等。</li>
+<li>可能造成的結果：
 <ul>
-<li>Changes in storage behavior can be used to introduce various potential and difficult-to-detect attacks.</li>
-<li>Presentation of incorrect data to storage clients (even if stored data is intact).</li>
-<li>Provision of incorrect statuses to storage clients, such as false reporting of the presence or state of snapshots and security settings.</li>
+<li>儲存行為的改變可用於<strong>引入各種潛在且難以檢測的攻擊</strong>。</li>
+<li>向儲存客戶端<strong>呈現不正確的數據</strong>（即使存儲的數據完好無損）</li>
+<li>向儲存客戶端提供<strong>不正確的狀態</strong>（例如，對快照和安全設定的存在或狀態進行虛假報告）</li>
 </ul>
 </li>
 </ul>
 </div></details>
-<h2 id="3-3-Attack-Surface">3.3 Attack Surface</h2>
-<div class="note info flat"><p>The attack surface is defined as “the sum of the different points (the ‘attack vectors’) where an unauthorized user (the ‘attacker’) can try to enter data into or extract data from an environment” [31].</p>
+<h2 id="3-3-Attack-Surface-攻擊面">3.3 Attack Surface 攻擊面</h2>
+<div class="note info flat"><p>攻擊面被定義為“未經授權的使用者（攻擊者）可以嘗試「進入環境」並進行「數據輸入」(編輯或添加數據)或「提取數據」(數據竊取)等不同攻擊點（“攻擊向量”）的總和” [31]。</p>
+<p>Attack surfaces are defined as “the sum of the different points (the “attack vectors”) where an unauthorized user (the “attacker”) can try to enter data into or extract data from an environment” [31].</p>
 </div>
-<p>This section will list common digital and physical attack surfaces related to storage infrastructure.</p>
-<details class="toggle" ><summary class="toggle-button" style="">Physical Access</summary><div class="toggle-content"><ul>
-<li><em>Physical access protection is the last line of defense</em>. Once an intruder gains access to the storage infrastructure, they may ultimately attempt data theft, copying, or corruption, or even modify access configurations for remote access.</li>
-<li><em>Targets include infiltrating physical devices</em>: intrusion into data centers, peripheral areas, communication infrastructure (cabling), transportation of physical objects (hosts, disks, etc.).</li>
-<li>There are two methods for physical access:
-<ol>
-<li>“Explicit access”: Attackers pretend to be legitimate personnel to enter protected physical devices.</li>
-<li>“Tailgating”: Attackers pose as legitimate visitors and follow them to gain physical access to protected devices.</li>
-</ol>
-</li>
+<p>本節將列出與儲存基礎架構相關的常見數位和實體攻擊面。</p>
+<details class="toggle" ><summary class="toggle-button" style="">實體存取 Physical Access</summary><div class="toggle-content"><ul>
+<li><strong>實體存取保護是最後防線</strong>，一但入侵者進入儲存基礎架構，那他們最終可能進行資料竊取、複製或毀損，甚至是修改存取配置已進行遠程存取。</li>
+<li><strong>目標在於入侵實體設備</strong>：入侵資料中心、周邊區域、通訊基礎架構（纜線）、運輸實體物件（主機、磁碟等）。</li>
+<li>進行實體存取的方法可分兩種：</li>
 </ul>
+<ol>
+<li>「顯性存取」：攻擊者假裝成合法人員，進入受保護的實體裝置。</li>
+<li>「尾隨」：攻擊者扮演合法訪客尾隨讓攻擊者進入受保護的實體裝置範圍進行實體存取。</li>
+</ol>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Access to Storage Operating System</summary><div class="toggle-content"><ul>
-<li>The primary <em>objective of this attack is to infiltrate storage devices through the operating system</em>.</li>
-<li>Possible threats:
+<details class="toggle" ><summary class="toggle-button" style="">儲存系統的存取 Access to Storage Operating System</summary><div class="toggle-content"><ul>
+<li>這個攻擊的主要<strong>目標是透過操作「作業系統」來「入侵儲存設備」</strong>。</li>
+<li>可能的威脅：
 <ul>
-<li>Operating systems all have <em>security vulnerabilities</em>, so regular updates with security patches are essential.</li>
-<li>Operating systems may be affected by <em>improper configurations</em>, allowing attackers various methods of access, including local login processes (SSH, rshell, telnet), remote login via TCP/IP, and exploiting system vulnerabilities.</li>
+<li>「作業系統」都包含<strong>安全漏洞</strong>，因此應定期更新安全更新和補丁。</li>
+<li>「作業系統」都可能因<strong>配置不檔影響安全性</strong>，攻擊者可以透過多種方法獲取對作業系統的存取，包含：本地登入過程（SSH, rshell, telnet）、通過TCP/IP遠程登入、利用系統漏洞。</li>
 </ul>
 </li>
-<li>In the case of “Hyper-Converged Infrastructure (HCI),” the attack surface may be larger as it involves multiple host operating systems.</li>
+<li>如果是「超融合基礎架構（HCI）」，攻擊面可能會更大，因為涉及多個主機作業系統。</li>
 </ul>
 </div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Access to Management Hosts</summary><div class="toggle-content"><ul>
-<li>Most storage components are primarily managed or configured through “commercial operating system hosts.”</li>
-<li>Attackers may infiltrate management hosts in the following ways:
+<details class="toggle" ><summary class="toggle-button" style="">管理主機的存取 Access to Management Hosts</summary><div class="toggle-content"><ul>
+<li>大多儲存元件主要透過「商用作業系統的主機」進行「管理或配置」。</li>
+<li>攻擊者會以下方式滲透到管理主機中：</li>
+</ul>
 <ol>
-<li><em>Through malicious software</em>: Infiltrating management hosts.</li>
-<li><em>Exploiting vulnerabilities in the operating system</em>: Carrying out attacks.</li>
+<li><strong>透過惡意軟體</strong>，滲透到管理主機。</li>
+<li><strong>操作作業系統的漏洞</strong>，進行攻擊。</li>
 </ol>
-</li>
-<li>Possible attack behaviors include compromising executables, reading cached data, installing eavesdropping devices to read memory data, installing malicious software, and obtaining configuration information.</li>
-<li>Risks associated with infiltrating management hosts can lead to data corruption, data loss, tampering with backups, altering logs, and audits, making the damage potentially limitless.</li>
-</ul>
-</div></details>
-<details class="toggle" style="border: 1px solid  Management Software"><summary class="toggle-button" style="background-color:  Management Software;color:  and In-Band Management">Management APIs</summary><div class="toggle-content"><ul>
-<li>Storage infrastructure components typically expose “management interfaces” such as “user interfaces (UIs),” “APIs,” or related management protocols to manage the associated devices.</li>
-<li>For example, management interfaces may include access protocols (SOAP), REST APIs, etc., interacting with external network services for key management, authentication, and authorization.</li>
-<li>These management interfaces can introduce various attack surfaces, including:
-<ol>
-<li><em>Accessing storage devices through management interfaces (APIs) without infiltrating management software</em>.</li>
-<li>Performing <em>in-band access</em> through data links (e.g., fiber channels), impersonating clients to send management commands.</li>
-</ol>
-</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Storage Clients</summary><div class="toggle-content"><ul>
-<li>Storage clients are typically “computing components” or “applications installed on computing components” that use storage protocols to “read” resources.</li>
-<li>Attackers may employ various attack methods by infiltrating clients, including:
-<ol>
-<li>Sending management commands to storage devices through clients.</li>
-<li>Compromising clients used for creating backups, potentially harming future backups.</li>
-</ol>
-</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Storage Network</summary><div class="toggle-content"><ul>
-<li>Attackers primarily gain access through <em>infiltrating network components</em> (including host adapters, switches, cables, extenders) and attacks on data transmission paths, leading to possible attack behaviors:
-<ol>
-<li><em>Data</em>: Copying, viewing, redirecting, or stealing.</li>
-<li><em>Configuration data</em>: Reading user credentials, encryption keys, etc.</li>
-<li><em>Network components</em>: Disrupting network components, modifying valid payloads, damaging or altering and adding data.</li>
-<li><em>Performing Man-in-the-Middle attacks (MITM)</em>: Sniffing data, bypassing encryption and authentication mechanisms.</li>
-</ol>
-</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Compute Environment of Key Individuals</summary><div class="toggle-content"><ul>
-<li>Some “key users” have “management rights” over the “storage infrastructure,” such as remote connections to storage management hosts.</li>
-<li>The “computing environment of key users” (e.g., laptops, desktops, home networks) may be exploited as a foothold to gain access to the storage infrastructure, causing damage.</li>
-<li>For example, installing malicious software on a key user’s device, which then installs keyloggers to intercept login credentials.</li>
-</ul>
-</div></details>
-<details class="toggle" ><summary class="toggle-button" style="">Electrical Network and other Utilities</summary><div class="toggle-content"><ul>
-<li>The “storage infrastructure” is connected to the electrical network, making it a potential attack surface. Possible attacks include:
 <ul>
-<li>Sudden power surges, lightning: Causing damage, including erasing data on electromagnetic disks.</li>
-<li>Through malicious software (e.g., PowerHammer): Exfiltrating data by modulating the power consumption (CPU workload) of infected machines or altering current flow to steal sensitive information like passwords and encryption keys.</li>
-<li>Line-level attacks: Intercepting data by eavesdropping on the power cables of infected computers.</li>
-<li>Non-Intrusive data theft: Collecting information by measuring signals emitted on power cables and decoding them into binary form.</li>
-</ul>
-</li>
-<li><em>Other utilities, security, and environmental control systems</em> may introduce risks such as system risks (e.g., overheating, floods, explosions), data leakage risks (e.g., stealing video surveillance to intercept password input or capturing content from screens, panels, indicator lights), and attempts to hijack the internal communication capabilities of environmental systems (e.g., WiFi, Bluetooth) to evade air gap isolation and network controls.</li>
+<li>可以進行的攻擊行為包含：入侵可執行檔案、讀取快取資料、安裝竊聽裝置讀取記憶體資料、安裝惡意軟體、獲取配置資訊等。</li>
+<li>透過入侵管理主機可以實現的相關風險包含：資料損壞、資料丟失與竄改、備份破壞、竄改日誌和審計等，因此總結來說，<strong>入侵管理主機造成的損害可能是無限的</strong>。</li>
 </ul>
 </div></details>
-<h1 id="Consolidation-01-Organizing-Threats-and-Physical-Attacks-Reference-OWASP">Consolidation 01: Organizing Threats and Physical Attacks (Reference OWASP)</h1>
-<p>Before creating a threat model, we need to organize the attack techniques used in threats more clearly to facilitate the creation of the threat model.</p>
-<p>There is a close relationship between API security and databases. The <code>OWASP Top 10</code> is a list of the most common web application security risks published by the Open Web Application Security Project (OWASP), and in the 2023 version, the top ten API security risks have been included, reflecting the importance of API security in modern applications.</p>
-<p>In addition, <code>NIST SP 800-209</code> provides guidelines on database security, especially in <em>Section 4.6</em>, which mentions <code>access control recommendations</code> related to <em>network infrastructure and protocols</em>. This is because databases involve the storage, management, and access of data, while network infrastructure and protocols are essential components that support data transmission and access. Therefore, here we will refer to <code>OWASP Top 10 2021</code>, <code>OWASP Top 10 2023</code> for reference and then map the threats that databases may pose to what is mentioned in NIST SP800-209 Section 3.2.</p>
-<h2 id="1-Credential-Theft-or-Compromise">1. Credential Theft or Compromise</h2>
-<p>Primary Defense Measures:</p>
+<details class="toggle" ><summary class="toggle-button" style="">管理 API、管理軟體和帶內管理 Management APIs、 Management Software、 and In-Band Management</summary><div class="toggle-content"><ul>
+<li>通常「儲存基礎架構元件」會公開軟體的相關「<strong>管理接口</strong>」像是「使用者介面UI」、「API」或相關管理協議來對相關設備進行管理。</li>
+<li>舉例來說，可能會有「管理接口」包含：訪問協議（SOAP)、REST API等，與外部網路服務進行交互，用於密鑰管理、身份驗證和授權，</li>
+<li>上述所提到的管理接口，接可能產生各種攻擊面，包含：</li>
+</ul>
+<ol>
+<li>帽中管理主機或彖已透過「<strong>管理接口(API)」訪問儲存設備</strong>，就無須滲透管理軟體就可獲訪問權限。</li>
+<li>透過<strong>數據鏈路(Data Link，例如光纖通道)進行Band-Access帶內訪問</strong>，冒充客戶端發送管理命令。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">儲存客戶端 Storage Clients</summary><div class="toggle-content"><ul>
+<li>儲存客戶端通常是「運算元件」或是安裝在運算元件的「應用程式」（<strong>那些會使用儲存協定對資源進行「讀取」</strong>）。</li>
+<li>透過入侵客戶端可能的攻擊手法包含：</li>
+</ul>
+<ol>
+<li>攻擊者可能會<strong>透過客戶端傳送管理命令</strong>對儲存裝置進行危害。</li>
+<li>若客戶端是用來建立備份時，可能因被<strong>入侵而導致未來的備份㔯害</strong>。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">儲存網路 Storage Network</summary><div class="toggle-content"><ul>
+<li>主要是透過<strong>入侵網路元件</strong>（包含host adapter, switches, cables, extendsers），<strong>對資料傳輸路徑的入侵</strong>，可能採取的攻擊行為包含：</li>
+</ul>
+<ol>
+<li><strong>資料</strong>：複製、檢視、重新導向、竊取。</li>
+<li><strong>配置資料</strong>：讀取使用者認證、加密金鑰等。</li>
+<li><strong>網路元件</strong>：透過破壞網路元件，修改有效載荷，對資料損毀或變更與添加。</li>
+<li><strong>實施中間人攻擊MITM</strong>：進行嗅探資料、繞過加密和驗證機制。</li>
+</ol>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">重要個人的計算環境 Compute Environment of Key Individuals</summary><div class="toggle-content"><ul>
+<li>有些「<strong>關鍵用戶</strong>」擁有對「<strong>儲存基礎架構的管理權限</strong>」，例如可以對儲存管理主機進行遠程連線。</li>
+<li><strong>關鍵用戶的電腦環境（例如筆記型電腦、桌機、家用網路等）皆可能被利用作為條版</strong>，以獲取儲存基礎設之的存取權限，對儲存基礎設施造成損害。</li>
+<li>例如透過在孤艦用戶的裝置上安裝惡意軟體，該軟體再安裝鍵盤側錄，攔截登陸憑證。</li>
+</ul>
+</div></details>
+<details class="toggle" ><summary class="toggle-button" style="">電力網絡及其他公用設施 Electrical Network and other Utilities</summary><div class="toggle-content"><ul>
+<li><strong>儲存基礎設施與電力網路相連，因此電力網路可能成為潛在攻擊面</strong>。可能的攻擊包含：
 <ul>
-<li>Use secure encryption protocols such as TLS 1.2, TLS 1.3</li>
-<li>Use iterated hashing algorithms like Argon2, scrypt, bcrypt, or PBKDF2 with salt to store passwords securely</li>
-<li>Implement corresponding control measures based on processing, storage, and transmission behavior</li>
-<li>Disable caching for responses containing sensitive data</li>
+<li>突然的電流暴增、閃電：造成的損壞，甚至抹除電磁碟片上的數據。</li>
+<li>透過惡意軟體：（如PowerHammer)透過調節被感染的機器功耗(CPU工作負載)來進行數據外洩。或是透過改變電流流量盜取敏感資訊，例如密碼和加密密鑰。</li>
+<li>線路級別攻擊：透過竊聽被感染計算機的店員電纜擷取惡意軟體外洩的數句。</li>
+<li>非侵入式竊取：透過測量電源電纜上發射的信號，來進行解碼轉換二進位形式進行收集[33]。</li>
+</ul>
+</li>
+<li><strong>其他公用事業、安全和環境控制系統</strong>，可能的攻擊包含：
+<ul>
+<li>對系統造成風險（例如過熱、洪水、爆炸）</li>
+<li>數據洩漏的風險（例如竊取視頻監控系統以攔截密碼輸入，或屏幕、面板、指示燈的內容，錄製聽覺信號）</li>
+<li>試圖劫持環境系統的內部傳輸能力（例如WiFi、藍牙）以試圖規避空隙隔離和網絡控制。</li>
+</ul>
+</li>
+</ul>
+</div></details>
+<h1 id="統整01：整理威脅與實體攻擊（參考OWASP）">統整01：整理威脅與實體攻擊（參考OWASP）</h1>
+<p>在建立威脅模型之前，我們必須先將威脅中採取的攻擊手法整理得更加清楚，以便於進行威脅模型的建立。</p>
+<p>API安全和資料庫之間有著密切的關聯。<code>OWASP Top 10</code>是由Open Web Application Security Project (OWASP) 發布的最常見的Web應用程式安全風險清單，而在2023年版本中，十大API安全風險被加入其中，反映了API安全在現代應用程式中的重要性。</p>
+<p>另外，<code>NIST SP 800-209</code>提供了有關資料庫安全的指南，特別在<strong>第4.6節</strong>中，提及了與<strong>網絡基礎設施和協議</strong>相關的<code>存取控制建議</code>。這是因為資料庫涉及到數據的存儲、管理和訪問，而網絡基礎設施和協議則是支援數據傳輸和存取的重要組成部分。因此，這邊會參考：<code>OWASP Top 10 2021</code>, <code>OWASP Top 10 2023</code> 進行參考然後 將資料庫可能造成的威脅 與 NIST SP800-209 3.2節中談到真對資料庫的威脅，進行Mapping。</p>
+<h2 id="1-憑證被盜或洩露-Credential-Theft-or-Compromise">1. 憑證被盜或洩露 Credential Theft or Compromise</h2>
+<p>主要防禦方式：</p>
+<ul>
+<li>使⽤安全的加密傳輸協定如 TLS 1.2, TLS 1.3</li>
+<li>使⽤具迭代⽅法之雜湊演算法如 Argon2, scrypt, bcrypt 或 PBKDF2 搭配加鹽來儲存密碼</li>
+<li>以處理、儲存、傳輸⾏為模式分類，執⾏對應的控制措施</li>
+<li>針對包含敏感資料的回應停⽤快取</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.1 Credential Theft or Compromise</td>
-<td>NIST SP 800-209 indicates that effective credential theft is mostly “direct acquisition of the user’s password, rather than guessing,” so relying solely on password length and complexity is usually insufficient to protect the system from attacks.</td>
-<td>- Chapter 4.9 Encryption <br> - Chapter 4.3 Authentication and Data Access Control</td>
+<td>3.3.1 憑證被盜或洩露 Credential Theft or Compromise</td>
+<td>NIST SP 800-209 指出，有效的憑證盜用大多「直接取得使用者的密碼，而非猜測」，因此僅僅依靠密碼的長度和複雜性通常不足以保護系統免受攻擊。</td>
+<td>- 章節 4.9 加密 <br> - 章節 4.3 身份驗證與數據訪問控制</td>
 </tr>
 <tr>
 <td>OWASP 2023</td>
-<td>API2:2023 Broken Authentication</td>
-<td>Improper implementation of authentication mechanisms can allow attackers to compromise or abuse authentication tokens, temporarily or permanently impersonating other users. Compromising user/client identification capabilities can harm the overall security of the API.</td>
-<td>- Chapter 4.9 Encryption <br> - Chapter 4.3 Authentication and Data Access Control</td>
+<td>API2:2023 Broken Authentication 無效身分認證</td>
+<td>身份驗證機制若實施不當，能使攻擊者破壞或利用身份驗證權杖，暫時或永久地冒用其他用戶的身份。破壞系統識別用戶端/使用者的能力，會損害 API整體安全。</td>
+<td>- 章節 4.9 加密 <br> - 章節 4.3 身份驗證與數據訪問控制</td>
 </tr>
 </tbody>
 </table>
-<h2 id="2-Cracking-Encryption">2. Cracking Encryption</h2>
-<p>Primary Defense Measures:</p>
+<h2 id="2-加密破解-Cracking-Encryption">2. 加密破解 Cracking Encryption</h2>
+<p>主要防禦方式：</p>
 <ul>
-<li>Using strong encryption methods is essential</li>
-<li>Safeguard encryption keys properly</li>
-<li>Regularly change encryption keys as a strategy to prevent them from being cracked or weak</li>
-<li>Key strength, quality, and entropy play important roles in key generation, and keys should not be reused</li>
+<li>使用強大的加密方法很重要</li>
+<li>同時也要妥善保護加密金鑰。</li>
+<li>積極更換加密金鑰可以成為一種策略，以防止金鑰被破解或不夠強大。</li>
+<li>在金鑰生成方面，金鑰的強度、質量和熵都起著重要作用，且金鑰不應重複使用。</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.2 Cracking Encryption</td>
-<td>Vulnerabilities such as weak encryption algorithms, weak key generators, or server-side vulnerabilities can lead to cracking encryption.</td>
-<td>- Chapter 4.9 Encryption <br> - Requirement: EN-SS-R9 - Encryption Key Management Requirements <br> - Requirement: EN-SS-R6 - Static Encryption of Sensitive Data</td>
+<td>3.3.2 加密破解 Cracking Encryption</td>
+<td>使用 弱的加密算法 和 弱的金鑰生成器 到 服務器端的漏洞、金鑰泄露、基本設計缺陷或漏洞</td>
+<td>- 章節 4.9 Encryption <br> - 要求：EN-SS-R9 - 加密金鑰管理要求 <br> - 要求：EN-SS-R6 - 敏感數據的靜態加密</td>
 </tr>
 <tr>
 <td>OWASP 2021</td>
-<td>A02:2021 Cryptographic Failures</td>
-<td>This category typically results from the use of weaker encryption algorithms or weak key generators in cryptographic algorithms, leading to the exposure of sensitive data or compromise of systems.</td>
-<td>- Chapter 4.9 Encryption <br> - Requirement: EN-SS-R9 - Encryption Key Management Requirements <br> - Requirement: EN-SS-R6 - Static Encryption of Sensitive Data</td>
+<td>A02:2021 加密機制失效 Cryptographic Failures</td>
+<td>此類別通常因資料加密使用較弱的加密算法或弱的金鑰生成器的加密演算法，導致敏感性資料外洩或者系統被破壞。</td>
+<td>- 章節 4.9 Encryption <br> - 要求：EN-SS-R9 - 加密金鑰管理要求 <br> - 要求：EN-SS-R6 - 敏感數據的靜態加密</td>
 </tr>
 </tbody>
 </table>
-<h2 id="3-Infection-of-Malware-and-Ransomware">3. Infection of Malware and Ransomware</h2>
-<p>Primary Defense Measures:</p>
+<h2 id="3-惡意軟體與勒索軟體的感染-Infection-of-Malware-and-Ransomware">3. 惡意軟體與勒索軟體的感染 Infection of Malware and Ransomware</h2>
+<p>主要防禦方式：</p>
 <ul>
-<li>Disaster recovery copies of critical data should be scanned with various anti-malware scanning tools to detect known vulnerabilities and anomalies.</li>
-<li>For sensitive data, regular use of antivirus tools to scan at least one subset of past copies to identify infected copies.</li>
+<li>對於關鍵任務的資訊，災難復原副本應該使用各種反惡意軟體掃描工具進行掃描，以檢測已知的漏洞和異常。</li>
+<li>對於敏感資料，應定期使用防毒工具掃描至少一個過去副本的子集識別是否有被感染的副本。</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.3 Infection of Malware and Ransomware</td>
-<td>Attacks often target “storage management systems” rather than the “storage devices” themselves. Therefore, malware may cause harm by being installed on the storage management host, such as stealing credentials, elevating privileges, data corruption, loss, or alteration, and disrupting future backups.</td>
-<td>- Requirement AC-SS-R33 - Use of Anti-Malware Scanning Tools <br> - Requirement RA-SS-R11 - Network Security Measures for Data Copies <br> - Requirement: DP-SS-R3.c Requirements for Backup-Related Standard Operating Procedures</td>
+<td>3.3.3 惡意軟體與勒索軟體的感染 Infection of Malware and Ransomware</td>
+<td>往往攻擊「存儲管理系統」比攻擊「存儲裝置」本身更容易。因此惡意軟體可能因安裝在存儲管理主機上，造成傷害，如竊取憑證、提升特權、資料損壞、損失或更改，以及破壞未來的備份等。</td>
+<td>- 要求 AC-SS-R33 - 使用反惡意軟體掃描工具 <br> - 要求 RA-SS-R11 - 數據副本的網路安全措施 <br> - 要求：DP-SS-R3.c 對於備份相關的標準作業程序應包含的要求</td>
 </tr>
 </tbody>
 </table>
-<h2 id="4-Backdoors-and-Unpatched-Vulnerabilities">4. Backdoors and Unpatched Vulnerabilities</h2>
-<p>Primary Defense Measures:</p>
+<h2 id="4-後門未修補的漏洞-Backdoors-and-Unpatched-Vulnerabilities">4. 後門未修補的漏洞 Backdoors and Unpatched Vulnerabilities</h2>
+<p>主要防禦方式：</p>
 <ul>
-<li>Features like call home or remote access are often used to collect telemetry and diagnostic data for manufacturer analysis and technical issue resolution, as well as for automatic software updates. However, these features can also be targeted by hackers, so they should be disabled if not needed, or limited and controlled if necessary.</li>
-<li>Ensure the storage software versions are up to date</li>
-<li>Install critical security updates and patches</li>
-<li>Develop mitigation plans for cases where patches cannot be obtained</li>
+<li>通常 call home 或 remote access 被用於收集遙測和診斷數據，供製造商分析和解決技術問題，以及進行自動軟件更新。然而，這些功能也可能成為黑客攻擊的目標，因此如果不需要的話應該禁用，如果需要的話則應該限制和控制。</li>
+<li>確保儲存軟體版本更新</li>
+<li>安裝重要的安全更新和修補程式</li>
+<li>制定無法取得修補程式時應採取的緩解計劃</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.4 Backdoors and Unpatched Vulnerabilities</td>
-<td>Backdoors are usually software mechanisms or features intentionally created by suppliers, individual contributors (in rare cases, it may be state or malicious actors), and are not documented in official documentation due to the potential harm they pose. However, over time, the existence of backdoors may be intentionally or unintentionally disclosed or discovered by the public.</td>
-<td>- Requirement: NC-SS-R10 Disable Unused Storage Area Network (SAN) Ports <br> - Chapter 4.6 Network Configuration Guidelines <br> - Requirement: AA-SS-R11 Disable or Limit Call Home or Remote Access <br> - Requirement: CM-SS-R8 Software Updates and Patches</td>
+<td>3.3.4 後門未修補的漏洞 Backdoors and Unpatched Vulnerabilities</td>
+<td>通常是軟體機制或功能，由供應商、個別貢獻者（在罕見情況下，可能是國家或惡意行為者）故意創建，由於門後具有潛在的危害性，它們並不在官方文檔中記錄，只有被限定的一組人才知道其存在。然而，隨著時間的推移，門後的存在可能會被故意或無意間洩露或被公眾發現。</td>
+<td>- 要求：NC-SS-R10 停用未使用的儲存區域網路（SAN）埠 <br> - 章節 4.6 網路設定指引 <br> - 要求：AA-SS-R11 禁用或限制 call home 或 遠端存取 <br> - 要求：CM-SS-R8 軟體更新和修補</td>
 </tr>
 </tbody>
 </table>
-<h2 id="5-Privilege-Escalation">5. Privilege Escalation</h2>
-<p>Primary Defense Measures:</p>
+<h2 id="5-特權升級-Privilege-Escalation">5. 特權升級 Privilege Escalation</h2>
+<p>主要防禦方式：</p>
 <ul>
-<li>Except for public resources, <code>default to deny access</code></li>
-<li>Establish <code>access control mechanisms</code> and apply them consistently</li>
-<li>Log access control failures and set alerts (e.g., repeated login failures)</li>
-<li>Implement traffic limits for API access to reduce damage from automated attacks</li>
-<li>Invalidate identity-based cookies upon logout or timeout</li>
-<li>Use the shortest access time for JWTs; if JWTs are used for extended periods, it is recommended to follow OAuth standards to invalidate them</li>
+<li>除公開的資源外，<code>預設為拒絕存取</code></li>
+<li>建⽴<code>存取控制機制</code>，並重複套⽤</li>
+<li>記錄存取控制失效，並設定告警（例如：重覆登⼊失敗）</li>
+<li>對 API 存取進⾏流量限制，降低⾃動攻擊帶來的損害</li>
+<li>具⾝份識別之 Cookie，於<code>登出、超時後被註銷</code></li>
+<li>JWT 使⽤最<code>短存取時間</code>，若⻑時間存取 JWT 建議遵循 OAuth 標準使其失效</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.5 Privilege Escalation</td>
-<td>Exploiting software vulnerabilities, design or deployment flaws, or configuration errors to gain unauthorized access to protected resources of applications or users.</td>
-<td>- Chapter 4.3 Identity and Data Access Control <br> - Requirement: AC-SS-R26 Default Partition Permissions</td>
+<td>3.3.5 特權升級 Privilege Escalation</td>
+<td>利用軟體漏洞、設計或部署缺陷，或是配置錯誤，以至於獲得對於應用程式或使用者取得受保護資源的訪問權限。</td>
+<td>- 章節 4.3 身份驗證與數據訪問控制 <br> - 要求：AC-SS-R26 - 默認分區的權限</td>
 </tr>
 <tr>
 <td>OWASP 2023</td>
-<td>API3:2023 - Broken Object Property Level Authorization</td>
-<td>Missing or improper authorization validation at the object property level leading to information leakage or unauthorized tampering.</td>
-<td>Same as above</td>
+<td>API3:2023 - Broken Object Property Level Authorization 物件屬性級別授權失效</td>
+<td>物件屬性級別的授權驗證缺失或不當導致資訊外洩或被未授權者篡改。</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>OWASP 2023</td>
-<td>API5:2023 - Broken Function Level Authorization</td>
-<td>Complex access control policies involving different levels, configurations, and roles without clear separation between management and regular functions, allowing attackers to send API requests to endpoints they should not access, leading to authorization vulnerabilities.</td>
-<td>Same as above</td>
+<td>API5:2023 - Broken Function Level Authorization 無效功能權限控管</td>
+<td>複雜的存取控制策略涉及不同的層級、組態和角色，並且在管理和常規功能之間沒有明確的分離，這可能讓攻擊者將APIf請求發送至不應該可存取的端點，且端點沒有設置存取控制所導致授權漏洞。</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>OWASP 2021</td>
-<td>A01:2021 Broken Access Control</td>
-<td>Control measures failing resulting in unauthorized information disclosure, modification, corruption, or execution of business functions beyond the original permissions.</td>
-<td>Same as above</td>
+<td>A01:2021  Broken Access Control 權限控制失效</td>
+<td>控制措施失效會導致未經授權的資訊洩露、修改、毀損，或執⾏超出原權限的業務功能。</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>OWASP 2021</td>
-<td>A07:2021 Identification and Authentication Failures</td>
-<td>Previously known as Broken Authentication, common flaws in account login/logout design mechanisms, with standardized frameworks helping to reduce the likelihood of such risks.</td>
-<td>Same as above</td>
+<td>A07:2021-Identification and Authentication Failures 認證及驗證機制失效</td>
+<td>以前被稱為Broken Authentication，常見的可能帳號登入登出的設計機制不完善，因此標準化的架構有協助降低次風險發生機率。</td>
+<td>同上</td>
 </tr>
 </tbody>
 </table>
-<h2 id="6-Human-Error-and-Deliberate-Misconfiguration">6. Human Error and Deliberate Misconfiguration</h2>
-<p>Main Defensive Measures:</p>
+<h2 id="6-人為錯誤與故意配置失誤-Human-Error-and-Deliberate-Misconfiguration">6. 人為錯誤與故意配置失誤 Human Error and Deliberate Misconfiguration</h2>
+<p>主要防禦方式：</p>
 <ul>
-<li>Automated processes for deploying and verifying various security settings in the environment.</li>
-<li>Consistent configurations across development and operational environments with different credentials.</li>
-<li>Minimization and localization of server functionality.</li>
-<li>Conduct security reviews and changes based on relevant updates (Refer to A06:2021 Dangerous or Outdated Components).</li>
-<li>Use security headers.</li>
-<li>Organizations should be able to recover data when production data is damaged or lost by replicating or backing up data copies, ensuring sufficient isolation between data assets and their recovery copies.</li>
-<li>Ensure successful recovery in case of business disruptions, disaster recovery events, or security breaches.</li>
-<li>Maintain a comprehensive and real-time configuration management list, manage changes, and ensure configurations consistently align with the organization’s security baselines and current industry best practices, while safeguarding against known risks.</li>
+<li>⾃動化的流程，可以部署及<code>確認環境中各類的安全設定</code></li>
+<li>開發及營運環境，都須有<code>⼀致相同的設定</code>，並且使⽤不同的認證資訊</li>
+<li>伺服器的功能最⼩化、區域化</li>
+<li>依據相關更新，來執⾏安全審視及更動 (請參照 A06:2021-危險或過舊的元件)</li>
+<li>使⽤安全表頭</li>
+<li>當生產數據損壞或丟失時，組織應該能夠通過複製或備份的數據副本來恢復數據，應確保數據資產及其恢復副本之間具有足夠的隔離。</li>
+<li>確保在業務中斷、災難恢復事件或資安攻擊後，能夠成功地復原。</li>
+<li>維護全面且即時的配置管理清單，管理變更，以及確保配置持續符合組織的安全基線和目前業界最佳實踐，同時確保其不受已知風險的影響。</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.6 Human Error and Deliberate Misconfiguration</td>
-<td>Unacceptable risks caused by technical support users making storage configuration changes.</td>
-<td>- Chapter 4.7 Isolation <br> - Chapter 4.8 Recovery Assurance <br> - Chapter 4.11 Configuration Management</td>
+<td>3.3.6 人為錯誤與故意配置失誤 Human Error and Deliberate Misconfiguration</td>
+<td>因使用者進行技術上支援的儲存配置更改，導致無法接受的風險。</td>
+<td>- 章節 4.7 隔離 <br> - 章節 4.8 恢復保證 <br> - 章節 4.11 配置管理</td>
 </tr>
 <tr>
 <td>OWASP 2023</td>
-<td>API4:2023 - Unrestricted Resource Consumption</td>
-<td>APIs are often designed to return data for queries, requiring resources such as network bandwidth, CPU, memory, and storage. Other resources like email/SMS/phone or biometric authentication are integrated through APIs provided by service providers and billed on a per-request basis. Successful attackers may exploit this risk, leading to denial of service or increased operational costs.</td>
-<td>Same as above</td>
+<td>API4:2023 - Unrestricted Resource Consumption 不受限的資源消耗</td>
+<td>API常設計用來供查詢回傳資料，因此API會請求需要的網路頻寬、CPU、記憶體和儲存等資源。其他資源，如電子郵件/SMS/電話或生物識別驗證，利用API整合由服務提供者提供，並按請求付費。成功的攻擊者可能利用這項風險，造成導致拒絕服務或增加營運成本。</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>OWASP 2023</td>
-<td>API8:2023 - Security Misconfiguration</td>
-<td>APIs and supporting systems often involve complex configurations, designed to make APIs more flexible and customizable. Software and DevOps engineers may overlook these configurations or not follow security best practices in configuration, opening doors to attacks.</td>
-<td>Same as above</td>
+<td>API8:2023 - Security Misconfiguration 安全組態錯誤</td>
+<td>API和支援系統通常包含複雜的配置，主要讓API更具彈性及客製化。軟體和DevOps工程師可能會忽視這些配置，或在配置方面未遵循安全最佳實踐，因而打開攻擊大門。</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>OWASP 2021</td>
-<td>A05:2021 Security Misconfiguration</td>
-<td>Unnecessary features, services, ports, or security risks opened in a production environment, including XML External Entity (XXE) attacks.</td>
-<td>Same as above</td>
+<td>A05:2021- 安全配置錯誤 Security Misconfiguration</td>
+<td>在系統正式環境開了不必要功能、服務、Port，導致有安全風險，XML外部實體攻擊(XXE)目前也被歸類於此類。</td>
+<td>同上</td>
 </tr>
 <tr>
 <td>OWASP 2021</td>
-<td>A08:2021 Software and Data Integrity Failures</td>
-<td>Insecure Continuous Integration/Continuous Deployment (CI/CD) processes, using automatic updates lacking sufficient integrity verification.</td>
-<td>Same as above</td>
+<td>A08:2021 Software and Data Integrity Failures 軟體及資料完整性失效</td>
+<td>不安全的持續性整合/部署(CI/CD)流程、使⽤缺乏充⾜完整性驗證的⾃動更新。</td>
+<td>同上</td>
 </tr>
 </tbody>
 </table>
-<h2 id="7-Physical-Theft-of-Storage-Media">7. Physical Theft of Storage Media</h2>
-<p>Main Defensive Measures:</p>
+<h2 id="7-實體媒體的物理偷竊-Physical-Theft-of-Storage-Media">7. 實體媒體的物理偷竊 Physical Theft of Storage Media</h2>
+<p>主要防禦方式：</p>
 <ul>
-<li>Backup of network-attacked recovery should be stored offline, separate from production data.</li>
-<li>This ensures that even if attackers gain physical access to production locations or successfully infiltrate physical locations, they cannot access or damage network-attacked recovery backups.</li>
-<li>Physical security is a fundamental element of ensuring the security of any information technology infrastructure. Often, “physical security of storage infrastructure” requirements should be the same as “other infrastructure elements” (such as facility security, monitoring, transportation, etc.).
+<li>網路攻擊恢復的備份應該儲存在離線的地方，而不是和生產數據存放在同一地點。</li>
+<li>這樣做可以確保即使攻擊者物理上進入生產地點，或者成功侵入物理位置，也無法訪問或破壞網路攻擊恢復的備份。</li>
+<li>實體安全是確保任何資訊科技「基礎建設安全」的「基本要素」。很多時候「儲存基礎建設的實體安全」要求與「其他基礎建設元素」（例如電腦和網路設備）相同（例如設施安全、監控、運輸等）。
 <ul>
-<li>Relevant standards for infrastructure elements include NIST SP 800-53, Rev5, NIST SP 800-171.</li>
-<li>For media disposal and destruction, you can refer to ISO 27040, NIST SP 800-88 for further discussion.</li>
+<li>基礎建設元素可以參考的相關標準包含： NIST SP 800-53, Rev5 NIST SP 800-171 。</li>
+<li>有關媒體處置和銷毀可以參考：ISO 27040, NIST SP 800-88 有更近一步的討論。</li>
 </ul>
 </li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.7 Physical Theft of Storage Media</td>
-<td>All data ultimately resides on one or more physical media that are susceptible to theft. Whether online or offline, they may be removed from their designated (fixed) locations or stolen during physical transport, such as archiving media used for backups or transporting storage devices as part of a data center migration project.</td>
-<td>Chapter 4.1 Physical Storage Security</td>
+<td>3.3.7 實體媒體的物理偷竊 Physical Theft of Storage Media</td>
+<td>所有的數據最終都儲存在一個或多個實體媒體上，而這些媒體容易受到偷竊的威脅。無論是在線或離線，都可能被從其指定的（固定）位置上移除，或者在實體運輸過程中被竊取（例如，正在運輸用於備份的媒體進行歸檔，或者作為數據中心遷移項目的一部分而運送存儲設備。</td>
+<td>章節 4.1 實體儲存安全</td>
 </tr>
 </tbody>
 </table>
-<h2 id="8-Network-Eavesdropping">8. Network Eavesdropping</h2>
-<p>Main Defensive Measures:</p>
+<h2 id="8-網路竊聽資料-Network-Eavesdropping">8. 網路竊聽資料 Network Eavesdropping</h2>
+<p>主要防禦方式：</p>
 <ul>
-<li>You can refer to NIST SP 800-209 Chapter 4.6 Network Configuration Guidance, which mainly covers network infrastructure (such as switches, ports, HBA and NIC configurations, zoning guidelines, etc.) and protocols.</li>
+<li>可以參考 NIST SP 800-209 章節 4.6 網路設定指引，該節主要涵蓋的網絡基礎設施（例如交換機、端口、HBA 和 NIC 配置、分區指南等）和協議。</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Reference Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>參考來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>NIST SP 800-209</td>
-<td>3.3.8 Network Eavesdropping</td>
-<td>Data may be intercepted during transmission. Transmission can cover many components: network cards (wired or wireless), transmission cables (carrying power or light), relays, switches, routers, etc. Any of these components may be compromised, involving the insertion, deletion, or modification of data during transmission, metadata, or control flow.</td>
-<td>Chapter 4.6 Network Configuration Guidance</td>
+<td>3.3.8 網路竊聽資料 Network Eavesdropping</td>
+<td>資料在傳輸時可能會被攔截。傳輸可以涵蓋許多組件：網路卡（有線或無線）、傳輸電纜（傳輸電力或光線）、中繼器、交換器、路由器等。這些組件中的任何一個都可能受到破壞，涉及對傳輸的資料、元數據或控制流量進行插入、刪除或修改。</td>
+<td>章節 4.6 網路設定指引</td>
 </tr>
 </tbody>
 </table>
-<h2 id="9-Insecure-Images-Software-and-Firmware">9. Insecure Images, Software and Firmware</h2>
-<p>While NIST SP 800-209 provides fewer specific security recommendations for applications, data leaks often occur due to insecure applications. However, it discusses less about securing the interaction between applications (AP) and data.</p>
-<p>Security recommendations related to applications in the standard mainly include:</p>
+<h2 id="9-不安全的映像、軟體和韌體-Insecure-Images-Software-and-Firmware">9. 不安全的映像、軟體和韌體 Insecure Images, Software and Firmware</h2>
+<p>從NIST SP 800-209中，較少有針對應用程式的相關安全建議，但是很多時候，資料的外洩也是因為應用程式的不安全所導致，但是裡面較少談論到如何針對應用程式AP與數據之間的安全性。</p>
+<p>在標準中與應用程式相關的安全建議主要有以下：</p>
 <ul>
-<li>Requirement 4.2.1 Data Backup, Recovery, and Storage
+<li>要求 4.2.1 資料備份、恢復和儲存
 <ul>
-<li>Emphasizes data integrity at the application and business process levels in terms of data backup, recovery, and storage.</li>
-<li>Strictly requires application availability during restoration.</li>
+<li>提到資料備份、恢復和儲存方面，應考慮應用程式和業務流程層面的資料完整性</li>
+<li>嚴格要求還原速度的應用程式可用性</li>
 </ul>
 </li>
-<li>Requirement NC-SS-R3 - Use a mixed method for zoning
+<li>要求 NC-SS-R3 - 使用混合方法進行 zoning
 <ul>
-<li>Involves host-based partitioning mechanisms to control what resources or storage data an application on the host can access and view.</li>
+<li>基於主機的分區機制，主機上的應用程式可以存取和看到可存取的設被或儲存資源有哪些。</li>
 </ul>
 </li>
-<li>Requirement RA-SS-R9 - Separation of data and application recovery
+<li>要求：RA-SS-R9 - 分離數據與應用程式的還原
 <ul>
-<li>Advocates isolating data from applications during data recovery to avoid restoring compromised code or software.</li>
+<li>還原數據時避免恢復受感染的代碼或軟體，應該將數據與應用程式進行分離。</li>
 </ul>
 </li>
-<li>Chapter 4.3 Identity and Data Access Control
+<li>章節 4.3 身份驗證與數據訪問控制
 <ul>
-<li>Recommends limiting privileged access for applications to reduce the risk of attacks on storage systems.</li>
+<li>應限制應用程式的特權訪問，降低了存儲系統受到攻擊的風險。</li>
 </ul>
 </li>
 </ul>
-<p>In the context of insecure images, software, and firmware, the following recommendations apply:</p>
+<p>而不安全的映像或軟體及韌體方面則是參考以下建議：</p>
 <ul>
-<li>Requirement AC-SS-R33 - Use anti-malware scanning tools</li>
-<li>Requirement RA-SS-R11 - Network security measures for data copies</li>
-<li>Requirement DP-SS-R3.c includes requirements for backup-related standard operating procedures</li>
+<li>要求 AC-SS-R33 - 使用反惡意軟體掃描工具</li>
+<li>要求 RA-SS-R11 - 數據副本的網路安全措施</li>
+<li>要求：DP-SS-R3.c 對於備份相關的標準作業程序應包含的要求</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>Threat Source</th>
-<th>Related Threats</th>
-<th>Description</th>
-<th><div style="width:130px">NIST SP 800-209 Security Recommendations</div></th>
+<th>威脅來源</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th><div style="width:130px">NIST SP 800-209 安全建議</div></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Applications (Client-side)</td>
-<td>API1:2023 - Broken Object Level Authorization</td>
-<td>APIs often handle object identification publicly, creating a broad attack surface related to object access control. OWASP suggests designing object authorization in every feature to prevent unauthorized information disclosure, data tampering, or destruction.</td>
-<td>- Requirement 4.2.1 Data Backup, Recovery, and Storage <br> - Requirement NC-SS-R3 - Use a mixed method for zoning  <br> - Requirement RA-SS-R9 - Separation of data and application recovery <br> - Chapter 4.3 Identity and Data Access Control</td>
+<td>應用程式（客戶端）</td>
+<td>API1:2023 - Broken Object Level Authorization 不安全的物件授權</td>
+<td>API 多半以公開方式處理物件識別，因此產生與物件存取控制相關的大範圍受攻擊面。OWASP建議物件授權應考慮在每項功能設計中，以防未授權的資訊洩露、資料被竄改或破壞。</td>
+<td>- 要求 4.2.1 資料備份、恢復和儲存 <br> - 要求 NC-SS-R3 - 使用混合方法進行 zoning  <br> - 要求：RA-SS-R9 - 分離數據與應用程式的還原 <br> - 章節 4.3 身份驗證與數據訪問控制</td>
 </tr>
 <tr>
-<td>Applications (Client-side)</td>
-<td>API6:2023 - Unrestricted Access to Sensitive Business Flows</td>
-<td>Threats due to application flow issues may affect APIs because of excessive automation.</td>
-<td>Same as above</td>
+<td>應用程式（客戶端）</td>
+<td>API6:2023 - Unrestricted Access to Sensitive Business Flows 不受限存取敏感商業流程</td>
+<td>因應用程式流程上的問題所導致的威脅，受此影響的API可能是因為自動化流程過度使用所導致。</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>Applications (Client-side)</td>
-<td>API7:2023 - Server Side Request Forgery</td>
-<td>When APIs fetch remote resources without verifying the URI provided by unauthenticated users, server-side request forgery (SSRF) flaws can occur. This allows attackers to send crafted requests to unexpected destinations, even behind firewalls or VPNs.</td>
-<td>Same as above</td>
+<td>應用程式（客戶端）</td>
+<td>API7:2023 - Server Side Request Forgery 伺服器端請求偽造</td>
+<td>當API在未驗證使用者提供的 URI 的情況下獲取遠端資源時，可能會出現伺服器端請求偽造 (SSRF) 缺陷。這使攻擊者能夠強制應用程式將精心設計的請求發送到意想不到的目的地，即使受到防火牆或 VPN 的保護。</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>Applications (Client-side)</td>
-<td>API9:2023 - Improper Inventory Management</td>
-<td>APIs often expose more endpoints than traditional web applications, making accurate and up-to-date documentation critical. Proper management of hosts and API versions is also essential to reduce maintenance issues such as deprecated API versions and exposed testing endpoints.</td>
-<td>Same as above</td>
+<td>應用程式（客戶端）</td>
+<td>API9:2023 - Improper Inventory Management 庫存管理不當</td>
+<td>API通常比傳統Web應用程式暴露更多的端點，因此正確和更新文檔非常重要。對主機和API版本進行適當的管理也很重要，以減少如廢棄的API版本和暴露的測試端點等維護問題。</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>Applications (Client-side)</td>
-<td>A03:2021 Injection</td>
-<td>Includes XSS attacks, SQL injection, and command injection.</td>
-<td>Same as above</td>
+<td>應用程式（客戶端）</td>
+<td>A03:2021 Injection 注入式攻擊</td>
+<td>XSS 攻擊、SQL Injection、Command Injection接屬於此類。</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>Applications (Client-side)</td>
+<td>應用程式（客戶端）</td>
 <td>A04:2021 Insecure Design</td>
-<td>Security issues resulting from incomplete system and feature design.</td>
-<td>Same as above</td>
+<td>在設計系統及功能時，設計不完全導致產生的安全問題。</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>Applications (Client-side)</td>
-<td>A10:2021 SSRF</td>
-<td>When web servers fetch remote resources without verifying the URL provided by users, SSRF attacks can occur, even with firewall, VPN, or other network ACL protections in place. The severity of SSRF attacks increases with cloud services and their complex structures.</td>
-<td>Same as above</td>
+<td>應用程式（客戶端）</td>
+<td>A10:2021 SSRF 伺服端請求偽造</td>
+<td>當網站伺服器取得遠端資源，卻未驗證由使⽤者提供的網址，此時就會發⽣偽造伺服端請求，即便有防⽕牆、VPN 或其他網路 ACL 保護的情況下，仍得以達成攻擊。雲端服務和其結構的複雜性，偽造伺服端請求的嚴重性將會愈來愈嚴峻。</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>Images, Software, and Firmware</td>
-<td>3.3.9 Insecure Images, Software and Firmware</td>
-<td>Refers to attempts to disrupt the software distribution, updates, or installation process of storage devices to introduce incorrect, outdated, or maliciously modified code. Every aspect of the software update process may be a target for introducing tampered software, including publishers (e.g., vendors, third parties, open-source communities), delivery methods (e.g., transmission or download, transportation of installation media, file copying by vendor employees), and individual organization-maintained local copies (e.g., proxy servers, internal file servers).</td>
-<td>- Requirement AC-SS-R33 - Use anti-malware scanning tools <br> - Requirement RA-SS-R11 - Network security measures for data copies <br> - Requirement DP-SS-R3.c includes requirements for backup-related standard operating procedures</td>
+<td>映像、軟體和韌體</td>
+<td>3.3.9 不安全的映像、軟體和韌體 Insecure Images, Software and Firmware</td>
+<td>可能試圖干擾儲存設備的軟體分發、更新或安裝過程，以引入不正確、過時或惡意修改的程式碼。軟體更新過程的每個環節都可能成為引入被篡改軟體的目標。包含：發行者（例如供應商、第三方、開源社區）、傳遞方法（例如傳輸或下載、安裝媒體的運送、供應商員工的檔案複製）、個別組織保存的本地副本（例如代理伺服器、內部檔案伺服器）等。</td>
+<td>- 要求 AC-SS-R33 - 使用反惡意軟體掃描工具 <br> - 要求 RA-SS-R11 - 數據副本的網路安全措施 <br> - 要求：DP-SS-R3.c 對於備份相關的標準作業程序應包含的要求</td>
 </tr>
 <tr>
-<td>Third-party Packages</td>
-<td>API10:2023 Unsafe Consumption of APIs</td>
-<td>Developers often trust data from third-party APIs more, leading to weaker security standards for third-party APIs. Attackers tend to prioritize attacking third-party services rather than directly attempting to compromise the target API.</td>
-<td>Same as above</td>
+<td>第三方套件</td>
+<td>API10:2023 Unsafe Consumption of APIs API的不安全使用</td>
+<td>開發人員一般會更信任來自thrid-party API的資料，因此對thrid-party API採取較弱的安全標準。而攻擊者往往會優先攻擊Thrid-Party服務，而不是直接嘗試破壞目標API。</td>
+<td>- 要求 AC-SS-R33 - 使用反惡意軟體掃描工具 <br> - 要求 RA-SS-R11 - 數據副本的網路安全措施 <br> - 要求：DP-SS-R3.c 對於備份相關的標準作業程序應包含的要求</td>
 </tr>
 <tr>
-<td>Third-party Packages</td>
-<td>A06:2021 Vulnerable and Outdated Components</td>
-<td>Using components (operating systems, software, packages, libraries, frameworks) with known vulnerabilities in system development.</td>
-<td>Same as above</td>
+<td>第三方套件</td>
+<td>A06:2021 Vulnerable and Outdated Components 危險或過舊的元件</td>
+<td>在系統開發使用有已知弱點的元件(作業系統、軟體、套件、函示庫、框架)。</td>
+<td>同上</td>
 </tr>
 <tr>
-<td>Third-party Packages</td>
-<td>A08:2021 Software and Data Integrity Failures</td>
-<td>Focuses on deserialization attacks and trust issues with third-party packages, libraries, modules, etc., including failure to protect software and data integrity, insecure deserialization, and the use of untrusted sources for packages, libraries, modules, etc.</td>
-<td>Same as above</td>
+<td>第三方套件</td>
+<td>A08:2021 Software and Data Integrity Failures 軟體及資料完整性失效</td>
+<td>反序列化攻擊及第三⽅套件信任問題是此項⽬中之重點，這其中包含程式碼或基礎架構未能保護軟體及資料之完整性、不安全的反序列化、 使⽤不受信任來源之套件、函式庫、模組等。</td>
+<td>同上</td>
 </tr>
 </tbody>
 </table>
-<h2 id="10-Security-Logging-and-Monitoring-Failures">10. Security Logging and Monitoring Failures</h2>
-<p>While NIST SP 800-209 does not list specific threats related to security logging, OWASP Top 10 2021 (A09) mentions threats related to security logging and monitoring failures. Chapter 4.4 (AL) of NIST SP 800-209 also emphasizes the importance of security logging and monitoring and provides related recommendations. Therefore, this section adds a threat aspect for security logging and monitoring.</p>
+<h2 id="10-資安記錄及監控失效-Security-Logging-and-Monitoring-Failures">10. 資安記錄及監控失效 Security Logging and Monitoring Failures</h2>
+<p>因為 NIST SP 800-209沒有針對資安紀錄有獨立列出威脅，然而在OWASP Top 10 2021的A09，有提及資安紀錄及監控失效的相關威脅，同時 NIST SP 800-209 第四章節中也有提及，針對資安紀錄及監控失效的重要性，而建議採取的相關措施，因此本節在此新添加一威脅面向。</p>
 <table>
 <thead>
 <tr>
-<th>Related Threats</th>
-<th>Description</th>
-<th>Defensive Measures</th>
+<th>相關威脅</th>
+<th>說明</th>
+<th>防禦方式</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>AA09:2021 Security Logging and Monitoring Failures</td>
-<td>Such failures can directly impact visibility, event alerts, and forensics.</td>
-<td>Chapter 4.4 (AL) Audit Logs</td>
+<td>AA09:2021 資安記錄及監控失效 Security Logging and Monitoring Failures</td>
+<td>此類故障可能會直接影響可見性、事件警報和取證。</td>
+<td>章節 4.4 (AL) 審計日誌</td>
 </tr>
 </tbody>
 </table>
-<h1 id="Consolidated-Threat-Model-02-Design-Threat-Model">Consolidated Threat Model 02: Design Threat Model</h1>
-<p>The following threat model is a compilation of common threats referencing NIST SP 800-209 and OWASP Top 10. The environment briefly describes threats that the data infrastructure may face, including system boundaries, data transmission, backup monitoring, and more. Based on these threats, refer to the relevant threat descriptions and security recommendations in Consolidated Threat Model 01.</p>
-<p><img src="/en/img/loading-icon.gif" data-original="https://i.imgur.com/HOvKOAN.png" alt=""></p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/en">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/en/posts/security-for-storage-infra/">https://shannonhung.github.io/en/posts/security-for-storage-infra/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener external nofollow noreferrer" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/en/tags/Database/">Database</a><a class="post-meta__tags" href="/en/tags/Master-s-Thesis/">Master's Thesis</a><a class="post-meta__tags" href="/en/tags/Cloud-Storage/">Cloud Storage</a><a class="post-meta__tags" href="/en/tags/Security/">Security</a><a class="post-meta__tags" href="/en/tags/NIST-SP-800-209/">NIST SP 800-209</a></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/en/posts/interupt-connection-pool/" title="How to Intervene in Connection Pool?"><img class="cover" src="/en/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/en/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">How to Intervene in Connection Pool?</div></div></a></div><div class="next-post pull-right"><a href="/en/posts/security-for-storage-infra-2/" title="NIST SP 800-209 Security Guidelines for Storage (2)"><img class="cover" src="/en/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/en/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">NIST SP 800-209 Security Guidelines for Storage (2)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/en/posts/security-for-storage-infra-2/" title="NIST SP 800-209 Security Guidelines for Storage (2)"><img class="cover" src="/en/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-27</div><div class="title">NIST SP 800-209 Security Guidelines for Storage (2)</div></div></a></div><div><a href="/en/posts/interupt-connection-pool/" title="How to Intervene in Connection Pool?"><img class="cover" src="/en/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-10</div><div class="title">How to Intervene in Connection Pool?</div></div></a></div><div><a href="/en/posts/about-jdbc-connection-pool/" title="JDBC Basics and Connection Pooling Explained"><img class="cover" src="/en/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1483736762161-1d107f3c78e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMyMjU0NQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-08</div><div class="title">JDBC Basics and Connection Pooling Explained</div></div></a></div><div><a href="/en/posts/zta-survey/" title="Zero Trust Architecture (ZTA) Principles Applied to AP and DB"><img class="cover" src="/en/img/loading-icon.gif" data-original="/en/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-03</div><div class="title">Zero Trust Architecture (ZTA) Principles Applied to AP and DB</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/en/img/loading-icon.gif" data-original="/en/img/dudu-me.png" onerror="this.onerror=null;this.src='/en/en/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">In order to avoid forgetfulness, I started to record</div></div><div class="card-info-data site-data is-center"><a href="/en/archives/"><div class="headline">Articles</div><div class="length-num">11</div></a><a href="/en/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/en/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">I am a graduate student at the Taiwan University of Science and Technology - Institute of Information Management, planning to pursue a dual-degree program in Germany this year. The reason behind setting up this website is my rather short memory span. While I have learned a lot, I tend to forget much of it. To combat forgetfulness, I have embarked on my note-taking journey.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#References"><span class="toc-text">References</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Key-Summary"><span class="toc-text">Key Summary</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-11-Storage-and-Data-Management"><span class="toc-text">2.11 Storage and Data Management</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Threats-Risks-and-Attack-Surfaces-Related-to-Storage-Infrastructure"><span class="toc-text">3. Threats, Risks, and Attack Surfaces Related to Storage Infrastructure</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Threats"><span class="toc-text">3.1 Threats</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Risk"><span class="toc-text">3.2 Risk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Attack-Surface"><span class="toc-text">3.3 Attack Surface</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Consolidation-01-Organizing-Threats-and-Physical-Attacks-Reference-OWASP"><span class="toc-text">Consolidation 01: Organizing Threats and Physical Attacks (Reference OWASP)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Credential-Theft-or-Compromise"><span class="toc-text">1. Credential Theft or Compromise</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Cracking-Encryption"><span class="toc-text">2. Cracking Encryption</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Infection-of-Malware-and-Ransomware"><span class="toc-text">3. Infection of Malware and Ransomware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Backdoors-and-Unpatched-Vulnerabilities"><span class="toc-text">4. Backdoors and Unpatched Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Privilege-Escalation"><span class="toc-text">5. Privilege Escalation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Human-Error-and-Deliberate-Misconfiguration"><span class="toc-text">6. Human Error and Deliberate Misconfiguration</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Physical-Theft-of-Storage-Media"><span class="toc-text">7. Physical Theft of Storage Media</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-Network-Eavesdropping"><span class="toc-text">8. Network Eavesdropping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Insecure-Images-Software-and-Firmware"><span class="toc-text">9. Insecure Images, Software and Firmware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-Security-Logging-and-Monitoring-Failures"><span class="toc-text">10. Security Logging and Monitoring Failures</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Consolidated-Threat-Model-02-Design-Threat-Model"><span class="toc-text">Consolidated Threat Model 02: Design Threat Model</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/en/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - Using LSTM to predict the emotion of the article"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/lstm-emotion.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="Twitter Dataset - Using LSTM to predict the emotion of the article"/></a><div class="content"><a class="title" href="/en/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - Using LSTM to predict the emotion of the article">Twitter Dataset - Using LSTM to predict the emotion of the article</a><time datetime="2023-11-16T06:30:45.000Z" title="Created 2023-11-16 14:30:45">2023-11-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/coco-object-diagnoise/" title="COCO Dataset - use Faster RCNN + MobileNet to conduct Object Detection"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/object-detection.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="COCO Dataset - use Faster RCNN + MobileNet to conduct Object Detection"/></a><div class="content"><a class="title" href="/en/posts/coco-object-diagnoise/" title="COCO Dataset - use Faster RCNN + MobileNet to conduct Object Detection">COCO Dataset - use Faster RCNN + MobileNet to conduct Object Detection</a><time datetime="2023-11-03T02:57:54.000Z" title="Created 2023-11-03 10:57:54">2023-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/flower102-transfer-learning/" title="Flower102 Dataset - Using Transfer Learning to train + Using Batch Normalization in CNN"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/flower-ml.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="Flower102 Dataset - Using Transfer Learning to train + Using Batch Normalization in CNN"/></a><div class="content"><a class="title" href="/en/posts/flower102-transfer-learning/" title="Flower102 Dataset - Using Transfer Learning to train + Using Batch Normalization in CNN">Flower102 Dataset - Using Transfer Learning to train + Using Batch Normalization in CNN</a><time datetime="2023-10-31T06:27:13.000Z" title="Created 2023-10-31 14:27:13">2023-10-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/pytorch-CNN-TensorBoard/" title="CIFAR10 Dataset - Using Pytorch to build CNN + activate GPU + output the result to TensorBoard"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/CNN-bg.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="CIFAR10 Dataset - Using Pytorch to build CNN + activate GPU + output the result to TensorBoard"/></a><div class="content"><a class="title" href="/en/posts/pytorch-CNN-TensorBoard/" title="CIFAR10 Dataset - Using Pytorch to build CNN + activate GPU + output the result to TensorBoard">CIFAR10 Dataset - Using Pytorch to build CNN + activate GPU + output the result to TensorBoard</a><time datetime="2023-10-24T06:40:52.000Z" title="Created 2023-10-24 14:40:52">2023-10-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/en/posts/pytorch-titanic-nn/" title="Titanic Dataset - Building a Neural Network with PyTorch + Testing for Overfitting"><img src="/en/img/loading-icon.gif" data-original="/en/img/cover/mac_coding.jpeg" onerror="this.onerror=null;this.src='/en/img/404.jpg'" alt="Titanic Dataset - Building a Neural Network with PyTorch + Testing for Overfitting"/></a><div class="content"><a class="title" href="/en/posts/pytorch-titanic-nn/" title="Titanic Dataset - Building a Neural Network with PyTorch + Testing for Overfitting">Titanic Dataset - Building a Neural Network with PyTorch + Testing for Overfitting</a><time datetime="2023-10-11T13:25:04.000Z" title="Created 2023-10-11 21:25:04">2023-10-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="Toggle Between Traditional Chinese And English">EN</button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/en/js/utils.js"></script><script src="/en/js/main.js"></script><script src="/en/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+<h1 id="統整02：設計威脅模型">統整02：設計威脅模型</h1>
+<p>以下威脅模型是<strong>參考NIST SP 800-209 和 OWASP Top 10的常見威脅</strong>，所整理出來的威脅模型。裡面的環境主要簡單描述在資料基礎架構中，系統邊界、資料傳輸、備份監控等，可能會面臨的威脅。可以根據以下威脅，於統整01中的威脅參考相關的威脅描述與相關的安全建議。</p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/HOvKOAN.png" alt=""></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/security-for-storage-infra/">https://shannonhung.github.io/posts/security-for-storage-infra/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Database/">Database</a><a class="post-meta__tags" href="/tags/%E7%A2%A9%E5%A3%AB%E8%AB%96%E6%96%87/">碩士論文</a><a class="post-meta__tags" href="/tags/Cloud-Storage/">Cloud Storage</a><a class="post-meta__tags" href="/tags/Security/">Security</a><a class="post-meta__tags" href="/tags/NIST-SP-800-209/">NIST SP 800-209</a></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/interupt-connection-pool/" title="如何介入 Connection Pool？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">如何介入 Connection Pool？</div></div></a></div><div class="next-post pull-right"><a href="/posts/security-for-storage-infra-2/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/security-for-storage-infra-2/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-27</div><div class="title">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引</div></div></a></div><div><a href="/posts/interupt-connection-pool/" title="如何介入 Connection Pool？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-10</div><div class="title">如何介入 Connection Pool？</div></div></a></div><div><a href="/posts/about-jdbc-connection-pool/" title="淺入淺出 JDBC, Connection Pool"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1483736762161-1d107f3c78e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMyMjU0NQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-08</div><div class="title">淺入淺出 JDBC, Connection Pool</div></div></a></div><div><a href="/posts/DLP-Survay-Paper/" title="DLP - Data Leakage Protection 的論文 Survey"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-21</div><div class="title">DLP - Data Leakage Protection 的論文 Survey</div></div></a></div><div><a href="/posts/ZTA-survey-AP-DB-summary/" title="適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇</div></div></a></div><div><a href="/posts/zta-survey/" title="適用於AP與DB之間的零信任架構(ZTA)原則"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-03</div><div class="title">適用於AP與DB之間的零信任架構(ZTA)原則</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">23</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">我是臺灣科技大學-資管所的研究生，今年預計前往德國雙聯。開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E9%BB%9E%E6%95%B4%E7%90%86"><span class="toc-text">重點整理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-11-%E5%84%B2%E5%AD%98%E5%92%8C%E8%B3%87%E6%96%99%E7%AE%A1%E7%90%86-Storage-and-Data-Management"><span class="toc-text">2.11 儲存和資料管理 Storage and Data Management</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%84%B2%E5%AD%98%E5%9F%BA%E7%A4%8E%E8%A8%AD%E6%96%BD%E7%9A%84%E7%9B%B8%E9%97%9C%E5%A8%81%E8%84%85-Threats-Risks-and-Attack-Surfaces"><span class="toc-text">3. 儲存基礎設施的相關威脅 Threats, Risks, and Attack Surfaces</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Threat-%E5%A8%81%E8%84%85"><span class="toc-text">3.1 Threat 威脅</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Risk-%E9%A2%A8%E9%9A%AA"><span class="toc-text">3.2 Risk 風險</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Attack-Surface-%E6%94%BB%E6%93%8A%E9%9D%A2"><span class="toc-text">3.3 Attack Surface 攻擊面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%B1%E6%95%B401%EF%BC%9A%E6%95%B4%E7%90%86%E5%A8%81%E8%84%85%E8%88%87%E5%AF%A6%E9%AB%94%E6%94%BB%E6%93%8A%EF%BC%88%E5%8F%83%E8%80%83OWASP%EF%BC%89"><span class="toc-text">統整01：整理威脅與實體攻擊（參考OWASP）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%86%91%E8%AD%89%E8%A2%AB%E7%9B%9C%E6%88%96%E6%B4%A9%E9%9C%B2-Credential-Theft-or-Compromise"><span class="toc-text">1. 憑證被盜或洩露 Credential Theft or Compromise</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8A%A0%E5%AF%86%E7%A0%B4%E8%A7%A3-Cracking-Encryption"><span class="toc-text">2. 加密破解 Cracking Encryption</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%83%A1%E6%84%8F%E8%BB%9F%E9%AB%94%E8%88%87%E5%8B%92%E7%B4%A2%E8%BB%9F%E9%AB%94%E7%9A%84%E6%84%9F%E6%9F%93-Infection-of-Malware-and-Ransomware"><span class="toc-text">3. 惡意軟體與勒索軟體的感染 Infection of Malware and Ransomware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%BE%8C%E9%96%80%E6%9C%AA%E4%BF%AE%E8%A3%9C%E7%9A%84%E6%BC%8F%E6%B4%9E-Backdoors-and-Unpatched-Vulnerabilities"><span class="toc-text">4. 後門未修補的漏洞 Backdoors and Unpatched Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%89%B9%E6%AC%8A%E5%8D%87%E7%B4%9A-Privilege-Escalation"><span class="toc-text">5. 特權升級 Privilege Escalation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E4%BA%BA%E7%82%BA%E9%8C%AF%E8%AA%A4%E8%88%87%E6%95%85%E6%84%8F%E9%85%8D%E7%BD%AE%E5%A4%B1%E8%AA%A4-Human-Error-and-Deliberate-Misconfiguration"><span class="toc-text">6. 人為錯誤與故意配置失誤 Human Error and Deliberate Misconfiguration</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%AF%A6%E9%AB%94%E5%AA%92%E9%AB%94%E7%9A%84%E7%89%A9%E7%90%86%E5%81%B7%E7%AB%8A-Physical-Theft-of-Storage-Media"><span class="toc-text">7. 實體媒體的物理偷竊 Physical Theft of Storage Media</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E7%B6%B2%E8%B7%AF%E7%AB%8A%E8%81%BD%E8%B3%87%E6%96%99-Network-Eavesdropping"><span class="toc-text">8. 網路竊聽資料 Network Eavesdropping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E6%98%A0%E5%83%8F%E3%80%81%E8%BB%9F%E9%AB%94%E5%92%8C%E9%9F%8C%E9%AB%94-Insecure-Images-Software-and-Firmware"><span class="toc-text">9. 不安全的映像、軟體和韌體 Insecure Images, Software and Firmware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E8%B3%87%E5%AE%89%E8%A8%98%E9%8C%84%E5%8F%8A%E7%9B%A3%E6%8E%A7%E5%A4%B1%E6%95%88-Security-Logging-and-Monitoring-Failures"><span class="toc-text">10. 資安記錄及監控失效 Security Logging and Monitoring Failures</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%B1%E6%95%B402%EF%BC%9A%E8%A8%AD%E8%A8%88%E5%A8%81%E8%84%85%E6%A8%A1%E5%9E%8B"><span class="toc-text">統整02：設計威脅模型</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-monitoring-ui/" title="Spark UI 觀察日誌"><img src="/img/loading-icon.gif" data-original="/img/cover/mac-python.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spark UI 觀察日誌"/></a><div class="content"><a class="title" href="/posts/pyspark-monitoring-ui/" title="Spark UI 觀察日誌">Spark UI 觀察日誌</a><time datetime="2024-01-08T15:48:54.000Z" title="發表於 2024-01-08 23:48:54">2024-01-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置"><img src="/img/loading-icon.gif" data-original="/img/cover/lang-switch.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hexo - Butterfly 版本的語言切換功能設置"/></a><div class="content"><a class="title" href="/posts/hexo-butterfly-lang-switch/" title="Hexo - Butterfly 版本的語言切換功能設置">Hexo - Butterfly 版本的語言切換功能設置</a><time datetime="2023-11-25T20:35:09.000Z" title="發表於 2023-11-26 04:35:09">2023-11-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac"><img src="/img/loading-icon.gif" data-original="/img/cover/mac-python.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spark and Pyspark Local Mode on Mac"/></a><div class="content"><a class="title" href="/posts/pyspark-install-notebook/" title="Spark and Pyspark Local Mode on Mac">Spark and Pyspark Local Mode on Mac</a><time datetime="2023-11-18T05:55:54.000Z" title="發表於 2023-11-18 13:55:54">2023-11-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/pyspark-basic/" title="Pyspark 的基本概念"><img src="/img/loading-icon.gif" data-original="/img/cover/python-spark2.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pyspark 的基本概念"/></a><div class="content"><a class="title" href="/posts/pyspark-basic/" title="Pyspark 的基本概念">Pyspark 的基本概念</a><time datetime="2023-11-17T15:47:06.000Z" title="發表於 2023-11-17 23:47:06">2023-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img src="/img/loading-icon.gif" data-original="/img/cover/lstm-emotion.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Twitter Dataset - 使用 LSTM 預測文章的情緒"/></a><div class="content"><a class="title" href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒">Twitter Dataset - 使用 LSTM 預測文章的情緒</a><time datetime="2023-11-16T06:30:45.000Z" title="發表於 2023-11-16 14:30:45">2023-11-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
   if (typeof pangu === 'object') pangu.autoSpacingPage()
   else {
     getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
@@ -1044,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
       repo: 'shannonhung.github.io',
       owner: 'ShannonHung',
       admin: ['ShannonHung'],
-      id: '99ecb2dd2cfb8199d3922ade3e16fbc6',
+      id: '728cf7f9b4dd0ad3f0301b629fff7d38',
       updateCountCallback: commentCount
     },null))
 
@@ -1073,11 +1081,11 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
   } else {
     window.loadOtherComment = loadGitalk
   }
-})()</script></div><script data-pjax src="/en/self/btf.js"></script><script data-pjax src="/en/self/tw_en.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+})()</script></div><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
 POWERMODE.shake = false;
 POWERMODE.mobile = false;
 document.body.addEventListener('input', POWERMODE);
-</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/en/js/search/local-search.js"></script></div></div>
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
         <style>
             [bg-lazy] {
                 background-image: none !important;
