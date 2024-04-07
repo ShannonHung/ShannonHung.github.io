@@ -204,6 +204,13 @@
   </url>
   
   <url>
+    <loc>https://shannonhung.github.io/en/tags/Mechine-Learning/</loc>
+    <lastmod>2024-04-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://shannonhung.github.io/en/tags/aws/</loc>
     <lastmod>2024-04-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -212,13 +219,6 @@
   
   <url>
     <loc>https://shannonhung.github.io/en/tags/textract/</loc>
-    <lastmod>2024-04-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://shannonhung.github.io/en/tags/Mechine-Learning/</loc>
     <lastmod>2024-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -255,13 +255,6 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/en/categories/Tech/</loc>
-    <lastmod>2024-04-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://shannonhung.github.io/en/categories/Code/</loc>
     <lastmod>2024-04-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -269,7 +262,7 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/en/categories/Research/Security/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Tech/</loc>
     <lastmod>2024-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -283,14 +276,21 @@
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/en/categories/Tech/OCR/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Code/Mechine-Learning/</loc>
     <lastmod>2024-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://shannonhung.github.io/en/categories/Code/Mechine-Learning/</loc>
+    <loc>https://shannonhung.github.io/en/categories/Research/Security/</loc>
+    <lastmod>2024-04-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://shannonhung.github.io/en/categories/Tech/OCR/</loc>
     <lastmod>2024-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
