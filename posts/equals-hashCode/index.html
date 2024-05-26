@@ -1,0 +1,355 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>一次搞懂Java中的equals()和hashCode() | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="前言 如果你想要自定義物件判斷是否相等的邏輯，就改equals吧！ 如果你想要修改HashMap或是HashSet中，不重複物件的邏輯，那就修改hashCode吧！  在物件導向的世界裡面，勢必逃不了自己建立的物件（你可能把某些功能包起來，放在某個class裡面）又或是想要建立一個Employee.class這樣的類別，方便你建立員工的資料存入資料庫中。 而這些xxxx.class都其實繼承Obj">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一次搞懂Java中的equals()和hashCode()">
+<meta property="og:url" content="https://shannonhung.github.io/posts/equals-hashCode/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="前言 如果你想要自定義物件判斷是否相等的邏輯，就改equals吧！ 如果你想要修改HashMap或是HashSet中，不重複物件的邏輯，那就修改hashCode吧！  在物件導向的世界裡面，勢必逃不了自己建立的物件（你可能把某些功能包起來，放在某個class裡面）又或是想要建立一個Employee.class這樣的類別，方便你建立員工的資料存入資料庫中。 而這些xxxx.class都其實繼承Obj">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://images.unsplash.com/photo-1607799279861-4dd421887fb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzNDIxOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080">
+<meta property="article:published_time" content="2023-06-20T07:21:48.000Z">
+<meta property="article:modified_time" content="2023-07-06T04:11:22.391Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="物件導向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1607799279861-4dd421887fb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzNDIxOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/equals-hashCode/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XBNKVVH2P4');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '一次搞懂Java中的equals()和hashCode()',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-06 12:11:22'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">30</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.unsplash.com/photo-1607799279861-4dd421887fb3?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzNDIxOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一次搞懂Java中的equals()和hashCode()</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-06-20T07:21:48.000Z" title="發表於 2023-06-20 15:21:48">2023-06-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2023-07-06T04:11:22.391Z" title="更新於 2023-07-06 12:11:22">2023-07-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/">技術</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>8分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="一次搞懂Java中的equals()和hashCode()"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/equals-hashCode/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言">前言</h1>
+<div class="note info flat"><p>如果你想要自定義物件判斷是否相等的邏輯，就改<code>equals</code>吧！<br>
+如果你想要修改HashMap或是HashSet中，不重複物件的邏輯，那就修改<code>hashCode</code>吧！</p>
+</div>
+<p>在物件導向的世界裡面，勢必逃不了自己建立的物件（你可能把某些功能包起來，放在某個class裡面）又或是想要建立一個<code>Employee.class</code>這樣的類別，方便你建立員工的資料存入資料庫中。</p>
+<p>而這些<code>xxxx.class</code>都其實繼承Object，可以說是Object是所有Java類別的超類(Abstract Class)，而我會想寫這篇的原因是因為，剛好碰到<strong>需要自定義<code>HashSet</code>的需求，修改放入Set的自定義物件時，判斷物件是否相等的邏輯</strong>。</p>
+<p>什麼意思呢？簡單來說，在程式語言中，我希望不要採用Object本身的<code>hashCode</code>和<code>equals</code>方法，<strong>我希望只要某些屬性的值一樣，我就視這個物件已經存在於Set裡面</strong>。而不是比較記憶體中的位置、所有屬性的value都要一樣等，<strong>我希望自定義物件相等的邏輯判斷</strong>。</p>
+<p>如果你好奇…</p>
+<ol>
+<li>我複寫equals的方法為什麼還要管hashCode?</li>
+<li>equals跟hashCode的關係是什麼？</li>
+</ol>
+<p>那你可以參考這個篇文章，繼續看下去。</p>
+<h1 id="equals-是什麼？">equals 是什麼？</h1>
+<p>可以從原始碼中看到一長串的東西，沒關係你可以跳過，讓我來跟你娓娓道來 …<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/bs2kH6g.png" alt=""></p>
+<h2 id="equals-的特性">equals 的特性</h2>
+<div class="note warning flat"><p>他裡面說了啥？面試這個應該要說得出來以下幾種特性呦！</p>
+</div>
+<p>簡單來說，equals主要遵循了以下規則來判斷物件的相等性：</p>
+<ol>
+<li><strong>自反性Reflexive</strong>： 我就是我
+<ul>
+<li><code>x.equals(x)</code> 應該總是返回 true。</li>
+</ul>
+</li>
+<li><strong>對稱性Symmetric</strong>： 我是你 你就是我 順序沒差
+<ul>
+<li>如果 <code>x.equals(y)</code> 返回 <code>true</code>，則 <code>y.equals(x)</code> 也應返回 <code>true</code>。這意味著比較的順序不重要。</li>
+</ul>
+</li>
+<li><strong>傳遞性Transitive</strong>: 爺爺的精神跟孫子是一樣的
+<ul>
+<li>相較於Symmetric更深一層，如果 <code>x.equals(y)</code> 返回 <code>true</code>，且 <code>y.equals(z)</code> 返回 <code>true</code>，則 <code>x.equals(z)</code> 也應返回 <code>true</code>。</li>
+<li>換句話說，如果兩個物件分別與第三個物件相等，則它們之間也應該相等。</li>
+</ul>
+</li>
+<li><strong>一致性Consistent</strong>：只要內容不變還是一樣
+<ul>
+<li>只要比較時使用的信息未被修改，多次調用 x.equals(y) 應始終返回相同的結果。</li>
+</ul>
+</li>
+<li><strong>與 null 的比較</strong>：永遠不同
+<ul>
+<li>對於任何非 null 的引用值 x，x.equals(null) 應該返回 false。物件不應該與 null 相等。</li>
+</ul>
+</li>
+</ol>
+<h2 id="到底怎麼樣算equals">到底怎麼樣算equals?</h2>
+<div class="note info flat"><p>你說的我都懂：但是我怎麼知道 equals 到底是比什麼？</p>
+</div>
+<p>按照原本equals的內容，如果滿足下面三個條件的話，我就說<strong>這兩個物件是一樣的</strong>：</p>
+<ol>
+<li><strong>位置</strong> 一樣</li>
+<li><strong>類別</strong> 一樣</li>
+<li><strong>屬性</strong> 一樣</li>
+</ol>
+<p>上面的例子中，你可能最不懂的是<strong>比較位置</strong>…<br>
+舉例來說，下面有一個程式範例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 每次 new 的時候就是 assign 一個新位置給他 </span></span><br><span class="line">        <span class="type">Employee</span> <span class="variable">emp1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Employee</span>(<span class="string">&quot;shannon&quot;</span>);</span><br><span class="line">        <span class="type">Employee</span> <span class="variable">emp2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Employee</span>(<span class="string">&quot;shannon&quot;</span>);</span><br><span class="line">        <span class="comment">// 這時就會返回 false </span></span><br><span class="line">        System.out.println(emp1.equals(emp2));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>大概是這種感覺：當new一個物件的時候，就會給他安排在不同的位置，所以他們當然就是獨立的個體囉，<strong>就像是同名同姓的人住在不同地區一樣，但是他們還是不同人</strong>。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/KwIZqYj.png" alt=""></p>
+<p>但是如果你把程式改成這樣：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 每次 new 的時候就是 assign 一個新位置給他 </span></span><br><span class="line">        <span class="type">Employee</span> <span class="variable">emp1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Employee</span>(<span class="string">&quot;shannon&quot;</span>);</span><br><span class="line">        <span class="type">Employee</span> <span class="variable">emp2</span> <span class="operator">=</span> emp1;</span><br><span class="line">        <span class="comment">// 這時就會返回 true </span></span><br><span class="line">        System.out.println(emp1.equals(emp2));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/4QAp0qe.png" alt=""></p>
+<h2 id="為啥要改寫equals">為啥要改寫equals?</h2>
+<div class="note info flat"><p>今天你不想要，判斷位置，我希望<strong>只要屬性值一樣，就識別這兩個物件是一樣的</strong><br>
+這時候你可以考慮override <code>equlas</code> 方法</p>
+</div>
+<ul>
+<li>簡單來說，我有一個<code>IdNumber.class</code>，用來記錄身分證資料，因此我只需要知道<code>id</code>如果一樣的話，一定是同一個人，不用多說。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IdNumber</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">        <span class="comment">// 如果“位置”一樣就不用看了 肯定同一個人</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span> == o) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 如果“類別”不可為null，同時如果&quot;類別&quot;不一樣，也太怪了，一定不是同個人</span></span><br><span class="line">        <span class="keyword">if</span> (o == <span class="literal">null</span> || getClass() != o.getClass()) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="comment">// 注意：上面這段絕對不要使用 instanceof !(o instanceof IdNumber) </span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 比較自定義類別的各種“屬性值”</span></span><br><span class="line">        <span class="comment">// 透過Objects.equals 判斷 就不用寫成這樣：(o.id != null &amp;&amp; o.id.equals(that.id))</span></span><br><span class="line">        <span class="type">IdNumber</span> <span class="variable">that</span> <span class="operator">=</span> (IdNumber) o</span><br><span class="line">        <span class="keyword">return</span> Objects.equals(id,that.id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 這時候就能打破「位置」的框架了，只針對「屬性」還有「類別」來比較。</span></span><br><span class="line">        <span class="type">IdNumber</span> <span class="variable">id1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IdNumber</span>(<span class="string">&quot;A123&quot;</span>);</span><br><span class="line">        <span class="type">IdNumber</span> <span class="variable">id2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IdNumber</span>(<span class="string">&quot;A123&quot;</span>);</span><br><span class="line">        System.out.println(id1.equals(id2));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="note danger flat"><p>這時候你可能會不太了解為什麼不要使用<code>instanceof</code>來進行類別的比較？<br>
+因為在父類別層次進行比較時，會出現問題</p>
+</div>
+<p>Ans:<br>
+<strong>違反對稱性</strong>：user 不是 employee 的子類，但是<code>employee</code>是<code>user</code>的子類，我們希望不管<code>employee</code>還是<code>user</code>放在被比較的那方，還是比較方，結果應該都要一樣！<br>
+因此才<strong>使用<code>getClass</code>來進行類別的比較，不考慮父類別之間的關係</strong>，反正class不一樣，我一率覺得這是不一樣的物件，拒絕！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="comment">// Parent class definition</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Child</span> <span class="keyword">extends</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="comment">// Child class definition</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Parent</span> <span class="variable">parent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Parent</span>();</span><br><span class="line">        <span class="type">Child</span> <span class="variable">child</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Child</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// print: parent.getClass() = class Parent</span></span><br><span class="line">        System.out.println(<span class="string">&quot;parent.getClass() = &quot;</span> + parent.getClass());</span><br><span class="line">        <span class="comment">// print: child.getClass() = class Child</span></span><br><span class="line">        System.out.println(<span class="string">&quot;child.getClass() = &quot;</span> + child.getClass());</span><br><span class="line">        <span class="comment">// print: child.getClass() == parent.getClass() ? false</span></span><br><span class="line">        System.out.println(<span class="string">&quot;child.getClass() == parent.getClass() ? &quot;</span> + (child.getClass() == parent.getClass()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="關於HashCode">關於HashCode ?</h1>
+<p>hashCode也叫雜湊碼（雜湊碼），它用來計算物件中所有屬性的雜湊值，哪裡會使用到呢？從字面上就可以看到，<code>Hash</code>有關的，就會呼叫到這個函式。例如，<code>HashMap</code>或是<code>HashSet</code>。在 Java 或 Kotlin 語言中，<code>hashCode()</code> 方法的主要目的是用來在使用哈希表（如 <code>HashMap</code> 或 <code>HashSet</code>）時<strong>提供一種快速查找的方式</strong>。</p>
+<h2 id="hash-的特性">hash 的特性</h2>
+<p>在計算機科學中，雜湊（Hash）是一種特殊的函數，具有以下幾個主要特性：</p>
+<ol>
+<li>確定性（Deterministic）：
+<ul>
+<li>對於<strong>同一個輸入，Hash 函數每次運算都將產生同一個輸出</strong>。也就是說，如果你有一個輸入 A，每次將 A 輸入 Hash 函數，你都會得到同樣的結果。</li>
+</ul>
+</li>
+<li>快速計算（Fast to Compute）：
+<ul>
+<li>對任何給定的輸入，計算其 Hash 值都應該是非常迅速的。</li>
+</ul>
+</li>
+<li>不可逆性（Irreversibility）：
+<ul>
+<li>當知道了 Hash 函數的輸出，<strong>我們卻無法推算出其對應的輸入。這是密碼學中特別重要的一個特性</strong>。</li>
+</ul>
+</li>
+<li>隨輸入微小變化產生大變化（Avalanche Effect）：
+<ul>
+<li>即使<strong>輸入的微小變化，也應該導致 Hash 值的劇烈變化</strong>。這有助於確保相似的輸入在經過雜湊後得到的結果將顯著不同。</li>
+</ul>
+</li>
+</ol>
+<h2 id="儲存物件於哈希表">儲存物件於哈希表</h2>
+<p>當您在哈希表(<code>HashMap</code> 或是 <code>HashSet</code>)中存儲物件時，<code>hashCode()</code> 方法被用來<strong>確定物件應該被存放在哈希表的哪個位置</strong>。這通常通過將物件的 <code>hashCode()</code> 返回值對哈希表的大小進行取模運算來實現。</p>
+<blockquote>
+<p>透過hashCode檢索儲存於哈希表的物件</p>
+</blockquote>
+<ol>
+<li>當您試圖<strong>從哈希表中檢索物件時，<code>hashCode()</code> 方法也會被調用以確定應該在哪裡查找該物件</strong>。</li>
+<li>如果哈希碼與表中存儲的任何物件的哈希碼不匹配，那麼哈希表可以<strong>立即確定該物件不在表中，而無需進行進一步的比較</strong>。</li>
+<li>如果在該哈希碼對應的位置找到了一個或多個物件，哈希表將使用 <code>equals()</code> 方法來確定哪一個物件（如果有的話）與查詢的物件匹配。這是因為多個不同的物件可能會有相同的哈希碼（也就是所謂的哈希碰撞）。</li>
+</ol>
+<p>這就是為什麼當我們在自定義類別中覆寫 <code>equals()</code> 方法時，<strong>我們應該始終確保也覆寫 <code>hashCode()</code> 方法，並確保如果兩個物件根據 <code>equals()</code> 方法是相等的</strong>，那麼它們的 <code>hashCode()</code> 方法也應該返回相同的值。如果這兩種方法之間的契約被違反，那麼依賴這些方法的資料結構（如 <code>HashMap</code> 和 <code>HashSet</code>）可能無法正確地工作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Objects;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Player</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    Player(String name) &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span> == o) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (o == <span class="literal">null</span> || getClass() != o.getClass()) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="type">Player</span> <span class="variable">player</span> <span class="operator">=</span> (Player) o;</span><br><span class="line">        <span class="keyword">return</span> Objects.equals(name, player.name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 我們用 name 來進行 hash </span></span><br><span class="line">        <span class="keyword">return</span> Objects.hash(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        HashSet&lt;Player&gt; players = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        players.add(<span class="keyword">new</span> <span class="title class_">Player</span>(<span class="string">&quot;Alice&quot;</span>));</span><br><span class="line">        players.add(<span class="keyword">new</span> <span class="title class_">Player</span>(<span class="string">&quot;Bob&quot;</span>));</span><br><span class="line">        players.add(<span class="keyword">new</span> <span class="title class_">Player</span>(<span class="string">&quot;Charlie&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Attempt to add a new player with the same name as Alice</span></span><br><span class="line">        players.add(<span class="keyword">new</span> <span class="title class_">Player</span>(<span class="string">&quot;Alice&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這時候 players 只會有三個 因為 name 是一樣的</span></span><br><span class="line">        System.out.println(player.getSize());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="參考連結">參考連結</h1>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://tw511.com/a/01/30684.html">Java中的equals()和hashCode() - 超細節篇</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/equals-hashCode/">https://shannonhung.github.io/posts/equals-hashCode/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">物件導向</a></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1607799279861-4dd421887fb3?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzNDIxOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/germany-visa/" title="德國簽證教學, 可能碰到的問題, 要準備什麼文件？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1618259278412-2819cbdea4dc?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4ODYxNjc1NA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">德國簽證教學, 可能碰到的問題, 要準備什麼文件？</div></div></a></div><div class="next-post pull-right"><a href="/posts/istio-intro/" title="簡單介紹Istio"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1543946602-a0fce8117697?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTM4OTM2OA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">簡單介紹Istio</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">30</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">我是臺灣科技大學-資管所的研究生，今年預計前往德國雙聯。開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#equals-%E6%98%AF%E4%BB%80%E9%BA%BC%EF%BC%9F"><span class="toc-text">equals 是什麼？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#equals-%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-text">equals 的特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B0%E5%BA%95%E6%80%8E%E9%BA%BC%E6%A8%A3%E7%AE%97equals"><span class="toc-text">到底怎麼樣算equals?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%82%BA%E5%95%A5%E8%A6%81%E6%94%B9%E5%AF%ABequals"><span class="toc-text">為啥要改寫equals?</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%9C%E6%96%BCHashCode"><span class="toc-text">關於HashCode ?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#hash-%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-text">hash 的特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%84%B2%E5%AD%98%E7%89%A9%E4%BB%B6%E6%96%BC%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="toc-text">儲存物件於哈希表</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E9%80%A3%E7%B5%90"><span class="toc-text">參考連結</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/lecture-leetcode-hash-table/" title="LeetCode 課前預習 - 掌握 Hash Table 指南"><img src="/img/loading-icon.gif" data-original="/img/cover/hash-table.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LeetCode 課前預習 - 掌握 Hash Table 指南"/></a><div class="content"><a class="title" href="/posts/lecture-leetcode-hash-table/" title="LeetCode 課前預習 - 掌握 Hash Table 指南">LeetCode 課前預習 - 掌握 Hash Table 指南</a><time datetime="2024-05-26T02:25:54.000Z" title="發表於 2024-05-26 10:25:54">2024-05-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/how-to-start-leetcode/" title="彙整medium上面 演算法學習之-Leetcode-破關總指南"><img src="/img/loading-icon.gif" data-original="/img/cover/leetcode.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="彙整medium上面 演算法學習之-Leetcode-破關總指南"/></a><div class="content"><a class="title" href="/posts/how-to-start-leetcode/" title="彙整medium上面 演算法學習之-Leetcode-破關總指南">彙整medium上面 演算法學習之-Leetcode-破關總指南</a><time datetime="2024-05-25T02:57:54.000Z" title="發表於 2024-05-25 10:57:54">2024-05-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/unit-test-python-pytest/" title="Pytest - Python 單元測試 教學"><img src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1576444356170-66073046b1bc?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTcxMzUzMTQ5MQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pytest - Python 單元測試 教學"/></a><div class="content"><a class="title" href="/posts/unit-test-python-pytest/" title="Pytest - Python 單元測試 教學">Pytest - Python 單元測試 教學</a><time datetime="2024-04-19T06:58:00.000Z" title="發表於 2024-04-19 14:58:00">2024-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/TensorFlow-Windows-GPU-Setup/" title="Windows - Tensorflow GPU Setup 手把手教你於Tensorflow上啟用GPU"><img src="/img/loading-icon.gif" data-original="/img/cover/mac_ai_gpu.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Windows - Tensorflow GPU Setup 手把手教你於Tensorflow上啟用GPU"/></a><div class="content"><a class="title" href="/posts/TensorFlow-Windows-GPU-Setup/" title="Windows - Tensorflow GPU Setup 手把手教你於Tensorflow上啟用GPU">Windows - Tensorflow GPU Setup 手把手教你於Tensorflow上啟用GPU</a><time datetime="2024-04-09T12:55:39.000Z" title="發表於 2024-04-09 20:55:39">2024-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/clean-code-python/" title="clean-code-python"><img src="/img/loading-icon.gif" data-original="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="clean-code-python"/></a><div class="content"><a class="title" href="/posts/clean-code-python/" title="clean-code-python">clean-code-python</a><time datetime="2024-03-30T14:49:49.000Z" title="發表於 2024-03-30 22:49:49">2024-03-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      id: 'eea412646048292631d93be2dd489c3e',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
