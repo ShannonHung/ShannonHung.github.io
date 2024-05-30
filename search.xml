@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>NBME - 使用 DeBERTa 模型分析病人病例</title>
+      <link href="/posts/bert-nbme-score-clinical-patient-notes/"/>
+      <url>/posts/bert-nbme-score-clinical-patient-notes/</url>
+      
+        <content type="html"><![CDATA[<div class="note warning flat"><p><strong>這篇文章不會談論怎麼寫程式，而是著重在說明如何為 DeBERTa 模型設計 Input 和 Ouput 以及如何評估模型的表現。</strong></p></div><h1 id="說明">說明</h1><ul><li>題目來源：<a href="https://www.kaggle.com/c/nbme-score-clinical-patient-notes">https://www.kaggle.com/c/nbme-score-clinical-patient-notes</a></li></ul><p>當你去看醫生時，醫生如何解讀你的症狀會決定診斷的準確性。醫生在獲得執照之前，已經有很多撰寫病人記錄的實踐經驗，這些記錄文檔包含病人的病史、體檢結果、可能的診斷和後續護理。學習和評估撰寫病人記錄的技能需要其他醫生的反饋，這是一個耗時的過程，可以通過機器學習來改進。</p><p>直到最近，Step 2 Clinical Skills（臨床技能）考試是美國醫學執照考試（USMLE）的一個組成部分。考試要求考生與標準化病人（被訓練來扮演特定臨床病例的人）互動，並撰寫病人記錄。訓練有素的醫師評分員會根據每個病例的重要概念（稱為特徵）用量表來評分病人記錄。病人記錄中包含的這些特徵越多，得分就越高（除了其他影響考試最終得分的因素）。簡單來說，就是<em>考生要從病例中找出可能可以作為生病的特徵</em>。</p><p>然而，讓醫生評分病人記錄考試需要大量時間和人力、財力資源。針對這個問題，自然語言處理技術被開發出來，但病人記錄的計算評分仍然充滿挑戰，因為特徵可以用很多不同的方式表達。例如…</p><ul><li>特徵“對活動失去興趣”可以表達為“不再打網球”</li><li>特徵“沒有寒冷不耐受、脫髮、心悸或顫抖”，這對應於關鍵的“缺乏其他甲狀腺症狀”。</li></ul><p>在這次競賽中，你需要識別病人記錄中的具體臨床概念。具體來說，你將開發一種自動方法，將考試量表中的臨床概念（例如“食欲減退”）映射到醫學生撰寫的病人記錄中表達這些概念的各種方式（例如“吃得更少”，“衣服變得更寬鬆”）。出色的解決方案將既準確又可靠。</p><p>如果成功，你將幫助解決病人記錄評分中的最大實際障礙，使這種方法更加透明、可解釋，並減輕這類評估的開發和管理難度。結果，醫療從業者將能夠充分發掘病人記錄在臨床技能評估中揭示相關信息的潛力。</p><h1 id="資料集">資料集</h1><p><img src="https://i.imgur.com/WVmaoEz.png" alt=""></p><ul><li><code>train.csv</code> - 用於訓練模型的訓練數據集</li><li><code>test.csv</code> - 用於測試模型的測試數據集（只有五筆）</li><li><code>patient_notes.csv</code> - 病人記錄的文本數據集</li><li><code>features.csv</code> - 用於訓練和測試的特徵數據集</li></ul><p><img src="https://i.imgur.com/I0T8ufJ.png" alt=""><br>從上圖可以看到，我們透過將 <code>train.csv</code> 和 <code>features.csv</code> 進行合併，得到了一個新的數據集如上圖所示。有幾點需要注意的：</p><ul><li>合併過後可能會同一個病人會有多個病例(<code>features_text</code>)</li><li>每個病例，可能會有多個<code>annotation</code>(也就是特徵)</li><li><code>location</code> 是 <code>annotation</code> 在 <code>pn_history</code> (病史)中的位置</li><li>綠色是用來給模型的輸入，黃色是我們想要預測的結果</li></ul><h1 id="衡量">衡量</h1><p><img src="https://i.imgur.com/A9Ja1YZ.png" alt=""><br>如上圖所示，對於每個實例，我們預測一組字元跨度。一個字元跨度是一對索引(114 129)表示為該內容的特徵，代表文字中的一個字元範圍。一個跨度i j代表索引為i到j的字符，左閉右開，在Python的符號中，一個跨度i j相當於一個切片 i:j 對於每個實例，都有一個基礎真實跨度的集合和一個預測跨度的集合。我們用分號來分割跨度。</p><h1 id="方法">方法</h1><p><img src="https://i.imgur.com/pIQmjZb.png" alt=""><br><em>首先我們知道提供給模型的有以下：</em></p><ol><li><code>pn_history</code> 病人的病史</li><li><code>feature_text</code> 得什麼病</li></ol><p><em>我們要預測的是：</em></p><ol><li><code>pn_history</code> 中哪個特徵對應到 <code>feature_text</code> 病例的索引</li></ol><hr><p>因此可以知道的事，我們的 input 必須是 <code>pn_history</code> 和 <code>feature_text</code> 的結合，把他們關聯起來，然後預測 <code>pn_history</code> 中的特徵對應到 <code>feature_text</code> 的索引。步驟可以如下：</p><ol><li><code>pn_history</code> 和 <code>feature_text</code> 的結合</li><li>把 step 1 整合的結果經過 Embedding 送入 DeBERTa 模型</li><li>output 的結果必須是 <code>pn_history</code> 經過 embedding 後，把解答的部分寫成1，不是解答的部分預測為0，其他padding為-1。</li></ol><h2 id="準備-input-與-label">準備 input 與 label</h2><p><strong>Input</strong></p><ol><li>先找到 <code>max_len</code> 的 input size：從這麼多的pn_history中找最大的長度當作 input 的 <code>max_len</code></li><li>把 <code>pn_history</code> + <code>feature_text</code> 轉換成 Token</li></ol><p><strong>Label</strong><br>目標：把 <code>pn_history</code> 轉換成 <code>&#123;-1, 0, 1&#125;</code> 的 Label，-1 代表 padding，0 代表不是解答，1 代表是解答</p><ol><li>先準備一個 <code>max_len</code> 的 array list with 0。</li><li>把 special token 像是 <code>[CLS]</code>, <code>[SEP]</code> 或 <code>[PAD]</code> 設定為 -1</li><li>找到 tokons 中包含 annotation 的部分，把這部分的 label 設定為 1</li><li>最終得到的結果可能會是：<code>[-1, 0, 0, 1, 1, 0, 0]</code></li></ol><h3 id="Input-準備">Input 準備</h3><p>接下來你可能會好奇怎麼找到 <code>max_len</code> 可以參考下圖：<br><img src="https://i.imgur.com/WyjV1XN.png" alt=""></p><ol><li>開始遞迴每個 <code>pn_history</code></li><li>把 <code>pn_history</code> 和 <code>feature_text</code> 結合轉換成 Token</li><li>計算這個 token 的長度，並存長度到一個 arr 裡面</li><li>最後這個arr會集結所有資料的長度，找到最大的長度就是 <code>max_len</code></li></ol><p>準備Input 會如下圖所示(發現會把annotation整合進去pn_history)<br><img src="https://i.imgur.com/tY7ahRM.png" alt=""></p><h3 id="Label-準備">Label 準備</h3><p>準備Label 會如下圖所示(只需要pn_history即可)<br><img src="https://i.imgur.com/nbmIxQJ.png" alt=""></p><ol><li><p>我們會先創造出一個由 max_len 長度的 array。<br><img src="https://i.imgur.com/dGnKEbg.png" alt=""></p></li><li><p>把 special token 像是 <code>[CLS]</code>, <code>[SEP]</code> 或 <code>[PAD]</code> 設定為 -1<br><img src="https://i.imgur.com/pLRtpfG.png" alt=""></p></li><li><p>接下來就是把 annotation 的部分設定為 1<br><img src="https://i.imgur.com/kYKaq2m.png" alt=""></p></li></ol><h2 id="訓練">訓練</h2><p>模型參數設定如下：<br><img src="https://i.imgur.com/63ODxTm.png" alt=""></p><p>到時候的輸出每個 token 位置都是一組機率，我們可以設定閥值為 0.5，如果機率大於 0.5 就是 1，否則就是 0。<br><img src="https://i.imgur.com/wXWTlyD.png" alt=""></p><h2 id="衡量-2">衡量</h2><p><img src="https://i.imgur.com/piIbFNP.png" alt=""><br>如果解答是 <code>0 3; 3 5</code> 而我預測出 <code>2 5; 7 9; 2 3</code> 那麼我們可以計算出以下的結果：<br>0 1 2 3 是解答 我預測出 2 3 4 5</p><ul><li>TP: 2, 3</li><li>FP: 4, 5</li><li>FN: 0</li></ul><p>這樣我們就可以計算 F1 score = 2 * TP / (2 * TP + FP + FN)</p><h1 id="參考資料">參考資料</h1><ul><li><a href="https://blog.csdn.net/Raki_J/article/details/123447643">Raki的NLP竞赛topline解读：NBME - Score Clinical Patient Notes</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Code </category>
+          
+          <category> Mechine Learning </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mechine Learning </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #169 Majority Element - 刷題之旅</title>
       <link href="/posts/leetcode-169-majority-element/"/>
       <url>/posts/leetcode-169-majority-element/</url>
@@ -24,9 +51,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Hash </tag>
             
             <tag> Easy </tag>
             
@@ -57,11 +84,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -90,11 +117,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -123,11 +150,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
             
@@ -158,9 +185,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Hash </tag>
             
             <tag> Easy </tag>
             
@@ -220,9 +247,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> Lecture </tag>
             
         </tags>
       
@@ -662,9 +689,9 @@
       
         <tags>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> DLP </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -964,9 +991,9 @@
       
         <tags>
             
-            <tag> Database </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Database </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -1003,9 +1030,9 @@
       
         <tags>
             
-            <tag> Database </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Database </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -1040,11 +1067,11 @@
       
         <tags>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -1073,11 +1100,11 @@
       
         <tags>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
