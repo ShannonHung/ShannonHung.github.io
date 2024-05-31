@@ -64,6 +64,39 @@
     
     
     <entry>
+      <title>LeetCode #49 Group Anagrams - 刷題之旅</title>
+      <link href="/posts/leetcode-49-group-anagrams/"/>
+      <url>/posts/leetcode-49-group-anagrams/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/jB7XDnq.png" alt=""><br>給定多個字串，然後把它們分類。只要字串所包含的字元完全一樣就算一類，不考慮順序。</p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的解法">2.1 我的解法</h2><p>因為不考慮順序，<em>只要字串的字元完全一樣就算一類，這讓我最先想到 Set 這個資料結構</em>。我們可以把字串轉成 Set ，<em>想辦法讓 Set 變成 dict 的 key</em> ，然後把相同 key 的字串放在一起。最後再把這些字串放在一個 List 中，這樣就可以得到答案了。<em>但是 Set 是不可 hash 的，所以我們可以先把 Set 裡面的每個元素進行 hash 並相加</em>，這也可以成功的讓。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">groupAnagrams</span>(<span class="params">self, strs</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type strs: List[str]</span></span><br><span class="line"><span class="string">        :rtype: List[List[str]]</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        ans_dic = &#123;&#125;</span><br><span class="line">        ans = []</span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">str</span> <span class="keyword">in</span> strs:</span><br><span class="line">            str_hash = <span class="built_in">sum</span>([<span class="built_in">hash</span>(char) <span class="keyword">for</span> char <span class="keyword">in</span> <span class="built_in">str</span>]) <span class="comment"># 把每個字元 hash 並相加 順序就不影響了</span></span><br><span class="line">            <span class="keyword">if</span> ans_dic.get(str_hash):</span><br><span class="line">                ans_dic[str_hash].append(<span class="built_in">str</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                ans_dic[str_hash] = [<span class="built_in">str</span>]</span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> ans_dic.values():</span><br><span class="line">            ans.append(v)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度 O(nL)</strong></p><ul><li>計算哈希值：對於每個字符串，計算哈希值的時間複雜度是 O(L)，其中 L 是字符串的平均長度。</li><li>且列表的長度為 n，那麼這一步的總時間複雜度是 O(n) * O(L) = O(nL)</li></ul><p><strong>空間複雜度 O(nL)</strong></p><ul><li>字典 ans_dic：這個字典最多會存儲 n 個鍵值對，每個鍵是哈希值（整數），每個值是字符串列表。我們會需要一個空間L把每個經過hash的字母相加，空間複雜度是 O(nL)。</li><li>結果列表 ans：會包含所有的字串，空間複雜度是 O(n)。</li></ul></div><h2 id="2-2-解法2">2.2 解法2</h2><p>但是還有一種可能是 hash 加總後發生碰撞，儘管他們字串不同，但仍有機率會被歸類在同一類。這時候我們可以使用一個更好的方法，就是把字串排序後再 hash ，這樣就可以保證不會發生碰撞。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">groupAnagrams2</span>(<span class="params">self, strs</span>):</span><br><span class="line">        anagram_map = defaultdict(<span class="built_in">list</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> strs:</span><br><span class="line">            sorted_word = <span class="string">&#x27;&#x27;</span>.join(<span class="built_in">sorted</span>(word))</span><br><span class="line">            anagram_map[sorted_word].append(word)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">list</span>(anagram_map.values())</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度 O(n⋅LlogL)</strong></p><ul><li>排序字符串：對於每個字符串，將其排序的時間複雜度是 O(LlogL)，其中 L 是字符串的平均長度。假設輸入列表中有 n 個字符串，這一步的總時間複雜度是 O(n⋅LlogL)。</li></ul><p><strong>空間複雜度 O(nL)</strong></p><ul><li>字典 anagram_map：這個字典最多會存儲 n 個鍵值對，每個鍵是排序後的字符串（長度為 L），每個值是包含原始字符串的列表。在最壞情況下，所有字符串都是不同的異位詞組，則字典中會有 n 個鍵，每個鍵對應一個包含一個字符串的列表。因此，字典的空間複雜度是 O(n⋅L)。</li></ul></div><h1 id="3-總結">3 總結</h1><p>這題其實很簡單，大概5分鐘不到就可以想到方法解出來了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> Hash </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
       <link href="/posts/leetcode-12-integer-to-roman/"/>
       <url>/posts/leetcode-12-integer-to-roman/</url>
