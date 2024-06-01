@@ -1,0 +1,499 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>資料分析概念大全 - TF, IDF, TF-IDF, Text Classification 樣樣來 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="一句話解釋TF-IDF『用來從一段文字&#x2F;一個語料庫中，給越重要的字詞&#x2F;文檔，越高的加權分數』  TF-IDF 你看，TF - IDF ，前面的TF是Term Frequency的縮寫，後面的IDF是Inverse Document Frequency的縮寫，合在一起則說明了它如何計算出誰是相對比較重要的字詞。   TF-IDF 有點像是互相牽制的感覺，前面的TF是Term Frequency的縮寫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="資料分析概念大全 - TF, IDF, TF-IDF, Text Classification 樣樣來">
+<meta property="og:url" content="https://shannonhung.github.io/posts/text-classification/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="一句話解釋TF-IDF『用來從一段文字&#x2F;一個語料庫中，給越重要的字詞&#x2F;文檔，越高的加權分數』  TF-IDF 你看，TF - IDF ，前面的TF是Term Frequency的縮寫，後面的IDF是Inverse Document Frequency的縮寫，合在一起則說明了它如何計算出誰是相對比較重要的字詞。   TF-IDF 有點像是互相牽制的感覺，前面的TF是Term Frequency的縮寫">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://shannonhung.github.io/img/cover/ai-knowledge.jpeg">
+<meta property="article:published_time" content="2023-09-30T03:36:29.000Z">
+<meta property="article:modified_time" content="2024-06-01T20:41:53.898Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="Mechine Learning">
+<meta property="article:tag" content="Text Classification">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shannonhung.github.io/img/cover/ai-knowledge.jpeg"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/text-classification/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XBNKVVH2P4');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '資料分析概念大全 - TF, IDF, TF-IDF, Text Classification 樣樣來',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-02 04:41:53'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">51</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">32</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/ai-knowledge.jpeg')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">資料分析概念大全 - TF, IDF, TF-IDF, Text Classification 樣樣來</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-09-30T03:36:29.000Z" title="發表於 2023-09-30 11:36:29">2023-09-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-06-01T20:41:53.898Z" title="更新於 2024-06-02 04:41:53">2024-06-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Code/">Code</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Code/Mechine-Learning/">Mechine Learning</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">3.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>10分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="資料分析概念大全 - TF, IDF, TF-IDF, Text Classification 樣樣來"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/text-classification/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><div class="note info flat"><p>一句話解釋TF-IDF『<strong>用來從一段文字/一個語料庫中，給越重要的字詞/文檔，越高的加權分數</strong>』</p>
+</div>
+<h1 id="TF-IDF">TF-IDF</h1>
+<p>你看，TF - IDF ，前面的TF是Term Frequency的縮寫，後面的IDF是Inverse Document Frequency的縮寫，合在一起則說明了它如何計算出誰是相對比較重要的字詞。</p>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/FT5iUuJ.png" alt=""></p>
+<ul>
+<li><code>TF-IDF</code> 有點像是互相牽制的感覺，前面的TF是Term Frequency的縮寫，後面的IDF是Inverse Document Frequency的縮寫。</li>
+<li>綜合兩個公式值相乘，便得到我們今天介紹的TF-IDF值</li>
+</ul>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/9fSEYIP.png" alt=""></p>
+<div class="note info flat"><p>字詞的<strong>重要性</strong>隨著 在<strong>文本出現的頻率越高</strong>則越<strong>高</strong>(TF)；在<strong>不同文本檔案間出現的次數越高</strong>則反而<strong>降低</strong>(DF)。<br>
+<code>更白話一點</code>：<em>一個單字在一篇文章中出現的次數越多，那麼這個單字就越重要，但是如果這個單字在其他文章中也出現很多次，那麼這個單字就越不重要</em>。</p>
+</div>
+<h2 id="Term-Frequency-tf">Term Frequency (tf)</h2>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/834Qtdk.png" alt=""><br>
+上圖取自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://medium.com/datamixcontent-lab/%E6%96%87%E6%9C%AC%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80-%E6%A6%82%E5%BF%B5%E7%AF%87-%E7%B5%A6%E6%88%91%E4%B8%80%E6%AE%B5%E8%A9%B1-%E6%88%91%E5%91%8A%E8%A8%B4%E4%BD%A0%E9%87%8D%E9%BB%9E%E5%9C%A8%E5%93%AA-%E5%B0%8D%E6%96%87%E6%9C%AC%E9%87%8D%E9%BB%9E%E5%AD%97%E8%A9%9E%E5%8A%A0%E6%AC%8A%E7%9A%84tf-idf%E6%96%B9%E6%B3%95-f6a2790b4991">【資料分析概念大全｜認識文本分析】對文本重點字詞加權的TF-IDF方法</a></p>
+<p>我們先把拆解出來的每個詞在各檔案出現的次數，一一列出，組成矩陣。</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi>t</mi><mo separator="true">,</mo><mi>d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">{n_{t,d}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span> 是詞t在文件d中出現的次數</li>
+</ul>
+<div class="note info flat"><p>『詞1』在『文件1』的TF值算出來時<br>
+<em>『詞1在文件1出現的次數』除以『文件1中所有詞出現次數的總和(可說是總字數)』</em><br>
+= <strong>這個<code>單字數量</code>在文件1中<code>所有的文字</code>，所佔的比例</strong>。</p>
+</div>
+<p><strong>可不可以把 TF 當作 Weight 來看呢？</strong></p>
+<ul>
+<li>當然可以，那我們還是仍要取 log 來避免極端值影響太大。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/7RQgStQ.png" alt=""></li>
+</ul>
+<h2 id="Inverse-Document-Frequency-IDF">Inverse Document Frequency (IDF)</h2>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/Hl6XNf2.png" alt=""><br>
+上圖取自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://medium.com/datamixcontent-lab/%E6%96%87%E6%9C%AC%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80-%E6%A6%82%E5%BF%B5%E7%AF%87-%E7%B5%A6%E6%88%91%E4%B8%80%E6%AE%B5%E8%A9%B1-%E6%88%91%E5%91%8A%E8%A8%B4%E4%BD%A0%E9%87%8D%E9%BB%9E%E5%9C%A8%E5%93%AA-%E5%B0%8D%E6%96%87%E6%9C%AC%E9%87%8D%E9%BB%9E%E5%AD%97%E8%A9%9E%E5%8A%A0%E6%AC%8A%E7%9A%84tf-idf%E6%96%B9%E6%B3%95-f6a2790b4991">【資料分析概念大全｜認識文本分析】對文本重點字詞加權的TF-IDF方法</a></p>
+<p><strong>如果經過TF的計算，此時發現有兩個單詞a, b兩個都在文件1中出現了相同的次數，我們該如何知道哪個單詞更重要呢？</strong></p>
+<ul>
+<li>其實，這時候就要用到IDF的概念了。</li>
+<li>我們還要考慮到 a, b 兩個單詞<em>在其他文件中出現的次數</em>。</li>
+<li>假設，檔案1 有兩個單字 “and” 跟 “company A” 兩個單字非常頻繁的在檔案1中出現，tf 值都相同。
+<ul>
+<li>但是 “and” 不僅僅在 檔案 1 出現，基本上其他檔案都出現他的身影，所以 “and” 就不是一個重要的單字</li>
+<li>而 “company A” 只在檔案1中出現，所以 “company A” 儘管與 “and” 數量相同，但是 “company A” 更為獨特，因為只出現在檔案1中。</li>
+</ul>
+</li>
+</ul>
+<p>如下圖：可以發現 calpurnia 這個單字指出現在某個特定檔案，所以代表他很特別，所以他的 IDF 值會很高。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/FBkgCZV.png" alt=""></p>
+<div class="note info flat"><p>IDF 有點像是<strong>代表性</strong>的感覺<br>
+<em>由『文章數總和(D)』除以『該字詞出現過的文章篇數(dt)』後，取log值</em><br>
+= <strong>這個單字在這個檔案中的獨特性，因為其他檔案很少出現</strong></p>
+<p>Note: 實際應用中為了避免分母=0，因此通常分母會是dt+1。</p>
+</div>
+<div class="note warning flat"><p><em>IDF之所以取log的原因?</em><br>
+取log是為了<strong>不讓極端值影響太大</strong>，如果今天文章總和數D很大，而某個詞指出現在一篇文章中，那麼這個詞的IDF值就會很大，這樣的情況下，取log可以讓這個值變得更小，避免極端值影響太大。</p>
+</div>
+<h1 id="Text-Classification-TC">Text Classification (TC)</h1>
+<p>文本分類的目標是通過學習算法，基於訓練數據中的<code>特徵</code>和<code>標籤</code>，構建一個能夠自動將新文檔正確<code>分類</code>的模型。<br>
+<em>有些分類具階層性，有些可能屬多個分類</em> 這在信息檢索、情感分析、垃圾郵件過濾等眾多應用中具有廣泛的應用價值。分類的方式主要可以分為：</p>
+<ul>
+<li><strong>人工分類 Manual Classification</strong>：靠專家分類會很準，但是當資料量大的時候人工判斷會有主觀不同的問題。</li>
+<li><strong>規則式分類 Rule-Based Systems</strong>：使用布林條件，例如 (文化創意 | 文創) → 歸於文化類</li>
+<li><strong>統計機率式 Statistical/Probabilistic Methods</strong>：使用機率模型，例如 Naive Bayes、SVM、KNN、Decision Tree、Random Forest、XGBoost、LightGBM、CatBoost 等等。</li>
+</ul>
+<p>接下來我們會針對幾個常見的統計機率式方法來進行介紹。</p>
+<h2 id="Naive-Bayes">Naive Bayes</h2>
+<ul>
+<li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://medium.com/%E5%B1%95%E9%96%8B%E6%95%B8%E6%93%9A%E4%BA%BA%E7%94%9F/python%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-110-%E5%96%AE%E7%B4%94%E8%B2%9D%E6%B0%8F%E5%88%86%E9%A1%9E%E5%99%A8-50cdd9ce16f7">【Python機器學習】110：簡單貝氏分類器介紹及其應用</a></li>
+<li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://youtu.be/O2L2Uv9pdDA?si=9Hc5wr-wUEVV8eI-">Youtube | Naive Bayes, Clearly Explained!!!</a></li>
+</ul>
+<p>我覺得直接看例子比較快，以下是一個簡單的例子：</p>
+<ul>
+<li>假設我們想要把垃圾郵件和非垃圾郵件分類</li>
+<li>我們先收集垃圾郵件 跟 非垃圾 郵件的所有拆好的單字</li>
+<li>然後我們要計算 每個單字 分別在 垃圾郵件 跟 非垃圾郵件 出現的機率</li>
+</ul>
+<p>從下圖可以看到，先計算每個單字在非垃圾郵件的機率 <code>P(Dear | N)</code> Dear 是出現的文字，N 是非垃圾郵件中，所有單字的總數。</p>
+<ul>
+<li>Dear 在非垃圾郵件中所有的單字裡面，出現了 8 次，表示 <code>P(Dear | N) = 8/20 = 0.4</code><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/rrCyUG4.png" alt=""></li>
+</ul>
+<p>然後我們就可以獲得，每個單字，分別在垃圾郵件和非垃圾郵件中的機率。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/CX9Craj.png" alt=""></p>
+<p><strong>那現在我們收到一個新的郵件，我們要判斷這個郵件是垃圾郵件還是非垃圾郵件。</strong></p>
+<ul>
+<li>新郵件的內容是 <code>Dear Friend</code></li>
+<li>我們先計算這個郵件是非垃圾郵件的機率 <code>P(Normal | Dear Friend)</code> 跟 <code>P(Spam | Dear Friend)</code></li>
+</ul>
+<p>這邊我們就可以使用貝氏定理來計算<code>P(Normal | Dear Friend)</code>，我們看到<code>Dear Friend</code> 的信件他是<code>非垃圾</code>郵件的機率是多少？</p>
+<ul>
+<li><code>P(N) = 8 / 12 = 0.67</code></li>
+<li><code>P(Normal | Dear Friend) = P(Dear | N) * P(Friend | N) * P(N) = 0.47 * 0.29 * 0.67 = 0.09</code><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/HTgrJJ0.png" alt=""></li>
+</ul>
+<p>用同樣的方式，這邊我們也可以使用貝氏定理來計算<code>P(Spam | Dear Friend)</code>，我們看到Dear Friend 的信件他是<code>垃圾郵件</code>的機率是多少？</p>
+<ul>
+<li><code>P(S) = 4 / 12 = 0.33</code></li>
+<li><code>P(Spam | Dear Friend) = P(Dear | S) * P(Friend | S) * P(S) = 0.29 * 0.14 * 0.33 = 0.013</code><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/euzpebb.png" alt=""></li>
+</ul>
+<p>最後我們可以比較 <code>P(Normal | Dear Friend)</code> 跟 <code>P(Spam | Dear Friend)</code>，看哪個機率比較高，就可以判斷這封信是垃圾郵件還是非垃圾郵件。這裡的例子中，<code>P(Normal | Dear Friend)</code> 比 <code>P(Spam | Dear Friend)</code> 高，所以這封信是非垃圾郵件。</p>
+<h3 id="注意事項">注意事項</h3>
+<p>但是如果我們今天看到另一個例子<code>Lunch Money Money Money Money</code> 這封信是垃圾郵件還是非垃圾郵件？<br>
+<em>用一樣的方式計算的話會發現，因為 <code>P(Lunch|S)</code> 是 0 所以會導致 <code>P(Spam | Lunch Money Money Money Money)</code> 也是 0</em><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/xWMk1MO.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/FQG8pn3.png" alt=""></p>
+<p>為了解決這個問題，<em>我們至少要把每個單字的機率設定一個最小值，這樣就不會出現 0 的情況</em>。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/l0Gvn4p.png" alt=""><br>
+然後重新計算每個單詞在不同類別時的機率。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/mVxs8OB.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/9t7h60a.png" alt=""></p>
+<h3 id="優缺點">優缺點</h3>
+<p><strong>使用 Naive Based 有什麼樣的問題？為什麼稱它為 Naive?</strong></p>
+<ul>
+<li><em>單字的組成順序不影響結果</em>，從下面例子可以看到 Dear Friend 跟 Friend Dear 他們的機率是一樣的。</li>
+<li>這導致在處理一些需要文法規則的語言時，效果不佳。</li>
+<li>因為 Naive Bayes 對待每個單字就像是獨立的一樣，<em>就是一個 a bag full of words 的概念</em>。</li>
+<li>稱它為 Naive 是<em>因為他太過於簡單，對於一些複雜的問題，效果不佳</em>。</li>
+</ul>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/1MrfKjG.png" alt=""></p>
+<p><strong>但是Naive Bayes 也並非如此 Naive</strong></p>
+<ul>
+<li>Naive Bayes 在某些競賽中獲勝（例如，KDD-CUP 97）</li>
+<li>對非相關特徵的魯棒性強於一些更複雜的學習方法：Naive Bayes 能夠有效處理包含大量非相關特徵的數據集，這在某些情況下比更複雜的算法更具優勢。</li>
+<li>對概念漂移（隨時間變化的類別定義）更具魯棒性：Naive Bayes 對於隨時間變化的數據（如類別定義變化）的適應能力較強，這使得它在動態環境中也能保持良好的性能。</li>
+<li>Naive Bayes 對於具有多個同等重要特徵的數據集，比如決策樹這類方法更具優勢。</li>
+<li>對於文本分類來說，<em>是一個可靠的基線（但不是最好的）</em></li>
+<li><em>Naive Bayes 假設特徵之間是獨立的</em>，如果這個假設成立，則 Naive Bayes 算法是最優的。雖然這個假設在文本分類中通常不成立，但在其他一些領域中是成立的</li>
+<li>Naive Bayes 算法學習過程非常高效，只需要一次遍歷數據即可完成。測試過程中的計算量與屬性數量和文檔集合大小呈線性關係，這使得它在大數據集上也能快速運行。</li>
+<li>Naive Bayes 算法需要的存儲空間很少，這在資源有限的環境中是一個很大的優勢。</li>
+</ul>
+<h2 id="Gaussian-Naive-Bayes">Gaussian Naive Bayes</h2>
+<p><strong>是 Naive Bayes 的一個變種，主要是用在連續型的資料上</strong>，例如身高、體重等等。<br>
+以下面的例子來說，我們有兩個全體的資料，一個是喜歡Troll，一個是不喜歡Troll。</p>
+<ul>
+<li>我們把喜歡Trolls的人，他們也喜歡Popcorn, Soda, Candy 的分佈畫出來 (下圖綠色的部分)</li>
+<li>再來把不喜歡Trolls的人，他們也喜歡Popcorn, Soda, Candy 的分佈畫出來 (下圖紅色的部分)<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/ycsfh5u.png" alt=""></li>
+</ul>
+<h3 id="例子">例子</h3>
+<p>接下來有一個人，<em>他吃了 20g 的Popcorn, 500ml 的Soda, 25g 的Candy，我們要判斷他是喜歡Trolls還是不喜歡Trolls</em>。<strong>我們先假設這個人是喜歡Trolls，我們可以計算他的機率</strong></p>
+<ul>
+<li><code>P(Like Troll2 | Popcorn, Soda, Candy) = P(Popcorn | Like Troll2) * P(Soda | Like Troll2) * P(Candy | Like Troll2) * P(Like Troll2)</code>。</li>
+<li><code>P(Like Troll2) = 8 / 16 = 0.5</code> (下圖1)</li>
+<li>然後把 Popcorn, Soda, Candy 的機率帶入，但是因為 Candy 的機率非常非常小，小到會變成 0，所以<em>我們要使用 log 來避免Underflow</em>。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/zgl7nnG.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/zf1ciLp.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/TPH9yRv.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/1LlEMGZ.png" alt=""></li>
+</ul>
+<p><strong>我們先假設這個人是不喜歡Trolls，我們可以計算他的機率</strong></p>
+<ul>
+<li><code>P(Unlike Troll2 | Popcorn, Soda, Candy) = P(Popcorn | Unlike Troll2) * P(Soda | Unlike Troll2) * P(Candy | Unlike Troll2) * P(Unlike Troll2)</code>。</li>
+<li><code>P(Unlike Troll2) = 8 / 16 = 0.5</code> (下圖1)</li>
+<li>然後把 Popcorn, Soda, Candy 的機率帶入，但是因為 Candy 的機率非常非常小，小到會變成 0，所以我們要使用 log 來避免Underflow。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/E8Xk2ni.png" alt=""></li>
+</ul>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/RoeParA.png" alt=""></p>
+<h2 id="NB-與-Gaussian-NB-差異">NB 與 Gaussian NB 差異</h2>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Naive Bayes</th>
+<th>Gaussian Naive Bayes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一般性</td>
+<td>通用的分類器，適用於不同類型的特徵</td>
+<td>Naive Bayes 的特例，專門用於連續型特徵</td>
+</tr>
+<tr>
+<td>特徵類型</td>
+<td>離散特徵或連續特徵</td>
+<td>連續特徵</td>
+</tr>
+<tr>
+<td>分佈假設</td>
+<td>可以使用不同的概率分佈模型（如多項式、伯努利）</td>
+<td>假設特徵值服從高斯分佈</td>
+</tr>
+<tr>
+<td>常見應用</td>
+<td>文本分類、垃圾郵件過濾等</td>
+<td>根據連續特徵（如身高和體重）進行分類</td>
+</tr>
+</tbody>
+</table>
+<h1 id="K-Nearest-Neighbors-KNN">K Nearest Neighbors (KNN)</h1>
+<p>簡單來說就是，<strong>挑最近的 k 個鄰居出來統計 (投票)，看最多人屬哪一類，自己標成那一類</strong><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/ESGbkKH.png" alt=""></p>
+<table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>類型</td>
+<td>kNN 是一種<em>向量空間分類方法</em>。</td>
+</tr>
+<tr>
+<td>簡單性</td>
+<td>它非常簡單且易於實現。</td>
+</tr>
+<tr>
+<td>準確性</td>
+<td>在大多數情況下，<em>kNN 比 Naive Bayes 和其他方法更準確</em>。</td>
+</tr>
+<tr>
+<td>迅速性</td>
+<td>如果你需要在短時間內得到一個相當準確的分類器……</td>
+</tr>
+<tr>
+<td>效率</td>
+<td>……並且不太在乎效率的話可以使用kNN……</td>
+</tr>
+<tr>
+<td><strong>時間複雜度</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>測試時間</td>
+<td><em>kNN 的測試時間與訓練集的大小成正比</em>。訓練集越大，分類測試文檔所需的時間越長。</td>
+</tr>
+<tr>
+<td>效率</td>
+<td>kNN 對於非常大的訓練集來說效率低下。</td>
+</tr>
+<tr>
+<td>訓練需求</td>
+<td>無需訓練。</td>
+</tr>
+<tr>
+<td>預處理</td>
+<td>但<em>文檔的線性預處理與訓練 Naive Bayes 同樣昂貴</em>。</td>
+</tr>
+<tr>
+<td>訓練時間</td>
+<td>我們總是對訓練集進行預處理，所以實際上 kNN 的訓練時間是線性的。</td>
+</tr>
+<tr>
+<td>訓練集大小與準確性</td>
+<td>如果<em>訓練集很大，kNN 非常準確。如果訓練集很小，kNN 可能非常不準確</em>。</td>
+</tr>
+<tr>
+<td>概率轉換</td>
+<td>kNN 的分數很難轉換為概率。</td>
+</tr>
+<tr>
+<td>更穩健的替代方法</td>
+<td>更穩健的替代方法是找到 k 個最相似的示例，並返回這些 k 個示例中的多數類別。k 的值通常取奇數以避免平局；3 和 5 是最常見的。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Support-Vector-Machine-SVM">Support Vector Machine (SVM)</h1>
+<ul>
+<li>Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://medium.com/@elvennote/%E6%94%AF%E6%8F%B4%E5%90%91%E9%87%8F%E6%A9%9F-support-vector-machine-796cb18886eb">支援向量機(Support Vector Machine)</a><br>
+SVM的目標是<strong>找到一個最佳的超平面（在二維空間中就是一條直線），將不同類別的數據分開</strong>。這條超平面應該使得兩個不同類別的數據點距離超平面的間隔最大化，這些距離稱為邊界（margin），如下圖。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/V12HzXw.png" alt=""></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/text-classification/">https://shannonhung.github.io/posts/text-classification/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！ <em>如果你覺得我的文章有幫助，希望你可以到我的 github 給我一個 star ⭐️ <a href="https://github.com/ShannonHung/ShannonHung.github.io" rel="external nofollow noreferrer" target="_blank">Shannon Blog Repo</a></em></span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mechine-Learning/">Mechine Learning</a><a class="post-meta__tags" href="/tags/Text-Classification/">Text Classification</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/ai-knowledge.jpeg" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/Design-Pattern-Hands-on/" title="Design Pattern - Day1: Introd to Design Pattern"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMxNTYwMg&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Design Pattern - Day1: Introd to Design Pattern</div></div></a></div><div class="next-post pull-right"><a href="/posts/ML/" title="All basic concept of Mechine Learning - ML 的重點知識整理"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/ai-knowledge.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">All basic concept of Mechine Learning - ML 的重點知識整理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/ML/" title="All basic concept of Mechine Learning - ML 的重點知識整理"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/ai-knowledge.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-30</div><div class="title">All basic concept of Mechine Learning - ML 的重點知識整理</div></div></a></div><div><a href="/posts/bert-nbme-score-clinical-patient-notes/" title="NBME - 使用 DeBERTa 模型分析病人病例"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/clinical-patient.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-30</div><div class="title">NBME - 使用 DeBERTa 模型分析病人病例</div></div></a></div><div><a href="/posts/PyTorch-Mac-GPU-Setup/" title="MAC OS - PyTorch 上如何啟用 GPU"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/mac_ai_gpu.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-30</div><div class="title">MAC OS - PyTorch 上如何啟用 GPU</div></div></a></div><div><a href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/lstm-emotion.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-16</div><div class="title">Twitter Dataset - 使用 LSTM 預測文章的情緒</div></div></a></div><div><a href="/posts/pytorch-CNN-TensorBoard/" title="CIFAR10 Dataset - 使用 Pytorch 搭建 CNN + 啟用 GPU + 結果展示至 TensorBoard"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/CNN-bg.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-24</div><div class="title">CIFAR10 Dataset - 使用 Pytorch 搭建 CNN + 啟用 GPU + 結果展示至 TensorBoard</div></div></a></div><div><a href="/posts/TensorFlow-Windows-GPU-Setup/" title="Windows - Tensorflow GPU Setup 手把手教你於Tensorflow上啟用GPU"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/mac_ai_gpu.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">Windows - Tensorflow GPU Setup 手把手教你於Tensorflow上啟用GPU</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">51</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">32</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">我是臺灣科技大學-資管所的研究生，今年預計前往德國雙聯。開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TF-IDF"><span class="toc-text">TF-IDF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Term-Frequency-tf"><span class="toc-text">Term Frequency (tf)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inverse-Document-Frequency-IDF"><span class="toc-text">Inverse Document Frequency (IDF)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Text-Classification-TC"><span class="toc-text">Text Classification (TC)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Naive-Bayes"><span class="toc-text">Naive Bayes</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="toc-text">注意事項</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%84%AA%E7%BC%BA%E9%BB%9E"><span class="toc-text">優缺點</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gaussian-Naive-Bayes"><span class="toc-text">Gaussian Naive Bayes</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-text">例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NB-%E8%88%87-Gaussian-NB-%E5%B7%AE%E7%95%B0"><span class="toc-text">NB 與 Gaussian NB 差異</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#K-Nearest-Neighbors-KNN"><span class="toc-text">K Nearest Neighbors (KNN)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Support-Vector-Machine-SVM"><span class="toc-text">Support Vector Machine (SVM)</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/leetcode-128-longest-consecutive-sequence/" title="LeetCode #128 Longest Consecutive Sequence - 刷題之旅"><img src="/img/loading-icon.gif" data-original="/img/cover/north-light-bear.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LeetCode #128 Longest Consecutive Sequence - 刷題之旅"/></a><div class="content"><a class="title" href="/posts/leetcode-128-longest-consecutive-sequence/" title="LeetCode #128 Longest Consecutive Sequence - 刷題之旅">LeetCode #128 Longest Consecutive Sequence - 刷題之旅</a><time datetime="2024-06-01T06:06:54.000Z" title="發表於 2024-06-01 14:06:54">2024-06-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/0/" title="無標題"><img src="/img/loading-icon.gif" data-original="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="無標題"/></a><div class="content"><a class="title" href="/posts/0/" title="無標題">無標題</a><time datetime="2024-05-31T09:30:27.072Z" title="發表於 2024-05-31 17:30:27">2024-05-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/leetcode-49-group-anagrams/" title="LeetCode #49 Group Anagrams - 刷題之旅"><img src="/img/loading-icon.gif" data-original="/img/cover/classification.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LeetCode #49 Group Anagrams - 刷題之旅"/></a><div class="content"><a class="title" href="/posts/leetcode-49-group-anagrams/" title="LeetCode #49 Group Anagrams - 刷題之旅">LeetCode #49 Group Anagrams - 刷題之旅</a><time datetime="2024-05-31T02:00:54.000Z" title="發表於 2024-05-31 10:00:54">2024-05-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/bert-nbme-score-clinical-patient-notes/" title="NBME - 使用 DeBERTa 模型分析病人病例"><img src="/img/loading-icon.gif" data-original="/img/cover/clinical-patient.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="NBME - 使用 DeBERTa 模型分析病人病例"/></a><div class="content"><a class="title" href="/posts/bert-nbme-score-clinical-patient-notes/" title="NBME - 使用 DeBERTa 模型分析病人病例">NBME - 使用 DeBERTa 模型分析病人病例</a><time datetime="2024-05-30T03:12:54.000Z" title="發表於 2024-05-30 11:12:54">2024-05-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/leetcode-169-majority-element/" title="LeetCode #169 Majority Element - 刷題之旅"><img src="/img/loading-icon.gif" data-original="/img/cover/majority-element-bear.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LeetCode #169 Majority Element - 刷題之旅"/></a><div class="content"><a class="title" href="/posts/leetcode-169-majority-element/" title="LeetCode #169 Majority Element - 刷題之旅">LeetCode #169 Majority Element - 刷題之旅</a><time datetime="2024-05-30T02:00:54.000Z" title="發表於 2024-05-30 10:00:54">2024-05-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      id: '9dd9edc7298a7cce1696598bc6c0eaa2',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
