@@ -4,6 +4,39 @@
   
     
     <entry>
+      <title>LeetCode #20 Valid Parentheses - 刷題之旅</title>
+      <link href="/posts/leetcode-120-valid-parentheses/"/>
+      <url>/posts/leetcode-120-valid-parentheses/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p>這是一個括號匹配的問題，給一個只包含<code>(</code>, <code>)</code>, <code>&#123;</code>, <code>&#125;</code>, <code>[</code>, <code>]</code>的字符串，目的是要檢查一個字串是否是有效的括號組合。<br><img src="https://i.imgur.com/KGx9I0c.png" alt=""></p><h1 id="2-解法">2 解法</h1><p>我的想法很簡單：</p><ol><li>先建立一個 dictionary，把所有的括號對應關係記錄下來。 key 是 <code>(</code>, <code>&#123;</code>, <code>[</code>，value 是說明 key 的方向(<code>open</code> or <code>close</code>)與屬性(大, 中, 小括號)。</li><li>開始遍歷字串，如果是<code>open</code>，就把它放進 stack 裡面，如果是<code>close</code>，就檢查 stack 最上面的元素是否是對應的開括號，如果是就 pop 掉，不是就返回 False。</li></ol><p>大概是這種感覺：<br><img src="https://i.imgur.com/DklQ6Je.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isValid</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        str_dic = &#123;</span><br><span class="line">            <span class="string">&quot;&#123;&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Big&quot;</span>],</span><br><span class="line">            <span class="string">&quot;&#125;&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Big&quot;</span>],</span><br><span class="line">            <span class="string">&quot;[&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Mid&quot;</span>],</span><br><span class="line">            <span class="string">&quot;]&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Mid&quot;</span>],</span><br><span class="line">            <span class="string">&quot;(&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Small&quot;</span>],</span><br><span class="line">            <span class="string">&quot;)&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Small&quot;</span>],</span><br><span class="line">        &#125;</span><br><span class="line">        stack = []</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">            target = str_dic.get(i)</span><br><span class="line">            <span class="comment"># open </span></span><br><span class="line">            <span class="keyword">if</span> target[<span class="number">0</span>] == <span class="string">&quot;open&quot;</span>:</span><br><span class="line">                stack.append(i)</span><br><span class="line">            <span class="keyword">else</span>: <span class="comment"># close</span></span><br><span class="line">                <span class="comment"># 應對可能一開始就是 close 的情況 stack 是空的</span></span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(stack) == <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># [1] 檢查是否相同型態:  Big, Mid, Small </span></span><br><span class="line">                <span class="keyword">if</span> str_dic.get(stack.pop())[<span class="number">1</span>] != target[<span class="number">1</span>]:</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 確保所有的都配對完</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> stack <span class="comment"># if the stack is empty, all opening brackets have been matched with their corresponding closing brackets,</span></span><br><span class="line">                         <span class="comment"># so the string is valid, otherwise, there are unmatched opening brackets, so return false</span></span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題很簡單，但是要能夠想到用 stack 來解決，<strong>如果是應對對稱性的問題，stack 是一個很好的選擇</strong>。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Easy </tag>
+            
+            <tag> Stack </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #128 Longest Consecutive Sequence - 刷題之旅</title>
       <link href="/posts/leetcode-128-longest-consecutive-sequence/"/>
       <url>/posts/leetcode-128-longest-consecutive-sequence/</url>
@@ -801,9 +834,9 @@
       
         <tags>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> DLP </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -1132,9 +1165,9 @@
       
         <tags>
             
-            <tag> Database </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Database </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -1171,9 +1204,9 @@
       
         <tags>
             
-            <tag> Database </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Database </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -1208,11 +1241,11 @@
       
         <tags>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -1241,11 +1274,11 @@
       
         <tags>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -1498,9 +1531,9 @@
       
         <tags>
             
-            <tag> 簽證 </tag>
-            
             <tag> 德國 </tag>
+            
+            <tag> 簽證 </tag>
             
         </tags>
       
