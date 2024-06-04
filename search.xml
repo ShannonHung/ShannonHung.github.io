@@ -8,7 +8,7 @@
       <link href="/posts/leetcode-120-valid-parentheses/"/>
       <url>/posts/leetcode-120-valid-parentheses/</url>
       
-        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p>這是一個括號匹配的問題，給一個只包含<code>(</code>, <code>)</code>, <code>&#123;</code>, <code>&#125;</code>, <code>[</code>, <code>]</code>的字符串，目的是要檢查一個字串是否是有效的括號組合。<br><img src="https://i.imgur.com/KGx9I0c.png" alt=""></p><h1 id="2-解法">2 解法</h1><p>我的想法很簡單：</p><ol><li>先建立一個 dictionary，把所有的括號對應關係記錄下來。 key 是 <code>(</code>, <code>&#123;</code>, <code>[</code>，value 是說明 key 的方向(<code>open</code> or <code>close</code>)與屬性(大, 中, 小括號)。</li><li>開始遍歷字串，如果是<code>open</code>，就把它放進 stack 裡面，如果是<code>close</code>，就檢查 stack 最上面的元素是否是對應的開括號，如果是就 pop 掉，不是就返回 False。</li></ol><p>大概是這種感覺：<br><img src="https://i.imgur.com/DklQ6Je.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isValid</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        str_dic = &#123;</span><br><span class="line">            <span class="string">&quot;&#123;&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Big&quot;</span>],</span><br><span class="line">            <span class="string">&quot;&#125;&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Big&quot;</span>],</span><br><span class="line">            <span class="string">&quot;[&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Mid&quot;</span>],</span><br><span class="line">            <span class="string">&quot;]&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Mid&quot;</span>],</span><br><span class="line">            <span class="string">&quot;(&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Small&quot;</span>],</span><br><span class="line">            <span class="string">&quot;)&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Small&quot;</span>],</span><br><span class="line">        &#125;</span><br><span class="line">        stack = []</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">            target = str_dic.get(i)</span><br><span class="line">            <span class="comment"># open </span></span><br><span class="line">            <span class="keyword">if</span> target[<span class="number">0</span>] == <span class="string">&quot;open&quot;</span>:</span><br><span class="line">                stack.append(i)</span><br><span class="line">            <span class="keyword">else</span>: <span class="comment"># close</span></span><br><span class="line">                <span class="comment"># 應對可能一開始就是 close 的情況 stack 是空的</span></span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(stack) == <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># [1] 檢查是否相同型態:  Big, Mid, Small </span></span><br><span class="line">                <span class="keyword">if</span> str_dic.get(stack.pop())[<span class="number">1</span>] != target[<span class="number">1</span>]:</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 確保所有的都配對完</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> stack <span class="comment"># if the stack is empty, all opening brackets have been matched with their corresponding closing brackets,</span></span><br><span class="line">                         <span class="comment"># so the string is valid, otherwise, there are unmatched opening brackets, so return false</span></span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題很簡單，但是要能夠想到用 stack 來解決，<strong>如果是應對對稱性的問題，stack 是一個很好的選擇</strong>。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p>這是一個括號匹配的問題，給一個只包含<code>(</code>, <code>)</code>, <code>&#123;</code>, <code>&#125;</code>, <code>[</code>, <code>]</code>的字符串，目的是要檢查一個字串是否是有效的括號組合。<br><img src="https://i.imgur.com/KGx9I0c.png" alt=""></p><h1 id="2-解法">2 解法</h1><p>我的想法很簡單：</p><ol><li>先建立一個 dictionary，把所有的括號對應關係記錄下來。 key 是 <code>(</code>, <code>&#123;</code>, <code>[</code>，value 是說明 key 的方向(<code>open</code> or <code>close</code>)與屬性(大, 中, 小括號)。</li><li>開始遍歷字串，如果是<code>open</code>，就把它放進 stack 裡面，如果是<code>close</code>，就檢查 stack 最上面的元素是否是對應的開括號，如果是就 pop 掉，不是就返回 False。</li></ol><p>大概是這種感覺：<br><img src="https://i.imgur.com/DklQ6Je.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isValid</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        str_dic = &#123;</span><br><span class="line">            <span class="string">&quot;&#123;&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Big&quot;</span>],</span><br><span class="line">            <span class="string">&quot;&#125;&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Big&quot;</span>],</span><br><span class="line">            <span class="string">&quot;[&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Mid&quot;</span>],</span><br><span class="line">            <span class="string">&quot;]&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Mid&quot;</span>],</span><br><span class="line">            <span class="string">&quot;(&quot;</span>: [<span class="string">&quot;open&quot;</span>, <span class="string">&quot;Small&quot;</span>],</span><br><span class="line">            <span class="string">&quot;)&quot;</span>: [<span class="string">&quot;close&quot;</span>, <span class="string">&quot;Small&quot;</span>],</span><br><span class="line">        &#125;</span><br><span class="line">        stack = []</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">            target = str_dic.get(i)</span><br><span class="line">            <span class="comment"># open </span></span><br><span class="line">            <span class="keyword">if</span> target[<span class="number">0</span>] == <span class="string">&quot;open&quot;</span>:</span><br><span class="line">                stack.append(i)</span><br><span class="line">            <span class="keyword">else</span>: <span class="comment"># close</span></span><br><span class="line">                <span class="comment"># 應對可能一開始就是 close 的情況 stack 是空的</span></span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(stack) == <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># [1] 檢查是否相同型態:  Big, Mid, Small </span></span><br><span class="line">                <span class="keyword">if</span> str_dic.get(stack.pop())[<span class="number">1</span>] != target[<span class="number">1</span>]:</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 確保所有的都配對完</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> stack <span class="comment"># if the stack is empty, all opening brackets have been matched with their corresponding closing brackets,</span></span><br><span class="line">                         <span class="comment"># so the string is valid, otherwise, there are unmatched opening brackets, so return false</span></span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度O(n)</strong> for 循環遍歷整個 s 列表，時間複雜度為 O(n)。<br><strong>空間複雜度O(n)</strong> 空間複雜度由字典 stack存儲 n 個不同的字，因此空間複雜度為 O(n)。</p></div><h1 id="3-總結">3 總結</h1><p>這題很簡單，但是要能夠想到用 stack 來解決，<strong>如果是應對對稱性的問題，stack 是一個很好的選擇</strong>。</p>]]></content>
       
       
       <categories>
@@ -24,11 +24,44 @@
             
             <tag> leetcode </tag>
             
-            <tag> Stack </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Stack </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #71 Simplify Path - 刷題之旅</title>
+      <link href="/posts/leetcode-71-simplify-path/"/>
+      <url>/posts/leetcode-71-simplify-path/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/ZMpZJ3j.png" alt=""><br><img src="https://i.imgur.com/gFzfnvi.png" alt=""><br><img src="https://i.imgur.com/FJagwnq.png" alt=""></p><p>這個題目的目標是在把一個很複雜的路徑簡化成為一個簡單的路徑，例如：</p><ul><li>input: <code>/a/./b/../../c/</code></li><li>output: <code>/c</code></li></ul><p><em>從上面的例子來說，<code>/a/b</code> 進去後，往上一層，再往上一層，回到<code>/</code>，最後進到 <code>/c</code>，但直接寫成 <code>/c</code> 不就好了嗎？太蠢了，請簡化他！這就是題目的用意。</em></p><h1 id="2-解法">2 解法</h1><p>從題目的思路來看，你會發現當遇到 <code>/..</code> 的時候，就需要往上一層，其實就是把目前 stack 的最上面的目錄 pop 出來，當遇到正常的目錄而不是<code>/.</code> 或是 <code>/..</code> 就可以放入 stack 裡面。從下面的圖片來看，以 <code>/.../a/../b/c/../d/./</code> 為例子，我們可以看到 stack 的變化。（注意 <code>/...</code> 是一個目錄，因為他不是 <code>/.</code> 或是 <code>/..</code>）</p><blockquote><p>從下圖來看，只要是正常檔案名稱，就放入 stack 裡面<br><img src="https://i.imgur.com/bvP0N2v.png" alt=""></p></blockquote><blockquote><p>當遇到 <code>..</code> 的時候，就 pop 出來，當遇到 <code>.</code> 的時候，就不做任何事情，繼續往下走。<br><img src="https://i.imgur.com/q2XcnlM.png" alt=""></p></blockquote><blockquote><p>最後，把 stack 裡面的元素，用 <code>/</code> 串接起來，就是答案。<br><img src="https://i.imgur.com/aT6YhtD.png" alt=""></p></blockquote><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">simplifyPath</span>(<span class="params">self, path: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> path.split(<span class="string">&quot;/&quot;</span>):</span><br><span class="line">            <span class="comment"># 如果是空的或是當前目錄，就不做任何事情 </span></span><br><span class="line">            <span class="keyword">if</span> i == <span class="string">&quot;&quot;</span> <span class="keyword">or</span> i == <span class="string">&quot;.&quot;</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="comment"># 如果是上一層目錄，就 pop 出來 </span></span><br><span class="line">            <span class="keyword">if</span> i == <span class="string">&quot;..&quot;</span>:</span><br><span class="line">                <span class="comment"># 但是如果 stack 是空的，就不做任何事情 </span></span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(stack) == <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    stack.pop()</span><br><span class="line">            <span class="comment"># 不是特殊標誌，就是一般檔案名稱，放入 stack 裡面</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                stack.append(i)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 可以用 join 實現 </span></span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> <span class="built_in">len</span>(stack) == <span class="number">0</span>:</span><br><span class="line">            ans = <span class="string">&quot;/&quot;</span> + stack.pop() + ans</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(ans) == <span class="number">0</span>:</span><br><span class="line">            ans = <span class="string">&quot;/&quot;</span></span><br><span class="line">        <span class="keyword">return</span> ans </span><br><span class="line"></span><br><span class="line"><span class="comment"># 著重在需要做處理的部分 (if, elif)</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> path.split(<span class="string">&quot;/&quot;</span>):</span><br><span class="line">            <span class="keyword">if</span> stack <span class="keyword">and</span> i == <span class="string">&quot;..&quot;</span>:</span><br><span class="line">                stack.pop()</span><br><span class="line">            <span class="keyword">elif</span> i <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">&quot;&quot;</span>, <span class="string">&quot;.&quot;</span>, <span class="string">&quot;..&quot;</span>]:</span><br><span class="line">                stack.append(i)</span><br></pre></td></tr></table></figure><p>但是我們發現應該可以簡化一下，因為 <code>continue</code> 的部分應該省略，專注在需要執行動作的條件<code>if</code>上。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># continue 的部分應該省略，專注在需要執行動作的條件if上</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> path.split(<span class="string">&quot;/&quot;</span>):</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;&quot;</span> <span class="keyword">or</span> i == <span class="string">&quot;.&quot;</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;..&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(stack) == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            stack.pop()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        stack.append(i)</span><br></pre></td></tr></table></figure><p>以及最後的部分，我們可以用 <code>join</code> 實現，而不是用 <code>while</code> loop 來實現。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以用 join 實現 </span></span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> <span class="built_in">len</span>(stack) == <span class="number">0</span>:</span><br><span class="line">            ans = <span class="string">&quot;/&quot;</span> + stack.pop() + ans</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(ans) == <span class="number">0</span>:</span><br><span class="line">            ans = <span class="string">&quot;/&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(ans)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 改成這樣</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;/&quot;</span> + <span class="string">&quot;/&quot;</span>.join(stack))</span><br></pre></td></tr></table></figure><p><strong>修改後的程式碼如下</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">simplifyPath2</span>(<span class="params">self, path: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> path.split(<span class="string">&quot;/&quot;</span>):</span><br><span class="line">            <span class="keyword">if</span> stack <span class="keyword">and</span> i == <span class="string">&quot;..&quot;</span>:</span><br><span class="line">                stack.pop()</span><br><span class="line">            <span class="keyword">elif</span> i <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">&quot;&quot;</span>, <span class="string">&quot;.&quot;</span>, <span class="string">&quot;..&quot;</span>]:</span><br><span class="line">                stack.append(i)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/&quot;</span> + <span class="string">&quot;/&quot;</span>.join(stack)</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度O(n)</strong> for 循環遍歷整個 s 列表在 split 過後，時間複雜度為 O(n)。<br><strong>空間複雜度O(n)</strong> 空間複雜度由字典 stack 存儲 n 個不同的檔案名稱，因此空間複雜度為 O(n)。</p></div><h1 id="3-總結">3 總結</h1><p>總結來說，很開心這個題目也是30分鐘內就寫出解決辦法，但是對於程式碼的簡化，還是需要多加練習，這個題目的特性就是你發現要有需要<em>回到上一層的需求，stack會是一個很好的選擇</em>，因為 <code>pop()</code> 可以把上面的元素拿掉，這樣就可以達到目的。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Stack </tag>
             
         </tags>
       
@@ -90,11 +123,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -136,11 +169,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -196,11 +229,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -229,11 +262,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -262,11 +295,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -295,11 +328,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
             
@@ -330,11 +363,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
