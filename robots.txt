@@ -1,0 +1,14 @@
+User-agent: *
+
+Allow: */posts/*
+
+Disallow: */js/*
+Disallow: */css/*
+Disallow: */img/*
+Disallow: */categories/*
+Disallow: */tags/*
+Disallow: */archives/*
+Disallow: */*.css
+Disallow: */*.js
+
+Sitemap: https://shannonhung.github.io/sitemap.xml
