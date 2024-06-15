@@ -4,6 +4,41 @@
   
     
     <entry>
+      <title>LeetCode #224 Basic Calculator - 刷題之旅</title>
+      <link href="/posts/leetcode-224-basic-calculator/"/>
+      <url>/posts/leetcode-224-basic-calculator/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/PCh2571.png" alt=""><br><img src="https://i.imgur.com/Vnniv8o.png" alt=""></p><p>這題是 Hard 的題目，難度在於，要如何處理以下問題：</p><ol><li>碰到括號怎麼進行優先處理</li><li>括號前面的“-”號會改變括號內的數字正負，並且要與括號外的數字相加</li></ol><h1 id="2-解法">2 解法</h1><p>首先一個很重要的概念是，我們要如何處理括號的問題，這邊我們會使用到三個變數：</p><ol><li><code>sign</code>：用來記錄當前的正負號，初始值為 1，通常用來記錄數字前一個符號是正還是負。</li><li><code>res</code>：用來記錄當前的結果，初始值為 0，通常是用來記錄左括號之前的加總數字。</li><li><code>num</code>：用來記錄當前的數字，初始值為 0，通常是當前括號內的數字總和。</li></ol><p>因此我們所使用的公式如下：<br><img src="https://i.imgur.com/PAEEBxR.png" alt=""></p><p>在了解公式之後，我們要有一個邏輯處理當碰到<code>左括號</code> 和 <code>右括號</code>的流程。<br><strong>當碰到左括號</strong></p><ol><li>我們要記錄當前的 <code>res</code> 和 <code>sign</code>先放到 stack 裡面，並且重新設定 <code>res</code> 和 <code>sign</code> 為 0 和 1。</li><li>然後優先處理括號內的數字，直到遇到右括號。</li></ol><p><strong>當碰到右括號</strong></p><ol><li>當前的 <code>res</code> 是括號內的加總數字</li><li>括號的前一個符號，也就是在 stack 裡面的 <code>sign</code> 會決定括號內的數字是正還是負。</li><li>因此我們會將括號也就是當前的 <code>res</code> 和 stack 的<code>sign</code> 取出來並相乘，再加回去 來自 stack 的 <code>res</code>。</li></ol><p>流程大概就是這樣，以 <code>(1+(4+5+2)-3)-(16+8)</code> 為例：</p><ol><li>因為一開始就是 <code>(</code>，所以我們會將 <code>res</code> 和 <code>sign</code> 放到 stack 裡面，並且重新設定 <code>res</code> 和 <code>sign</code> 為 0 和 1。</li><li>然後開始處理 <code>1+</code> 的部分，<code>res</code> 會變成 1，<code>sign</code> 會變成 1。</li><li>結果又碰到 <code>(</code>，所以我們會將 <code>res</code>(1) 和 <code>sign</code>(1) 放到 stack 裡面，並且重新設定 <code>res</code> 和 <code>sign</code> 為 0 和 1。</li><li>開始專心處理 <code>4+5+2</code> 的部分，<code>res</code> 會變成 11，<code>sign</code> 會變成 1。</li><li>結果碰到了 <code>)</code>，這時候我們要將 stack 的 <code>sign</code> pop 出來與括號的 <code>res</code>相乘，並且與 stack 中的 <code>res</code> 相加。</li><li>然後繼續處理…<br>(參考以下示意圖)<br><img src="https://i.imgur.com/yQn4err.png" alt=""><br><img src="https://i.imgur.com/hOkTGFJ.png" alt=""></li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calculate2</span>(<span class="params">self, s</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    1. Take 3 containers:</span></span><br><span class="line"><span class="string">    num -&gt; to store current num value only</span></span><br><span class="line"><span class="string">    sign -&gt; to store sign value, initially +1</span></span><br><span class="line"><span class="string">    res -&gt; to store sum</span></span><br><span class="line"><span class="string">    When ( comes these containers used for calculate sum of intergers within () brackets.</span></span><br><span class="line"><span class="string">    --------------------</span></span><br><span class="line"><span class="string">    2. When c is + or -</span></span><br><span class="line"><span class="string">    Move num to res, because we need to empty num for next integer value.</span></span><br><span class="line"><span class="string">    set num = 0</span></span><br><span class="line"><span class="string">    sign = update with c</span></span><br><span class="line"><span class="string">    --------------------</span></span><br><span class="line"><span class="string">    3. When c is &#x27;(&#x27;</span></span><br><span class="line"><span class="string">    Here, we need num, res, sign to calculate sum of integers within ()</span></span><br><span class="line"><span class="string">    So, move num and sign to stack =&gt; [num, sign]</span></span><br><span class="line"><span class="string">    Now reset - res = 0, num = 0, sign = 1 (default)</span></span><br><span class="line"><span class="string">    --------------------</span></span><br><span class="line"><span class="string">    4. When c is &#x27;)&#x27; -&gt; 2-(3+4), Here res=3, num=4, sign=1 stack [2, -]</span></span><br><span class="line"><span class="string">    res +=sign*num -&gt; calculate sum for num first, then pop items from stack, res=7</span></span><br><span class="line"><span class="string">    res *=stack.pop() - &gt; Pop sign(+ or -) to multiply with res, res = 7*(-1)</span></span><br><span class="line"><span class="string">    res +=stack.pop() - &gt; Pop integer and add with prev. sum, res = -7 + 2 - 5</span></span><br><span class="line"><span class="string">    --------------------</span></span><br><span class="line"><span class="string">    Simple Example: 2 - 3</span></span><br><span class="line"><span class="string">    Initially res will have 2,i.e. res = 2</span></span><br><span class="line"><span class="string">    then store &#x27;-&#x27; in sign. it will be used when 3 comes. ie. sign = -1</span></span><br><span class="line"><span class="string">    Now 3 comes =&gt; res = res + num*sign</span></span><br><span class="line"><span class="string">    Return statement: res+num*sign =&gt; res = 2 + 3(-1) = 2 - 3 = -1</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num = <span class="number">0</span></span><br><span class="line">    sign = <span class="number">1</span></span><br><span class="line">    res = <span class="number">0</span></span><br><span class="line">    stack = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):  <span class="comment"># iterate till last character</span></span><br><span class="line">        c = s[i]</span><br><span class="line">        <span class="keyword">if</span> c.isdigit():  <span class="comment"># process if there is digit</span></span><br><span class="line">            num = num * <span class="number">10</span> + <span class="built_in">int</span>(c)  <span class="comment"># for consecutive digits 98 =&gt; 9x10 + 8 = 98</span></span><br><span class="line">        <span class="keyword">elif</span> c <span class="keyword">in</span> <span class="string">&#x27;-+&#x27;</span>:  <span class="comment"># check for - and + sign，如果沒遇到括號，就繼續計算res總額</span></span><br><span class="line">            res += num * sign</span><br><span class="line">            sign = -<span class="number">1</span> <span class="keyword">if</span> c == <span class="string">&#x27;-&#x27;</span> <span class="keyword">else</span> <span class="number">1</span></span><br><span class="line">            num = <span class="number">0</span></span><br><span class="line">        <span class="keyword">elif</span> c == <span class="string">&#x27;(&#x27;</span>:  <span class="comment"># if ( comes, 儲存括號以外的總額，與括號之前的符號</span></span><br><span class="line">            stack.append(res)</span><br><span class="line">            stack.append(sign)</span><br><span class="line">            res = <span class="number">0</span>     <span class="comment"># reset res for new calculation </span></span><br><span class="line">            sign = <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> c == <span class="string">&#x27;)&#x27;</span>:  <span class="comment"># if ) comes, 括號結束的意思，可以把 stack 的內容取出來計算</span></span><br><span class="line">            res += sign * num</span><br><span class="line">            res *= stack.pop()</span><br><span class="line">            res += stack.pop()</span><br><span class="line">            num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> res + num * sign</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題真的難，這題的<em>難度我卡在不知道該怎麼處理括號前面對“負號“的狀況，這邊的解法是把括號前面的符號存到 stack 裡面</em>，然後在括號結束的時候，再取出來相乘，這樣就可以處理括號前面的負號問題。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Stack </tag>
+            
+            <tag> Hard </tag>
+            
+            <tag> Hard-For-Me </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #Todo - 刷題之旅</title>
       <link href="/posts/leetcode-todo-list/"/>
       <url>/posts/leetcode-todo-list/</url>
@@ -224,9 +259,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Hash </tag>
             
             <tag> Medium </tag>
             
@@ -270,9 +305,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Hash </tag>
             
             <tag> Medium </tag>
             
@@ -330,44 +365,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
-      <link href="/posts/leetcode-12-integer-to-roman/"/>
-      <url>/posts/leetcode-12-integer-to-roman/</url>
-      
-        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> LeetCode </category>
-          
-          <category> 刷題之旅 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> leetcode </tag>
-            
             <tag> Hash </tag>
-            
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -396,9 +398,42 @@
             
             <tag> leetcode </tag>
             
+            <tag> practice </tag>
+            
             <tag> Hash </tag>
             
+            <tag> Medium </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
+      <link href="/posts/leetcode-12-integer-to-roman/"/>
+      <url>/posts/leetcode-12-integer-to-roman/</url>
+      
+        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
             <tag> practice </tag>
+            
+            <tag> Hash </tag>
             
             <tag> Medium </tag>
             
@@ -429,9 +464,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Hash </tag>
             
             <tag> Medium </tag>
             
@@ -464,11 +499,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -526,9 +561,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> Lecture </tag>
             
         </tags>
       
