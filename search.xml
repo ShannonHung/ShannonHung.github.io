@@ -4,6 +4,76 @@
   
     
     <entry>
+      <title>LeetCode - 刷題之旅的總結與心得</title>
+      <link href="/posts/leetcode-sum-up/"/>
+      <url>/posts/leetcode-sum-up/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Todo-Linked-List">Todo - Linked List</h1><h2 id="0611-Tue-21-Merge-Two-Sorted-Lists">0611 Tue - 21. Merge Two Sorted Lists</h2><ul><li><a href="https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0612-Wed-138-Copy-List-with-Random-Pointer">0612 Wed - 138. Copy List with Random Pointer</h2><ul><li><a href="https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0613-Thu-92-Reverse-Linked-List-II">0613 Thu - 92. Reverse Linked List II</h2><ul><li><a href="https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h1 id="Hash-Table">Hash Table</h1><h2 id="情境1-快速找元素"><strong>情境1: 快速找元素</strong></h2><ul><li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li><li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li><li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li></ul></li></ul><h2 id="情境2-比對無序的東西"><strong>情境2: 比對無序的東西</strong></h2><ul><li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li><li>相關題目：<ul><li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li></ul></li></ul><h2 id="情境3-找連續的不重複元素"><strong>情境3: 找連續的不重複元素</strong></h2><ul><li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li><li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li><li>相關題目：<ul><li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Stack-Queue">Stack &amp; Queue</h1><h2 id="情境1-後進先出問題"><strong>情境1: 後進先出問題</strong></h2><ul><li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li><li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li><li>相關題目：<ul><li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li><li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li></ul></li></ul><h2 id="情境2-數字計算，括弧的優先"><strong>情境2: 數字計算，括弧的優先</strong></h2><ul><li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li><li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li><li>相關題目：<ul><li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li><li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li></ul></li></ul><h2 id="情境3-時間複雜度O-1-卻能取得Max或Min"><strong>情境3: 時間複雜度O(1)卻能取得Max或Min</strong></h2><ul><li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li><li>相關題目：<ul><li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="情境1-判斷是否有循環"><strong>情境1: 判斷是否有循環</strong></h2><ul><li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li><li>相關題目：<ul><li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li></ul></li></ul><h2 id="情境2-dummy-head-的使用"><strong>情境2: dummy head 的使用</strong></h2><ul><li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li><li>相關題目：<ul><li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li></ul></li></ul><h1 id="特殊">特殊</h1><h2 id="摩爾投票法">摩爾投票法</h2><div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p></div><p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p><p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Stack </tag>
+            
+            <tag> Queue </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #2 Add Two Numbers - 刷題之旅</title>
+      <link href="/posts/leetcode-2-add-two-numbers/"/>
+      <url>/posts/leetcode-2-add-two-numbers/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/f2vClUm.png" alt=""><br><img src="https://i.imgur.com/LPCMrnR.png" alt=""></p><p>這題就是兩個鍊錶表示的數相加，這樣就可以實現兩個很大的數相加了，<em>關鍵要能無需考慮數值 int ，float 的限制了</em>。但是如果你把 ListNode 直接串啟程字串並且轉換成數字，這你就大錯特錯了！因為這樣就失去了這題的意義了。</p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的解法">2.1 我的解法</h2><p>我一開始沒意識到，這題的 ListNode 是倒序的，所以我一開始的想法是把兩個 ListNode 轉換成數字，然後相加，再轉換成 ListNode。但是這樣就失去了這題的意義了。因為有一個test case是超級長的<code>[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]</code>直接突破了int的限制。</p><div class="note warning flat"><p><strong>所以我的解法無法通過這個 test case。建議參考下一個方法</strong></p></div><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">addTwoNumbers</span>(<span class="params">self, l1: <span class="type">Optional</span>[ListNode], l2: <span class="type">Optional</span>[ListNode]</span>) -&gt; <span class="type">Optional</span>[ListNode]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        1. 先串起來成字串 [2, 3, 4] =&gt; 432, [5, 6, 4] =&gt; 465</span></span><br><span class="line"><span class="string">        2. 字串轉換成數字後相加 int(432) + int(465) = 807</span></span><br><span class="line"><span class="string">        3. 807 mode 10 一個個串入 7 -&gt; 0 -&gt; 8</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        l1_str = <span class="string">&quot;&quot;</span></span><br><span class="line">        l2_str = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">while</span> l1:</span><br><span class="line">            l1_str = <span class="built_in">str</span>(l1.val) + l1_str</span><br><span class="line">            l1 = l1.<span class="built_in">next</span></span><br><span class="line">        <span class="keyword">while</span> l2:</span><br><span class="line">            l2_str = <span class="built_in">str</span>(l2.val) + l2_str</span><br><span class="line">            l2 = l2.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line">        tot = <span class="built_in">int</span>(l1_str) + <span class="built_in">int</span>(l2_str)</span><br><span class="line">        val = tot % <span class="number">10</span></span><br><span class="line">        head = ListNode(val)</span><br><span class="line"></span><br><span class="line">        current = head</span><br><span class="line">        <span class="keyword">while</span> current:</span><br><span class="line">            tot = <span class="built_in">int</span>(tot / <span class="number">10</span>)</span><br><span class="line">            val = tot % <span class="number">10</span></span><br><span class="line">            <span class="keyword">if</span> tot == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            new_node = ListNode(val)</span><br><span class="line">            current.<span class="built_in">next</span> = new_node</span><br><span class="line">            current = current.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> head</span><br></pre></td></tr></table></figure><h2 id="2-2-最佳解法">2.2 最佳解法</h2><p>這題的精髓在於有以下兩個特點：</p><ol><li><strong>從個位數往前一個個相加</strong>：為了實現兩個很大的數值相加，不被 int 的限制，我們在相加的時候可以從倒序 listnode 開始相加，也就是 123 + 456 的時候，我們從 3+6 開始。因此 123 需要先變成 321，456 需要先變成 654。這樣才可以從個位數（3與6）開始相加。</li><li><strong>處理商數</strong>：再來第二點是，我們要處理商數，也就是進位的問題。因此我們需要一個變數 <code>carry</code> 來處理進位的問題。如果個位數相加的時候，發現有進位的需求，我們就把進位的數字加到下一個數字相加的時候。</li><li><strong>dummy_head</strong>：如果我們要處理第一個 ListNode 就是兩個 ListNode 的第一個值相加的話，這可能會導致整個程式碼很攏長，要先檢查是否None，然後取出第二個數值，再相加。確保好第一個ListNode才可以進入while迴圈，但是檢查的事項又要重新做第二次，因此還不如直接先造出一個假的 ListNode，然後最後再返回 <code>dummy_head.next</code> 就好。</li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">addTwoNumbers2</span>(<span class="params">self, l1: <span class="type">Optional</span>[ListNode], l2: <span class="type">Optional</span>[ListNode]</span>) -&gt; <span class="type">Optional</span>[ListNode]:</span><br><span class="line">    dummy_head = ListNode(<span class="number">0</span>) <span class="comment"># 原來還可以隨便塞一個，最後 return dummy_head.next 就好 （記得把 dummy_head.next 清空）</span></span><br><span class="line">    cur = dummy_head</span><br><span class="line">    carry = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> l1 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">or</span> l2 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">or</span> carry != <span class="number">0</span>:</span><br><span class="line">        digit1 = l1.val <span class="keyword">if</span> l1 <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">        digit2 = l2.val <span class="keyword">if</span> l2 <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="built_in">sum</span> = digit1 + digit2 + carry</span><br><span class="line">        digit = <span class="built_in">sum</span> % <span class="number">10</span></span><br><span class="line">        carry = <span class="built_in">sum</span> // <span class="number">10</span></span><br><span class="line"></span><br><span class="line">        cur.<span class="built_in">next</span> = ListNode(digit)</span><br><span class="line">        cur = cur.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line">        l1 = l1.<span class="built_in">next</span> <span class="keyword">if</span> l1 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line">        l2 = l2.<span class="built_in">next</span> <span class="keyword">if</span> l2 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    result = dummy_head.<span class="built_in">next</span></span><br><span class="line">    dummy_head.<span class="built_in">next</span> = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題我也沒有在時間內解出來，直接去看答案了，雖然我的想法跟答案有點像，但是我還是傻傻的先把ListNode轉換成數字的字串，再用這個字串從第一個字串開始處理，太蠢了！！！可以直接拿ListNode開始處理，人家都幫你倒敘排好了…簡單來說，根本不用這樣做：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">addTwoNumbers</span>(<span class="params">self, l1: <span class="type">Optional</span>[ListNode], l2: <span class="type">Optional</span>[ListNode]</span>) -&gt; <span class="type">Optional</span>[ListNode]:</span><br><span class="line">    l1_str = <span class="string">&quot;&quot;</span></span><br><span class="line">    l2_str = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">while</span> l1:</span><br><span class="line">        l1_str = <span class="built_in">str</span>(l1.val) + l1_str</span><br><span class="line">        l1 = l1.<span class="built_in">next</span></span><br><span class="line">    <span class="keyword">while</span> l2:</span><br><span class="line">        l2_str = <span class="built_in">str</span>(l2.val) + l2_str</span><br><span class="line">        l2 = l2.<span class="built_in">next</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #141 Linked List Cycle - 刷題之旅</title>
       <link href="/posts/leetcode-141-linked-list-cycle/"/>
       <url>/posts/leetcode-141-linked-list-cycle/</url>
@@ -26,11 +96,11 @@
             
             <tag> practice </tag>
             
+            <tag> Easy </tag>
+            
             <tag> Review-Needed </tag>
             
             <tag> linked-list </tag>
-            
-            <tag> Easy </tag>
             
         </tags>
       
@@ -90,48 +160,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Stack </tag>
-            
             <tag> practice </tag>
             
-            <tag> Hard </tag>
+            <tag> Stack </tag>
             
             <tag> Review-Needed </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>LeetCode #Todo - 刷題之旅</title>
-      <link href="/posts/leetcode-todo-list/"/>
-      <url>/posts/leetcode-todo-list/</url>
-      
-        <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>因為接下來的幾天要去巴黎跟埃及，所以可能會無法每天刷一題Leetcode…<br>但是會攜帶Ipad去刷題，這篇文章是讓我放題目的地方 這樣我就可以方面找到題目了</p><p>主要題目來源：<a href="https://leetcode.com/studyplan/top-interview-150/">https://leetcode.com/studyplan/top-interview-150/</a><br>提示來源：<a href="https://leetcode.wang/">https://leetcode.wang/</a></p><h1 id="Stack">Stack</h1><h2 id="0607-Fri-224-Basic-Calculator">0607 Fri - 224. Basic Calculator</h2><ul><li>ref: <a href="https://leetcode.com/problems/basic-calculator/description/?envType=study-plan-v2&amp;envId=top-interview-150">source</a></li><li>ref: <a href="https://leetcode.wang/leetcode-224-Basic-Calculator.html">提示</a><br><img src="https://i.imgur.com/PCh2571.png" alt=""><br><img src="https://i.imgur.com/Vnniv8o.png" alt=""></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="0608-Sat-Linked-List-Node">0608 Sat - Linked List Node</h2><ul><li>todo</li></ul><h2 id="0609-Sun-141-Linked-List-Cycle">0609 Sun - 141. Linked List Cycle</h2><ul><li><a href="https://leetcode.com/problems/linked-list-cycle/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/linked-list-cycle/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0610-Mon-2-Add-Two-Numbers">0610 Mon - 2. Add Two Numbers</h2><ul><li><a href="https://leetcode.com/problems/add-two-numbers/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/add-two-numbers/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0611-Tue-21-Merge-Two-Sorted-Lists">0611 Tue - 21. Merge Two Sorted Lists</h2><ul><li><a href="https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0612-Wed-138-Copy-List-with-Random-Pointer">0612 Wed - 138. Copy List with Random Pointer</h2><ul><li><a href="https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0613-Thu-92-Reverse-Linked-List-II">0613 Thu - 92. Reverse Linked List II</h2><ul><li><a href="https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0614-Fri-回卡魯">0614 Fri 回卡魯</h2>]]></content>
-      
-      
-      <categories>
-          
-          <category> LeetCode </category>
-          
-          <category> 刷題之旅 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> leetcode </tag>
-            
-            <tag> Stack </tag>
-            
-            <tag> Queue </tag>
-            
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
+            <tag> Hard </tag>
             
         </tags>
       
@@ -160,11 +195,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Stack </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Stack </tag>
             
         </tags>
       
@@ -193,11 +228,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Stack </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Stack </tag>
             
         </tags>
       
@@ -226,9 +261,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Stack </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Stack </tag>
             
             <tag> Easy </tag>
             
@@ -259,11 +294,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Stack </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Stack </tag>
             
         </tags>
       
@@ -292,11 +327,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
-            
             <tag> Stack </tag>
             
             <tag> Queue </tag>
+            
+            <tag> Lecture </tag>
             
         </tags>
       
@@ -433,9 +468,9 @@
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -538,6 +573,8 @@
             
             <tag> Sliding-Window </tag>
             
+            <tag> Review-Needed </tag>
+            
         </tags>
       
     </entry>
@@ -567,9 +604,9 @@
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -1737,9 +1774,9 @@
       
         <tags>
             
-            <tag> 德國 </tag>
-            
             <tag> 簽證 </tag>
+            
+            <tag> 德國 </tag>
             
         </tags>
       
