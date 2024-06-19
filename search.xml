@@ -8,7 +8,34 @@
       <link href="/posts/leetcode-sum-up/"/>
       <url>/posts/leetcode-sum-up/</url>
       
-        <content type="html"><![CDATA[<h1 id="Todo-Linked-List">Todo - Linked List</h1><h2 id="0611-Tue-21-Merge-Two-Sorted-Lists">0611 Tue - 21. Merge Two Sorted Lists</h2><ul><li><a href="https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0612-Wed-138-Copy-List-with-Random-Pointer">0612 Wed - 138. Copy List with Random Pointer</h2><ul><li><a href="https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0613-Thu-92-Reverse-Linked-List-II">0613 Thu - 92. Reverse Linked List II</h2><ul><li><a href="https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h1 id="Hash-Table">Hash Table</h1><h2 id="情境1-快速找元素"><strong>情境1: 快速找元素</strong></h2><ul><li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li><li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li><li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li></ul></li></ul><h2 id="情境2-比對無序的東西"><strong>情境2: 比對無序的東西</strong></h2><ul><li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li><li>相關題目：<ul><li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li></ul></li></ul><h2 id="情境3-找連續的不重複元素"><strong>情境3: 找連續的不重複元素</strong></h2><ul><li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li><li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li><li>相關題目：<ul><li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Stack-Queue">Stack &amp; Queue</h1><h2 id="情境1-後進先出問題"><strong>情境1: 後進先出問題</strong></h2><ul><li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li><li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li><li>相關題目：<ul><li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li><li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li></ul></li></ul><h2 id="情境2-數字計算，括弧的優先"><strong>情境2: 數字計算，括弧的優先</strong></h2><ul><li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li><li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li><li>相關題目：<ul><li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li><li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li></ul></li></ul><h2 id="情境3-時間複雜度O-1-卻能取得Max或Min"><strong>情境3: 時間複雜度O(1)卻能取得Max或Min</strong></h2><ul><li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li><li>相關題目：<ul><li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="情境1-判斷是否有循環"><strong>情境1: 判斷是否有循環</strong></h2><ul><li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li><li>相關題目：<ul><li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li></ul></li></ul><h2 id="情境2-dummy-head-的使用"><strong>情境2: dummy head 的使用</strong></h2><ul><li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li><li>相關題目：<ul><li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li></ul></li></ul><h1 id="特殊">特殊</h1><h2 id="摩爾投票法">摩爾投票法</h2><div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p></div><p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p><p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="Todo-Linked-List">Todo - Linked List</h1><h2 id="0611-Tue-21-Merge-Two-Sorted-Lists">0611 Tue - 21. Merge Two Sorted Lists</h2><ul><li><a href="https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0612-Wed-138-Copy-List-with-Random-Pointer">0612 Wed - 138. Copy List with Random Pointer</h2><ul><li><a href="https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h2 id="0613-Thu-92-Reverse-Linked-List-II">0613 Thu - 92. Reverse Linked List II</h2><ul><li><a href="https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=study-plan-v2&amp;envId=top-interview-150</a></li></ul><h1 id="Hash-Table">Hash Table</h1><h2 id="情境1-快速找元素"><strong>情境1: 快速找元素</strong></h2><ul><li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li><li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li><li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li></ul></li></ul><h2 id="情境2-比對無序的東西"><strong>情境2: 比對無序的東西</strong></h2><ul><li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li><li>相關題目：<ul><li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li></ul></li></ul><h2 id="情境3-找連續的不重複元素"><strong>情境3: 找連續的不重複元素</strong></h2><ul><li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li><li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li><li>相關題目：<ul><li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Stack-Queue">Stack &amp; Queue</h1><h2 id="情境1-後進先出問題"><strong>情境1: 後進先出問題</strong></h2><ul><li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li><li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li><li>相關題目：<ul><li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li><li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li></ul></li></ul><h2 id="情境2-數字計算，括弧的優先"><strong>情境2: 數字計算，括弧的優先</strong></h2><ul><li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li><li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li><li>相關題目：<ul><li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li><li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li></ul></li></ul><h2 id="情境3-時間複雜度O-1-卻能取得Max或Min"><strong>情境3: 時間複雜度O(1)卻能取得Max或Min</strong></h2><ul><li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li><li>相關題目：<ul><li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="情境1-判斷是否有循環"><strong>情境1: 判斷是否有循環</strong></h2><ul><li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li><li>相關題目：<ul><li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li></ul></li></ul><h2 id="情境2-dummy-head-的使用-若為-None-則給予極值"><strong>情境2: dummy head 的使用 + 若為 None 則給予極值</strong></h2><ul><li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li><li>我們最怕的是在取listNode的值時發現他是None而導致錯誤，<em>因此我們可以使用 <code>digit1 = list1.val if list1 else 極值</code> 的方式</em>，儘管遇到 none 仍然可以繼續執行迴圈，直到兩個 list1 跟 list2 都觸底，以避免 None 的問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li><li><a href="/posts/leetcode-21-merge-two-sorted-lists">leetcode-21-merge-two-sorted-lists</a>：合併兩個有序的linked list</li></ul></li></ul><h1 id="特殊">特殊</h1><h2 id="摩爾投票法">摩爾投票法</h2><div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p></div><p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p><p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #21 Merge Two Sorted Lists - 刷題之旅</title>
+      <link href="/posts/leetcode-21-merge-two-sorted-lists/"/>
+      <url>/posts/leetcode-21-merge-two-sorted-lists/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/QRGvMq9.png" alt=""></p><p>合併兩個有序的鍊錶，並且返回一個新的鍊錶。新的鍊錶是由兩個鍊錶的節點組成的。</p><h1 id="2-解法">2 解法</h1><p>跟 <a href="https://shannonhung.github.io/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a> 很類似，因為它涉及到多個 listNode 的操作，並且將操作結果合併為一個，因此我們可以使用 dummy_head 來幫助我們串接結果。因為他是排序，所以要比較兩個數字的大小，但是我們最怕的是在取listNode的值時發現他是None而導致錯誤，因為題目說數字範圍是[0, 50] 因此我們取 100 當作最大值，<em>因此我們可以使用 <code>digit1 = list1.val if list1 else 100</code> 的方式</em>，儘管遇到 none 仍然可以繼續執行迴圈，直到兩個 list1 跟 list2 都觸底，以避免 None 的問題。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ListNode</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, val=<span class="number">0</span>, <span class="built_in">next</span>=<span class="literal">None</span></span>):</span><br><span class="line">        self.val = val</span><br><span class="line">        self.<span class="built_in">next</span> = <span class="built_in">next</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">mergeTwoLists</span>(<span class="params">self, list1: <span class="type">Optional</span>[ListNode], list2: <span class="type">Optional</span>[ListNode]</span>) -&gt; <span class="type">Optional</span>[ListNode]:</span><br><span class="line">        dummy_head = ListNode(-<span class="number">1</span>)</span><br><span class="line">        cur = dummy_head</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> list1 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">or</span> list2 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="comment"># 檢查是否為 None，如果是 None 就取 100 以繼續迴圈</span></span><br><span class="line">            digit1 = list1.val <span class="keyword">if</span> list1 <span class="keyword">else</span> <span class="number">100</span></span><br><span class="line">            digit2 = list2.val <span class="keyword">if</span> list2 <span class="keyword">else</span> <span class="number">100</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 操作：比較大小，取最小值，並且移動指標</span></span><br><span class="line">            <span class="keyword">if</span> digit1 &lt;= digit2:</span><br><span class="line">                min_val = digit1</span><br><span class="line">                list1 = list1.<span class="built_in">next</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                min_val = digit2</span><br><span class="line">                list2 = list2.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line">            cur.<span class="built_in">next</span> = ListNode(min_val)</span><br><span class="line">            cur = cur.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 把 dummy_head 移除</span></span><br><span class="line">        result = dummy_head.<span class="built_in">next</span></span><br><span class="line">        dummy_head.<span class="built_in">next</span> = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題很簡單，如果有處理過 Medium 等級的 <a href="https://shannonhung.github.io/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>會覺得這個簡單很多！這題五分鐘左右就寫出來了！會運用到的概念就是 dummy_head 以及 取 value 的使用。</p>]]></content>
       
       
       <categories>
@@ -26,11 +53,38 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
+            <tag> Easy </tag>
             
-            <tag> Stack </tag>
+            <tag> linked-list </tag>
             
-            <tag> Queue </tag>
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>手把手帶你實作 Hugging Face Transformers (入門篇)</title>
+      <link href="/posts/transformers/"/>
+      <url>/posts/transformers/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Transformers-相關的庫">Transformers 相關的庫</h1><ul><li>Transformers 核心庫: 模型加載 模型訓練</li><li>Tokenizer 分詞器: 對數據進行預處理，將文本轉換成模型可以理解的格式(Token序列)</li><li></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Code </category>
+          
+          <category> Mechine Learning </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mechine Learning </tag>
+            
+            <tag> Transformers </tag>
             
         </tags>
       
@@ -162,9 +216,9 @@
             
             <tag> practice </tag>
             
-            <tag> Stack </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> Stack </tag>
             
             <tag> Hard </tag>
             
@@ -263,9 +317,9 @@
             
             <tag> practice </tag>
             
-            <tag> Stack </tag>
-            
             <tag> Easy </tag>
+            
+            <tag> Stack </tag>
             
         </tags>
       
@@ -327,11 +381,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Lecture </tag>
+            
             <tag> Stack </tag>
             
             <tag> Queue </tag>
-            
-            <tag> Lecture </tag>
             
         </tags>
       
@@ -360,11 +414,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -406,11 +460,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -466,9 +520,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> practice </tag>
             
             <tag> Easy </tag>
             
@@ -499,11 +553,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -532,11 +586,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -565,11 +619,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
             
@@ -602,9 +656,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> practice </tag>
             
             <tag> Easy </tag>
             
