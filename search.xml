@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>手把手帶你實作 Hugging Face Transformers (入門篇)</title>
+      <link href="/posts/transformers/"/>
+      <url>/posts/transformers/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Transformers-相關的庫">Transformers 相關的庫</h1><ul><li>Transformers 核心庫: 模型加載 模型訓練</li><li>Tokenizer 分詞器: 對數據進行預處理，將文本轉換成模型可以理解的格式(Token序列)</li><li>Datasets 數據集庫: 下載公開的數據集，並且進行預處理</li><li>Evaluate 評估函示: 像是準確率 F1, BLEU, ROUGE 等等</li><li>PEFT 高校微調方法: 只訓練一小部分參數，而不是全部重新訓練，提供常用的微調方法</li><li>Accelerate 分布式訓練: 對訓練過程進行加速，提供了分布式訓練的方法</li><li>Optimum 優化加速庫: 提供了一些優化方法，比如混合精度訓練，對訓練過程進行加速</li><li>Gradio 可視化庫: 提供了一些可視化的方法，透過幾行程式達到快速外部交互的效果</li></ul><h1 id="前置環境">前置環境</h1><p>需要安裝以下套件：</p><ol><li>python</li><li>conda</li><li>pytorch</li></ol><ul><li>以我的狀況為例，我是cuda支援的版本是12.4，這代表小於12.4的版本都可以支援cuda，建議使用pip進行安裝</li><li>30xx 或是 40xx 顯卡要安裝 cu11 以上的版本</li></ul><p>最後測試是否安裝成功</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\Name&gt;python</span><br><span class="line">&gt;&gt;&gt; import torch</span><br><span class="line">&gt;&gt;&gt; torch.cuda.is_available()</span><br><span class="line">True <span class="comment"># 如果是 True 代表安裝成功</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure><h2 id="確認cuda版本">確認cuda版本</h2><p><img src="https://i.imgur.com/Dpk1cKn.png" alt=""></p><ol><li>進入 nvdia 控制面板</li><li>點選系統信息</li><li>查看 cuda 版本</li></ol><h1 id="Transformers-安裝">Transformers 安裝</h1><p>執行以下指令安裝 transformers</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install transformers datasets evaluate peft accelerate gradio optimum sentencepiece</span><br><span class="line">pip install jupyterlab scikit-learn pandas matplotlib tensorboard nltk rouge</span><br></pre></td></tr></table></figure><h1 id="關於Pipeline">關於Pipeline</h1><p>這是一個簡單的工具，可以幫助我們快速的使用模型進行預測，包含三個階段：</p><ol><li>Tokenization 數據處理: 將文本轉換成模型可以理解的格式(Token序列)<ul><li>Raw Text (<code>&quot;This is apple&quot;</code>) -&gt; Tokenization -&gt; Token IDs (<code>[100, 101, 2708]</code>)</li></ul></li><li>Model 模型調用: 使用模型進行預測<ul><li><code>[-4.3630, 4.6859]</code></li></ul></li><li>Post-processing 結果後處理: 將模型的輸出轉換成我們需要的格式<ul><li><code>Pisitive: 99.89%, Negative: 0.11%</code></li></ul></li></ol><p>有很多不同 Pipeline 支援的任務，可以透過以下程式碼查看：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers.pipelines <span class="keyword">import</span> SUPPORTED_TASKS</span><br><span class="line"><span class="keyword">for</span> k, v <span class="keyword">in</span> SUPPORTED_TASKS.items():</span><br><span class="line">    <span class="built_in">print</span>(k, v[<span class="string">&quot;type&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 顯示出以下 這邊我們會以 text-classification 為例</span></span><br><span class="line">audio-classification  | audio</span><br><span class="line">automatic-speech-recognition  | multimodal</span><br><span class="line">text-to-audio  | text</span><br><span class="line">feature-extraction  | multimodal</span><br><span class="line">text-classification  | text</span><br><span class="line">token-classification  | text</span><br><span class="line">question-answering  | text</span><br><span class="line">table-question-answering  | text</span><br><span class="line">visual-question-answering  | multimodal</span><br><span class="line">document-question-answering  | multimodal</span><br><span class="line">fill-mask  | text</span><br><span class="line">summarization  | text</span><br><span class="line">translation  | text</span><br><span class="line">text2text-generation  | text</span><br><span class="line">text-generation  | text</span><br><span class="line">zero-shot-classification  | text</span><br><span class="line">zero-shot-image-classification  | multimodal</span><br><span class="line">zero-shot-audio-classification  | multimodal</span><br><span class="line">conversational  | text</span><br><span class="line">image-classification  | image</span><br><span class="line">image-feature-extraction  | image</span><br><span class="line">image-segmentation  | multimodal</span><br><span class="line">image-to-text  | multimodal</span><br><span class="line"><span class="built_in">object</span>-detection  | multimodal</span><br><span class="line">zero-shot-<span class="built_in">object</span>-detection  | multimodal</span><br><span class="line">depth-estimation  | image</span><br><span class="line">video-classification  | video</span><br><span class="line">mask-generation  | multimodal</span><br><span class="line">image-to-image  | image</span><br></pre></td></tr></table></figure><p><img src="https://i.imgur.com/cyb3H6I.png" alt=""></p><h2 id="快速上手">快速上手</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> * </span><br><span class="line"></span><br><span class="line">pipe = pipeline(<span class="string">&quot;text-classification&quot;</span>) <span class="comment"># 指定任務 </span></span><br><span class="line">pip(<span class="string">&quot;This is a good day&quot;</span>) <span class="comment"># 會印出 &#123;&#x27;label&#x27;: &#x27;POSITIVE&#x27;, &#x27;score&#x27;: 0.9998&#125;</span></span><br></pre></td></tr></table></figure><h2 id="使用指定模型">使用指定模型</h2><p>可以前往 <a href="https://huggingface.co/models">https://huggingface.co/models</a> 找到模型名稱建立相對應的Pipeline。</p><p><strong>指定任務 -&gt; 再指定模型 -&gt; 創建基於指定模型的 Pipeline</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> * </span><br><span class="line"></span><br><span class="line">pipe = pipeline(<span class="string">&quot;text-classification&quot;</span>, model=<span class="string">&quot;uer/roberta-base-finetuned-dianping-chinese&quot;</span>)</span><br><span class="line">pipe(<span class="string">&quot;今天是好天氣&quot;</span>) <span class="comment"># 會印出 &#123;&#x27;label&#x27;: &#x27;POSITIVE&#x27;, &#x27;score&#x27;: 0.9998&#125;</span></span><br></pre></td></tr></table></figure><p><strong>預先加載模型，再創建Pipeline</strong></p><div class="note info flat"><p>一定要使用模型相對應的 Tokenizer，否則會出現錯誤</p></div><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> * </span><br><span class="line"></span><br><span class="line">model = AutoModelForSequenceClassification.from_pretrained(<span class="string">&quot;uer/roberta-base-finetuned-dianping-chinese&quot;</span>)</span><br><span class="line">toeknizer = AutoTokenizer.from_pretrained(<span class="string">&quot;uer/roberta-base-finetuned-dianping-chinese&quot;</span>)</span><br><span class="line">pipe = pipeline(<span class="string">&quot;text-classification&quot;</span>, model=model, tokenizer=tokenizer)</span><br><span class="line">pipe(<span class="string">&quot;今天是好天氣&quot;</span>) <span class="comment"># 會印出 &#123;&#x27;label&#x27;: &#x27;POSITIVE&#x27;, &#x27;score&#x27;: 0.9998&#125;</span></span><br></pre></td></tr></table></figure><h2 id="使用GPU">使用GPU</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> * </span><br><span class="line"></span><br><span class="line">pipe = pipeline(<span class="string">&quot;text-classification&quot;</span>) <span class="comment"># 指定任務 </span></span><br><span class="line"><span class="built_in">print</span>(pipe.model.device) <span class="comment"># 會顯示 device(type=&#x27;cuda&#x27;, index=0)</span></span><br></pre></td></tr></table></figure><h1 id="關於Tokenizer">關於Tokenizer</h1><p>Tokenizer 是將文本轉換成模型可以理解的格式(Token序列)，這是模型的第一步，因為模型只能理解數字，而不能理解文本。因此 Tokenizer 是非常重要的一個環節。</p><p><strong>基本使用</strong></p><ul><li>加載保存<ul><li><code>from_pretrained</code>: 從預訓練模型中加載 Tokenizer</li><li><code>save_pretrained</code>: 將 Tokenizer 保存到本地</li></ul></li><li>句子分詞<ul><li><code>tokenize</code>: 句子分詞</li><li><code>encode</code>: 句子轉換成 ID</li></ul></li><li>查看字典<ul><li><code>vocab</code>: 顯示 Tokenizer 的詞彙表</li></ul></li><li>索引轉換<ul><li><code>convert_tokens_to_ids</code>: 將 Token 轉換成 ID</li><li><code>convert_ids_to_tokens</code>: 將 ID 轉換成 Token</li></ul></li><li>填充截斷<ul><li><code>padding</code>: 對文本進行填充</li><li><code>truncation</code>: 對文本進行截斷</li></ul></li></ul><h2 id="快速上手-2">快速上手</h2><ul><li>直接使用 tokenizer(sen, padding=“max_length”, max_length=10) 可以會傳以下資訊<ul><li><code>offset_mapping</code>: 會顯示每個 token 在原始文本中的位置，通常會合 word_ids 一起使用<ul><li>會長這樣 <code>[(0, 0), (0, 2), (2, 5), (5, 8), (8, 11), (0, 0)]</code></li></ul></li><li><code>word_ids</code>: 會顯示每個 token 對應的原始文本中的單詞<ul><li>會長這樣 <code>[None, 0, 1, 2, 3, None]</code></li></ul></li><li><code>input_ids</code>: 會顯示每個 token 對應的 ID<ul><li>會長這樣 <code>[101, 0, 1, 2, 3, 102]</code></li></ul></li><li><code>attention_mask</code>: 會顯示每個 token 對應的注意力遮罩，哪些部分是有效的哪些是填充的<ul><li>會長這樣 <code>[1, 1, 1, 1, 1, 1, 0, 0]</code></li></ul></li><li><code>token_type_ids</code>: 會顯示每個 token 對應的 token type<ul><li>會長這樣 <code>[0, 0, 0, 0, 0, 0, 0, 0]</code></li></ul></li></ul></li><li><code>add_special_tokens</code>: 是否加入特殊的 token，像是 [CLS], [SEP] 等等</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 加載與保存</span></span><br><span class="line"><span class="comment">## 可以在 /users/.cache/huggingface/hub 下找到</span></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(<span class="string">&quot;user/tokenizer-name&quot;</span>)</span><br><span class="line">tokenizer.save_pretrained(<span class="string">&quot;tokenizer-name&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 分詞</span></span><br><span class="line">tokenizer = toeknizer(<span class="string">&quot;今天是好天氣&quot;</span>) </span><br><span class="line"><span class="built_in">print</span>(tokenizer) <span class="comment"># 會印出 [&#x27;今天&#x27;, &#x27;是&#x27;, &#x27;好&#x27;, &#x27;天氣&#x27;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 查看辭典</span></span><br><span class="line"><span class="built_in">print</span>(tokenizer.vocab) <span class="comment"># 會印出 &#123;&#x27;今天&#x27;: 0, &#x27;是&#x27;: 1, &#x27;好&#x27;: 2, &#x27;天氣&#x27;: 3&#125;</span></span><br><span class="line"><span class="built_in">print</span>(tokenizer.vocab_size) <span class="comment"># 可以查看辭典的大小</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 索引轉換</span></span><br><span class="line">ids = tokenizer.convert_tokens_to_ids(<span class="string">&quot;今天是好天氣&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(ids) <span class="comment"># 會印出 [0, 1, 2, 3]</span></span><br><span class="line">str_sen = tokenizer.convert_ids_to_tokens([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="built_in">print</span>(str_sen) <span class="comment"># 會印出 [&#x27;今天&#x27;, &#x27;是&#x27;, &#x27;好&#x27;, &#x27;天氣&#x27;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 更便捷的方法</span></span><br><span class="line"><span class="comment">### add_special_tokens - 是否加入特殊的 token，像是 [CLS], [SEP] 等等</span></span><br><span class="line">ids = tokenizer.encode(<span class="string">&quot;今天是好天氣&quot;</span>, add_special_tokens=<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(ids) <span class="comment"># 會印出 [101, 0, 1, 2, 3, 102] </span></span><br><span class="line">str_sen = tokenizer.decode([<span class="number">101</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">102</span>])</span><br><span class="line"><span class="built_in">print</span>(str_sen) <span class="comment"># 會印出 &#x27;[CLS] 今天 是 好 天氣 [SEP]&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 填充與截斷</span></span><br><span class="line"><span class="comment">## 太短的句子要 填充 </span></span><br><span class="line">ids = tokenizer.encode(<span class="string">&quot;今天是好天氣&quot;</span>, padding=<span class="string">&quot;max_length&quot;</span>, max_length=<span class="number">10</span>)</span><br><span class="line"><span class="built_in">print</span>(ids) <span class="comment"># [101, 0, 1, 2, 3, 102, 0, 0, 0, 0] </span></span><br><span class="line"> </span><br><span class="line"><span class="comment">## 過長的句子要 截斷(truncation) 你會發現 special token 必須包含在裡面</span></span><br><span class="line">ids = tokenizer.encode(<span class="string">&quot;今天是好天氣&quot;</span>, truncation=<span class="literal">True</span>, max_length=<span class="number">4</span>)</span><br><span class="line"><span class="built_in">print</span>(ids) <span class="comment"># [101, 0, 1, 102]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 6. 最常用的方法</span></span><br><span class="line">inputs = tokenizer(<span class="string">&quot;今天是好天氣&quot;</span>, padding=<span class="string">&quot;max_length&quot;</span>, max_length=<span class="number">10</span>, return_offsets_mapping=<span class="literal">True</span>) </span><br><span class="line"><span class="built_in">print</span>(inputs) <span class="comment"># input_ids, attention_mask, token_type_ids, offset_mapping 都會印出來</span></span><br><span class="line">inputs.word_ids() <span class="comment"># 會印出 &#x27;word_ids&#x27;: [None, 0, 1, 2, 3, 3, None] 因為有可能一個單字拆成多個 token 你會看到 3, 3 表示這個單字被拆成兩個 token</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 7. 處理 batch </span></span><br><span class="line">sens = [<span class="string">&quot;今天是好天氣&quot;</span>, <span class="string">&quot;明天是好天氣&quot;</span>]</span><br><span class="line">inputs = tokenizer(sens, padding=<span class="string">&quot;max_length&quot;</span>, max_length=<span class="number">15</span>)</span><br><span class="line"><span class="built_in">print</span>(inputs)</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="特殊Tokenizer的加載">特殊Tokenizer的加載</h2><p>huggingface 上有很多模型不是官方的，有可能我們下載的模型，他的 Tokenizer 不在官方的 Tokenizer 中，這時候我們可以使用 <code>trust_remote_code=True</code> 來加載 Tokenizer，表示我們相信這個 Tokenizer 是安全的。以 <a href="https://huggingface.co/THUDM/chatglm-6b/tree/main">https://huggingface.co/THUDM/chatglm-6b/tree/main</a> 為例，他所使用的 Tokenizer 是 <code>tokenization_chatglm.py</code> 他自己實現的。</p><p><img src="https://i.imgur.com/nEnq8QI.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer</span><br><span class="line"></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(<span class="string">&quot;THUDM/chatglm-6b&quot;</span>, trust_remote_code=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># 加載完後可以保存 </span></span><br><span class="line">tokenizer.save_pretrained(<span class="string">&quot;chatglm-6b&quot;</span>)</span><br><span class="line"><span class="comment"># 加載回來也要添加 trust_remote_code=True</span></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(<span class="string">&quot;chatglm-6b&quot;</span>, trust_remote_code=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure><h1 id="關於-Model">關於 Model</h1><p><strong>模型的類型</strong></p><ol><li>只有 Encoder: 每個詞都能看到完整上下文<ul><li>常用預訓練模型: BERT, RoBERTa, ALBERT</li><li>適合任務：文本分類、命名實體識別、閱讀理解</li></ul></li><li>只有 Decoder: 每個詞能看到上文，但是不能看到下文<ul><li>常用預訓練模型: GPT, LLaMA</li><li>適合任務：文本生成</li></ul></li><li>Encoder+Decoder: 前面的token只能看後面的，但是到了後面的token就是純粹的解碼器模型了<ul><li>常用預訓練模型: MART, T5, GLM, Marian, mBART</li><li>適合任務：文本摘要, 翻譯<br><img src="https://i.imgur.com/i1BBL7n.png" alt=""></li></ul></li></ol><p><strong>Model Head</strong></p><ul><li>通常是連接在模型後的層，通常為1個或多個fully connected layer</li><li>他負責將模型的輸出轉換成我們需要的格式，以解決不同類型的任務</li><li>常見的像是 ForMaskedLMHead (遮住某個字來猜), ForSeq2SeqLMHead (翻譯), ForQuestionAnsweringHead (問答), ForSequenceClassification (分類)<br><img src="https://i.imgur.com/NkYv83t.png" alt=""></li></ul><h2 id="快速上手-3">快速上手</h2><p>這邊主要會介紹 Model 的基本使用方法</p><ul><li>在線加載: <code>AutoModel.from_pretrained</code></li><li>模型下載</li><li>離線加載</li><li>模型參數下載</li></ul><p>模型調用</p><ol><li>不帶 model head 的模型調用</li><li>帶 model head 的模型調用</li></ol><h3 id="下載模型-AutoModel">下載模型 AutoModel</h3><p><strong>方法1: 線上下載</strong><br>直接透過 AutoModel.from_pretrained()</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoConfig, AutoModel, AutoTokenizer</span><br><span class="line"></span><br><span class="line">model = AutoModel.from_pretrained(<span class="string">&quot;hf1/rbt3&quot;</span>)</span><br></pre></td></tr></table></figure><p><strong>方法2: 模型下載</strong><br>或是可以透過git的方式，甚至是去huggingface自己下載<code>.bin</code>檔案</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!git <span class="built_in">clone</span> <span class="string">&quot;https://huggingface.co/hf1/rbt3&quot;</span></span><br><span class="line">!git lfs <span class="built_in">clone</span> <span class="string">&quot;https://huggingface.co/hf1/rbt3&quot;</span> --include=<span class="string">&quot;*.bin&quot;</span></span><br></pre></td></tr></table></figure><p>然後你就可以在本地加載了:</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoConfig, AutoModel, AutoTokenizer</span><br><span class="line"></span><br><span class="line">model = AutoModel.from_pretrained(<span class="string">&quot;本地資料夾位置&quot;</span>)</span><br></pre></td></tr></table></figure><h3 id="模型參數加載-AutoConfig">模型參數加載 AutoConfig</h3><p>可以透過AutoConfig查看模型相關參數</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoConfig, AutoModel, AutoTokenizer</span><br><span class="line"></span><br><span class="line">config = AutoConfig.from_pretrained(<span class="string">&quot;rbt3&quot;</span>)</span><br><span class="line">config.[想看的參數] <span class="comment"># e.g config.output_attentions</span></span><br></pre></td></tr></table></figure><h3 id="模型調用-AutoTokenizer-AutoModel">模型調用 AutoTokenizer + AutoModel</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoConfig, AutoModel, AutoTokenizer</span><br><span class="line"></span><br><span class="line"><span class="comment"># 先進行tokenize</span></span><br><span class="line">sen = <span class="string">&quot;今天天氣很好今天天氣很好&quot;</span></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(<span class="string">&quot;rbt3&quot;</span>)</span><br><span class="line">inputs = tokenizer(sen, return_tensor=<span class="string">&quot;pt&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(inputs) <span class="comment"># 會列印出 input_ids, token_type_ids, attention_mask </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 調用model </span></span><br><span class="line">model = AutoModel.from_pretrained(<span class="string">&quot;rbt3&quot;</span>) <span class="comment"># 參數可以根據config.[想看的參數]來輸出 e.g. AutoModel.from_pretrained(&quot;rbt3&quot;, output_attentions = True)</span></span><br><span class="line">output = model(**inputs)</span><br><span class="line"><span class="built_in">print</span>(output) <span class="comment"># 就會輸出 last_hidden_state, pooler_output, ... 等 (看你model想輸出多少)</span></span><br><span class="line"><span class="built_in">print</span>(output.last_hidden_state) <span class="comment"># 可以印出特定想看的結果</span></span><br><span class="line"><span class="built_in">print</span>(output.last_hidden_state.size()) <span class="comment"># 可以印出維度 torch.size([1, 12, 768]) 1 batch size, 12 整個token長度, 768 結果size</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(inputs[<span class="string">&quot;input_ids&quot;</span>][<span class="number">0</span>])) <span class="comment"># 可以看inputs的長度發現是12</span></span><br></pre></td></tr></table></figure><h3 id="Model-Head的模型調用">Model Head的模型調用</h3><p>我們用 AutoModelForSequenceClassification 文本分類為例：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoModelForSequenceClassification </span><br><span class="line"></span><br><span class="line">clz_model = AutoModelForSequenceClassification.from_pretrained(<span class="string">&quot;rbts&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(clz_model.config.num_labels) <span class="comment"># 可以看到有幾個分類會印出 2 </span></span><br><span class="line"><span class="built_in">print</span>(clz_model(**inputs)) <span class="comment"># 兩個分類的機率就會印出來 </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我們也可以設定成10個分類</span></span><br><span class="line">clz_model = AutoModelForSequenceClassification.from_pretrained(<span class="string">&quot;rbts&quot;</span>, num_labels=<span class="number">10</span>)</span><br><span class="line"><span class="built_in">print</span>(clz_model.config.num_labels) <span class="comment"># 可以看到有幾個分類會印出 10</span></span><br><span class="line"><span class="built_in">print</span>(clz_model(**inputs)) <span class="comment"># 兩個分類的機率就會印出來 </span></span><br></pre></td></tr></table></figure><h2 id="模型微調範例">模型微調範例</h2><h3 id="step-1-加載數據">step 1 加載數據</h3><p>先去下載 <a href="https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/ChnSentiCorp_htl_all/ChnSentiCorp_htl_all.csv"><code>ChnSentiCorp_ht1_all.csv</code></a> 預測資料存在本地</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoConfig, AutoModel, AutoTokenizer</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line">data = pd.read_csv(<span class="string">&quot;./ChnSentiCorp_ht1_all.csv&quot;</span>).dropna() <span class="comment"># 把空移除</span></span><br></pre></td></tr></table></figure><h3 id="Step-2-創建-dataset">Step 2 創建 dataset</h3><p>後面Dataloader會根據整批的dataset</p><ol><li>進行 90:10 的訓練和測試資料分割</li><li>進行 tokenizer</li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.utils.data <span class="keyword">import</span> Dataset</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyDataset</span>(<span class="title class_ inherited__">Dataset</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>) -&gt; <span class="literal">None</span>: </span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.data = pd.read_csv(<span class="string">&quot;./ChnSentiCorp_ht1_all.csv&quot;</span>).dropna()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, index</span>):</span><br><span class="line">        <span class="keyword">return</span> self.data.iloc[index][<span class="string">&quot;review&quot;</span>], self.data.iloc[index][<span class="string">&quot;label&quot;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.data)</span><br><span class="line"></span><br><span class="line">dataset = MyDataset()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    <span class="built_in">print</span>(daataset[i]) <span class="comment"># 印出來應該會長(&#x27;sentence&#x27;, 1)</span></span><br></pre></td></tr></table></figure><h3 id="Step3-劃分數據集">Step3 劃分數據集</h3><p>接下來我們可以使用 <code>random_split</code> 劃分數據:</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> random_split</span><br><span class="line"></span><br><span class="line">trainset, validset = random_split(dataset, lengths=[<span class="number">0.9</span>, <span class="number">0.1</span>]) <span class="comment"># 90:10</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(trainset, <span class="built_in">len</span>(validset))) <span class="comment"># (6989, 776)</span></span><br></pre></td></tr></table></figure><h3 id="Step-4-創建Dataloader">Step 4 創建Dataloader</h3><p>開始處理 batch 資料，進行 batch 的 tokenizer</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.util.data <span class="keyword">import</span> DataLoader</span><br><span class="line"></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(<span class="string">&quot;rbt3&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">collate_func</span>(<span class="params">batch</span>):</span><br><span class="line">    texts, labels = [], []</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> batch:</span><br><span class="line">        texts.append(item[<span class="number">0</span>])</span><br><span class="line">        labels.append(item[<span class="number">1</span>])</span><br><span class="line">    inputs = tokenizer(texts, max_length=<span class="number">128</span>, padding=<span class="string">&quot;max_length&quot;</span>, truncation=<span class="literal">True</span>, retrun_tensor=<span class="string">&quot;pt&quot;</span>) <span class="comment"># 過長也要截斷  並且返回tensor不是list</span></span><br><span class="line">    inputs[<span class="string">&quot;labels&quot;</span>] = torch.tensor(labels) <span class="comment"># 在裡面多添加一個key叫做labels, 這樣就有input_ids, labels, ...</span></span><br><span class="line">    <span class="keyword">return</span> inputs </span><br><span class="line"></span><br><span class="line">trainloader = DataLoader(trainset, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>, collate_fn=collate_func) </span><br><span class="line">validloader = DataLoader(validset, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>, collate_fn=collate_func)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(<span class="built_in">enumerate</span>(trainloader))[<span class="number">1</span>]) <span class="comment"># 可以印出來第一筆，&#123;&#x27;input&#x27;: [[101, 1, 2], [101, 2, 1], ...], &#x27;label&#x27;: tensor([1, 1, ...])&#125;</span></span><br></pre></td></tr></table></figure><h3 id="Step-5-創建模型及優化器">Step 5 創建模型及優化器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.optim <span class="keyword">import</span> Adam </span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoModelForSequenceClassification </span><br><span class="line"></span><br><span class="line">model = AutoModelForSequenceClassification.from_pretrained(<span class="string">&quot;./rbt3/&quot;</span>)</span><br><span class="line">optimizer = Adam(model.parameters(), l2=<span class="number">2e-5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 gpu </span></span><br><span class="line"><span class="keyword">if</span> torch.cuda.is_available():</span><br><span class="line">    model = model.cuda()</span><br></pre></td></tr></table></figure><h3 id="Step-6-訓練與驗證">Step 6 訓練與驗證</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">evaluate</span>():</span><br><span class="line">    model.<span class="built_in">eval</span>()</span><br><span class="line">    acc_num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">with</span> torch.inference_mode():</span><br><span class="line">        <span class="keyword">for</span> batch <span class="keyword">in</span> validloader:</span><br><span class="line">            <span class="keyword">if</span> torch.cuda.is_available():</span><br><span class="line">                batch = &#123;k: v.cuda() <span class="keyword">for</span> k, v <span class="keyword">in</span> batch.items()&#125;</span><br><span class="line">            ouput = model(**batch)</span><br><span class="line">            pred = torch.argmax(ouput.logits, dim=-<span class="number">1</span>)</span><br><span class="line">            acc_num += (pred.long() == batch[<span class="string">&quot;labels&quot;</span>]).<span class="built_in">float</span>().<span class="built_in">sum</span>() <span class="comment"># 因為是batch，我們想知道這個batch ouput準確的共有多少</span></span><br><span class="line">    <span class="keyword">return</span> acc_num / <span class="built_in">len</span>(validset)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">epoch=<span class="number">3</span>, log_step=<span class="number">100</span></span>):</span><br><span class="line">    global_step = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> ep <span class="keyword">in</span> <span class="built_in">range</span>(epoch):</span><br><span class="line">        model.train()</span><br><span class="line">        <span class="keyword">for</span> batch <span class="keyword">in</span> trainloader: </span><br><span class="line">            <span class="keyword">if</span> torch.cuda.is_available():</span><br><span class="line">                batch = &#123;k: v.cuda() <span class="keyword">for</span> k, v <span class="keyword">in</span> batch.items()&#125;</span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            ouput = model(**batch)</span><br><span class="line">            output.loss.backword() <span class="comment"># 進行backforward</span></span><br><span class="line">            optimizer.step() <span class="comment"># 更新模型</span></span><br><span class="line">            <span class="keyword">if</span> global_step % log_step == <span class="number">0</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;ep: <span class="subst">&#123;ep&#125;</span>, global_step: <span class="subst">&#123;global_step&#125;</span>, loss:<span class="subst">&#123;output.loss.item()&#125;</span>&quot;</span>)</span><br><span class="line">            global_step += <span class="number">1</span></span><br><span class="line">        acc = evaluate()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;ep: <span class="subst">&#123;ep&#125;</span>, acc: <span class="subst">&#123;acc&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 就可以開始訓練了</span></span><br><span class="line">train()  </span><br></pre></td></tr></table></figure><h3 id="Step-9-進行預測">Step 9 進行預測</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">sen = <span class="string">&quot;我覺得這家酒店不錯 飯很好吃！&quot;</span></span><br><span class="line">id2_label = &#123;<span class="number">0</span>: <span class="string">&quot;差評&quot;</span>, <span class="number">1</span>:<span class="string">&quot;好評&quot;</span>&#125;</span><br><span class="line"><span class="keyword">with</span> torch.inference_mode():</span><br><span class="line">    inputs = tokenizer(sen, return_tensors=<span class="string">&quot;pt&quot;</span>)</span><br><span class="line">    inputs = &#123;k: v.cuda() <span class="keyword">for</span> k, v <span class="keyword">in</span> inputs.items()&#125;</span><br><span class="line">    logits = model(**inputs).logits</span><br><span class="line">    pred = torch.argmax(logits, dim=-<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;輸入: <span class="subst">&#123;sen&#125;</span> \n模型預測結果:<span class="subst">&#123;id2_label(pred.item())&#125;</span>&quot;</span>) <span class="comment"># 會顯示 輸入: 我覺得這家酒店不錯 飯很好吃！ \n模型預測結果:好評</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 也可以直接使用 pipeline </span></span><br><span class="line"><span class="keyword">from</span> transformer <span class="keyword">import</span> pipeline </span><br><span class="line"></span><br><span class="line">pipe = pipeline(<span class="string">&quot;text-classification&quot;</span>, model=model, tokenizer=tokenizer, device=<span class="number">0</span>)</span><br><span class="line"><span class="built_in">print</span>(pipe(sen)) <span class="comment"># 會印出 -&gt; [&#123;&#x27;label&#x27;: &#x27;LABEL1&#x27;, &#x27;score&#x27;: 0.99&#125;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我們希望幫我把結果進行轉換可以設定 model.config </span></span><br><span class="line">model.config.id2lable = id2_label</span><br><span class="line"><span class="built_in">print</span>(pipe(sen)) <span class="comment"># 會印出 -&gt; 好評</span></span><br></pre></td></tr></table></figure><h1 id="參考文獻">參考文獻</h1><ul><li><a href="https://youtu.be/ddCfxkCh-O8?si=pi9Ir_aWBF5gPjjt">Youtube | 【手把手带你实战HuggingFace Transformers-入门篇】基础知识与环境安装</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Code </category>
+          
+          <category> Mechine Learning </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mechine Learning </tag>
+            
+            <tag> Transformers </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode - 刷題之旅的總結與心得</title>
       <link href="/posts/leetcode-sum-up/"/>
       <url>/posts/leetcode-sum-up/</url>
@@ -51,40 +80,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> linked-list </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> linked-list </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>手把手帶你實作 Hugging Face Transformers (入門篇)</title>
-      <link href="/posts/transformers/"/>
-      <url>/posts/transformers/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Transformers-相關的庫">Transformers 相關的庫</h1><ul><li>Transformers 核心庫: 模型加載 模型訓練</li><li>Tokenizer 分詞器: 對數據進行預處理，將文本轉換成模型可以理解的格式(Token序列)</li><li></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> Code </category>
-          
-          <category> Mechine Learning </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Mechine Learning </tag>
-            
-            <tag> Transformers </tag>
             
         </tags>
       
@@ -113,13 +113,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> linked-list </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> Review-Needed </tag>
             
-            <tag> linked-list </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -148,13 +148,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> linked-list </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> Review-Needed </tag>
-            
-            <tag> linked-list </tag>
             
         </tags>
       
@@ -414,11 +414,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -460,11 +460,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -520,11 +520,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -553,11 +553,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -586,11 +586,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -619,15 +619,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Review-Needed </tag>
             
             <tag> Medium </tag>
             
-            <tag> Sliding-Window </tag>
+            <tag> Hash </tag>
             
-            <tag> Review-Needed </tag>
+            <tag> Sliding-Window </tag>
             
         </tags>
       
@@ -656,11 +656,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -1160,9 +1160,9 @@
       
         <tags>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> DLP </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -1462,9 +1462,9 @@
       
         <tags>
             
-            <tag> Database </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Database </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -1501,9 +1501,9 @@
       
         <tags>
             
-            <tag> Database </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Database </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -1538,11 +1538,11 @@
       
         <tags>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -1571,11 +1571,11 @@
       
         <tags>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
