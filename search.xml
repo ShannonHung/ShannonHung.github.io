@@ -37,7 +37,7 @@
       <link href="/posts/leetcode-sum-up/"/>
       <url>/posts/leetcode-sum-up/</url>
       
-        <content type="html"><![CDATA[<h1 id="todo">todo</h1><ul><li><p>資料結構L1 Linked List ~6/27</p><ul><li>6/24 <a href="https://leetcode.com/problems/rotate-list/?envType=study-plan-v2&amp;envId=top-interview-150">61. Rotate List</a></li><li>6/25 <a href="https://leetcode.com/problems/partition-list/description/?envType=study-plan-v2&amp;envId=top-interview-150">86. Partition List</a></li><li>6/26 <a href="https://leetcode.com/problems/lru-cache/?envType=study-plan-v2&amp;envId=top-interview-150">146. LRU Cache</a></li><li>6/27 <a href="https://leetcode.com/problems/reverse-nodes-in-k-group/?envType=study-plan-v2&amp;envId=top-interview-150">25. Reverse Nodes in k-Group</a></li></ul></li><li><p>資料結構L1 Binary Tree 6/28-7/6</p><ul><li>6/28</li></ul></li><li><p>演算法L1 Recursion 7/7-7/13</p></li><li><p>演算法L1 Divide and Conquer 7/14-7/20</p></li><li><p>演算法L1 Two Pointer 7/21-7/27</p></li><li><p>演算法L1 Prefix Sum 7/28-8/3</p></li><li><p>演算法L1 BFS/DFS 8/4-8/10</p></li><li><p>演算法L1 Greedy 8/11-8/17（練習時先寫 Easy 題就好）</p></li><li><p>演算法L2 Bit Manipulation 8/18-8/24（練習時先寫 Easy 題就好）</p></li></ul><h1 id="Hash-Table">Hash Table</h1><h2 id="情境1-快速找元素">情境1: 快速找元素</h2><ul><li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li><li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li><li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li></ul></li></ul><h2 id="情境2-比對無序的東西">情境2: 比對無序的東西</h2><ul><li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li><li>相關題目：<ul><li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li></ul></li></ul><h2 id="情境3-找連續的不重複元素">情境3: 找連續的不重複元素</h2><ul><li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li><li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li><li>相關題目：<ul><li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h2 id="情境4-替換原本的node">情境4:替換原本的node</h2><ul><li>如果今天有需求把 <code>old_node</code> 變成 <code>new_node</code> 簡單來說就是建立一個一模一樣的 linked list，可以使用 HashTable 直接把 <code>old_node</code> 當作 key，<code>new_node</code> 當作 value。這樣不管是串 next 還是串 random 都只要拿 old_node 去找，就可以找到 new_node，然後開始串。</li><li>相關題目：<ul><li><a href="/posts/leetcode-138-copy-list-with-random-pointer">leetcode-138-copy-list-with-random-pointer</a>: 複製一個有 random node 的 linked list</li></ul></li></ul><h1 id="Stack-Queue">Stack &amp; Queue</h1><h2 id="情境1-後進先出問題">情境1: 後進先出問題</h2><ul><li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li><li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li><li>相關題目：<ul><li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li><li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li></ul></li></ul><h2 id="情境2-數字計算，括弧的優先">情境2: 數字計算，括弧的優先</h2><ul><li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li><li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li><li>相關題目：<ul><li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li><li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li></ul></li></ul><h2 id="情境3-時間複雜度O-1-卻能取得Max或Min">情境3: 時間複雜度O(1)卻能取得Max或Min</h2><ul><li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li><li>相關題目：<ul><li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="情境1-判斷是否有循環">情境1: 判斷是否有循環</h2><ul><li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li><li>相關題目：<ul><li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li></ul></li></ul><h2 id="情境2-dummy-head-的使用">情境2: dummy head 的使用</h2><ul><li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li><li>我們最怕的是在取listNode的值時發現他是None而導致錯誤，<em>因此我們可以使用 <code>digit1 = list1.val if list1 else 極值</code> 的方式</em>，儘管遇到 none 仍然可以繼續執行迴圈，直到兩個 list1 跟 list2 都觸底，以避免 None 的問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li><li><a href="/posts/leetcode-21-merge-two-sorted-lists">leetcode-21-merge-two-sorted-lists</a>：合併兩個有序的linked list</li></ul></li></ul><h2 id="情境3-雙指針法">情境3: 雙指針法</h2><ul><li><strong>反轉操作</strong>：<ul><li>如果今天要空間複雜度為O(1)的情況下，想要<em>透過反轉的方式做某些操作</em>，例如反轉linked list，或是取得倒數第n個node，這時候就可以使用雙指針法。只是怎麼跑這個指針的方式不一樣，一種是某個指針一直往前跑，然後<em>到目標位置執行操作</em>。另一個是比速度的，要<em>快的指針比慢的指針快n個位置</em>，以取得倒數第n個node。</li><li>這真的經典，今天要<em>有順序的進行反轉或是整批的改變位置移動，雙指針會是一個Linked List的重點</em>。想像有兩個指針，一個指針<code>cur</code>慢往前，另一個指針會是目標節點<code>target</code> (在這裡是<code>next</code>)，<code>target</code> 會串到想要放的目標 location(在這裡是<code>pre.next</code>)，<code>cur</code> 會一直往前移動(<code>cur.next</code> 變成 <code>pre.next</code>)，直到達到目標節點，這樣就可以完成操作。</li></ul></li><li><strong>依序比較</strong>：<ul><li>如果只是在<em>有序的linkedlist中比較<code>隔壁</code>的元素關係</em>使用1個pointer以比較鄰居就好，另一個pointer放previous的訊息，到時候滿足條件時，就要把<code>pre.next</code>串到 <code>cur</code> 或 <code>cur.next</code>也就是當前的節點上。</li></ul></li><li>相關題目：<ul><li>反轉操作<a href="/posts/leetcode-92-reverse-linked-list-II">leetcode-92-reverse-linked-list-II</a>: 反轉linked list的一部分</li><li>反轉操作<a href="/posts/leetcode-19-remove-nth-node-from-end-of-list">leetcode-19-remove-nth-node-from-end-of-list</a>: 刪除倒數第n個node</li><li>依序比較<a href="/posts/leetcode-82-remove-duplicates-from-sorted-list-ll">leetcode-82-remove-duplicates-from-sorted-list-ll</a>: 移除重複的元素</li></ul></li></ul><h1 id="特殊">特殊</h1><h2 id="摩爾投票法">摩爾投票法</h2><div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p></div><p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p><p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="todo">todo</h1><ul><li><p>資料結構L1 Linked List ~6/27</p><ul><li>6/24 <a href="https://leetcode.com/problems/rotate-list/?envType=study-plan-v2&amp;envId=top-interview-150">61. Rotate List</a></li><li>6/25 <a href="https://leetcode.com/problems/partition-list/description/?envType=study-plan-v2&amp;envId=top-interview-150">86. Partition List</a></li><li>6/26 <a href="https://leetcode.com/problems/lru-cache/?envType=study-plan-v2&amp;envId=top-interview-150">146. LRU Cache</a></li><li>6/27 <a href="https://leetcode.com/problems/reverse-nodes-in-k-group/?envType=study-plan-v2&amp;envId=top-interview-150">25. Reverse Nodes in k-Group</a></li></ul></li><li><p>資料結構L1 Binary Tree 6/28-7/6</p><ul><li>6/28</li></ul></li><li><p>演算法L1 Recursion 7/7-7/13</p></li><li><p>演算法L1 Divide and Conquer 7/14-7/20</p></li><li><p>演算法L1 Two Pointer 7/21-7/27</p></li><li><p>演算法L1 Prefix Sum 7/28-8/3</p></li><li><p>演算法L1 BFS/DFS 8/4-8/10</p></li><li><p>演算法L1 Greedy 8/11-8/17（練習時先寫 Easy 題就好）</p></li><li><p>演算法L2 Bit Manipulation 8/18-8/24（練習時先寫 Easy 題就好）</p></li></ul><h1 id="前言">前言</h1><p>這裡是我寫Leetcode總結核心概念的地方，不同的情境會使用到的武器不同，這裡我會描述在什麼樣的情境滿足下，適合的資料結構或是演算法。而這個演算法的核心概念是什麼，同時我也會紀錄一些我在刷題時的心得，以及刷題的時間，來慢慢看到成長與進步。</p><div class="note info flat"><p><a href="https://docs.google.com/spreadsheets/d/1hPIzYcGlZV36lumGjxdZLx4_HmuvYNmc_RIRpt8uN18/edit?usp=sharing">Leetcode時間紀錄</a></p></div><h1 id="Hash-Table">Hash Table</h1><h2 id="情境1-快速找元素">情境1: 快速找元素</h2><ul><li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li><li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li><li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li></ul></li></ul><h2 id="情境2-比對無序的東西">情境2: 比對無序的東西</h2><ul><li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li><li>相關題目：<ul><li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li></ul></li></ul><h2 id="情境3-找連續的不重複元素">情境3: 找連續的不重複元素</h2><ul><li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li><li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li><li>相關題目：<ul><li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h2 id="情境4-替換原本的node">情境4:替換原本的node</h2><ul><li>如果今天有需求把 <code>old_node</code> 變成 <code>new_node</code> 簡單來說就是建立一個一模一樣的 linked list，可以使用 HashTable 直接把 <code>old_node</code> 當作 key，<code>new_node</code> 當作 value。這樣不管是串 next 還是串 random 都只要拿 old_node 去找，就可以找到 new_node，然後開始串。</li><li>相關題目：<ul><li><a href="/posts/leetcode-138-copy-list-with-random-pointer">leetcode-138-copy-list-with-random-pointer</a>: 複製一個有 random node 的 linked list</li></ul></li></ul><h1 id="Stack-Queue">Stack &amp; Queue</h1><h2 id="情境1-後進先出問題">情境1: 後進先出問題</h2><ul><li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li><li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li><li>相關題目：<ul><li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li><li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li></ul></li></ul><h2 id="情境2-數字計算，括弧的優先">情境2: 數字計算，括弧的優先</h2><ul><li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li><li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li><li>相關題目：<ul><li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li><li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li></ul></li></ul><h2 id="情境3-時間複雜度O-1-卻能取得Max或Min">情境3: 時間複雜度O(1)卻能取得Max或Min</h2><ul><li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li><li>相關題目：<ul><li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="情境1-判斷是否有循環">情境1: 判斷是否有循環</h2><ul><li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li><li>相關題目：<ul><li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li></ul></li></ul><h2 id="情境2-dummy-head-的使用">情境2: dummy head 的使用</h2><ul><li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li><li>我們最怕的是在取listNode的值時發現他是None而導致錯誤，<em>因此我們可以使用 <code>digit1 = list1.val if list1 else 極值</code> 的方式</em>，儘管遇到 none 仍然可以繼續執行迴圈，直到兩個 list1 跟 list2 都觸底，以避免 None 的問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li><li><a href="/posts/leetcode-21-merge-two-sorted-lists">leetcode-21-merge-two-sorted-lists</a>：合併兩個有序的linked list</li></ul></li></ul><h2 id="情境3-雙指針法">情境3: 雙指針法</h2><ul><li><strong>反轉操作</strong>：<ul><li>如果今天要空間複雜度為O(1)的情況下，想要<em>透過反轉的方式做某些操作</em>，例如反轉linked list，或是取得倒數第n個node，這時候就可以使用雙指針法。只是怎麼跑這個指針的方式不一樣，一種是某個指針一直往前跑，然後<em>到目標位置執行操作</em>。另一個是比速度的，要<em>快的指針比慢的指針快n個位置</em>，以取得倒數第n個node。</li><li>這真的經典，今天要<em>有順序的進行反轉或是整批的改變位置移動，雙指針會是一個Linked List的重點</em>。想像有兩個指針，一個指針<code>cur</code>慢往前，另一個指針會是目標節點<code>target</code> (在這裡是<code>next</code>)，<code>target</code> 會串到想要放的目標 location(在這裡是<code>pre.next</code>)，<code>cur</code> 會一直往前移動(<code>cur.next</code> 變成 <code>pre.next</code>)，直到達到目標節點，這樣就可以完成操作。</li></ul></li><li><strong>依序比較</strong>：<ul><li>如果只是在<em>有序的linkedlist中比較<code>隔壁</code>的元素關係</em>使用1個pointer以比較鄰居就好，另一個pointer放previous的訊息，到時候滿足條件時，就要把<code>pre.next</code>串到 <code>cur</code> 或 <code>cur.next</code>也就是當前的節點上。</li></ul></li><li>相關題目：<ul><li>反轉操作<a href="/posts/leetcode-92-reverse-linked-list-II">leetcode-92-reverse-linked-list-II</a>: 反轉linked list的一部分</li><li>反轉操作<a href="/posts/leetcode-19-remove-nth-node-from-end-of-list">leetcode-19-remove-nth-node-from-end-of-list</a>: 刪除倒數第n個node</li><li>依序比較<a href="/posts/leetcode-82-remove-duplicates-from-sorted-list-ll">leetcode-82-remove-duplicates-from-sorted-list-ll</a>: 移除重複的元素</li></ul></li></ul><h1 id="特殊">特殊</h1><h2 id="摩爾投票法">摩爾投票法</h2><div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p></div><p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p><p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p>]]></content>
       
       
       <categories>
@@ -546,9 +546,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -592,9 +592,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -652,44 +652,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Hash </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
-      <link href="/posts/leetcode-12-integer-to-roman/"/>
-      <url>/posts/leetcode-12-integer-to-roman/</url>
-      
-        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> LeetCode </category>
-          
-          <category> 刷題之旅 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> leetcode </tag>
-            
-            <tag> practice </tag>
-            
-            <tag> Hash </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -718,9 +685,42 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
+            <tag> Medium </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
+      <link href="/posts/leetcode-12-integer-to-roman/"/>
+      <url>/posts/leetcode-12-integer-to-roman/</url>
+      
+        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
             <tag> Hash </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -751,9 +751,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Hash </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -788,11 +788,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -850,9 +850,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> Lecture </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
