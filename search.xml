@@ -60,6 +60,72 @@
     
     
     <entry>
+      <title>LeetCode #104 Maximum Depth of Binary Tree - 刷題之旅</title>
+      <link href="/posts/leetcode-104-maximum-depth-of-binary-tree/"/>
+      <url>/posts/leetcode-104-maximum-depth-of-binary-tree/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/rqtO8xf.png" alt=""><br>計算Binary Tree的最大深度。</p><h1 id="2-解法">2 解法</h1><p>我們先將大問題變成小問題</p><ol><li>大問題：知道一個樹的最大深度</li><li>小問題：讓我們相信遞歸並<strong>假設我們已經透過遞歸給出了根的左子樹和右子樹的最大深度</strong>。</li><li>大小問題的關係：因此，為了找到這個二元樹的最大深度，我們必須取出遞歸給我們的 2 個深度中的最大值，然後加 1 以將當前級別（即根的級別）考慮到我們的深度中。</li><li>最小的問題是，當 root 是 None 時，我們的深度為 0。</li></ol><div class="note info flat"><p>大小問題關係式：max(左子樹深度, 右子樹深度) + 1(root)</p></div><p>寫成python大概會長這樣</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maxDepth</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(self.maxDepth(root.left), self.maxDepth(root.right)) + <span class="number">1</span></span><br></pre></td></tr></table></figure><p>還有另一種思維，那就是最小的問題就是當 root 有值，但是就一個節點，沒有 right 與 left，這時候我們的深度就是 1。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maxDepth</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">if</span> root.right <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">and</span> root.left <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(self.maxDepth(root.left), self.maxDepth(root.right)) + <span class="number">1</span></span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>還不是很適應遞迴的思維，所以這個我還是直接偷看了一下解答，不看沒發現，一看不得了，幸好有先學Recursion的思維，不然這題真的會卡住。可以參考一下我的<a href="/posts/lecture-recursion">LeetCode 課前預習 - 掌握 Recursion 的思維指南</a>。思考的時候我們想三個方向</p><ol><li>他們的大問題跟小問題分別可以是什麼</li><li>大小問題的關聯式子怎麼寫</li><li>最小問題又是什麼</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode 課前預習 - 掌握 Recursion 的思維指南</title>
+      <link href="/posts/lecture-recursion/"/>
+      <url>/posts/lecture-recursion/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>會想要寫這篇是因為在碰到binary tree的時候會大量的使用recursion，因此想先瞭解Recursion的核心思維，希望能讓自己將遞迴的概念內化，讓他從此不再高不可攀。那我們就開始吧！首先，來聊聊基礎遞迴常見的思維方式之一，</p><ol><li>先將一個大問題，拆解成幾個較小的問題</li><li>如果發現這些較小的問題當中，也能<strong>依照相同的方式拆解</strong>成更小的問題</li><li>每當小問題解決時，<strong>大問題也可以依靠小問題的結果來解決</strong></li><li>從大問題到小問題，<strong>每層</strong>的解決方法都是<strong>一樣</strong>的，除了<strong>最小問題</strong>以外</li><li>根據以上幾點，我可以不段套用相同的函數，讓他<strong>自己幫自己解決問題</strong></li></ol><p>以上就是遞迴的基本核心精神，如何分析看不懂沒關係，我們先來看個最基本的例子</p><h1 id="實戰範例">實戰範例</h1><h2 id="從-1-加到-n">從 1 加到 n</h2><p>如果使用迴圈的方式</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sum</span>(<span class="params">n</span>):</span><br><span class="line">    result = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n+<span class="number">1</span>):</span><br><span class="line">        result += i</span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure><p>我們的思考方式如下：</p><ol><li>大問題：從1加到n</li><li>小一點的問題：從1加到n-1</li><li>那我們只要先處理好小問題，最後再把其答案加上n就好了</li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sum_1_to_n</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x + sum_1_to_n(x-<span class="number">1</span>)</span><br></pre></td></tr></table></figure><p>這個思維就是，如果我想算 sum(1~10)，我可以改成算 10 + sum(1~9)。那如何算 sum(1~9) 呢？當然就是 9 + sum(1~8) 依此類推下去。</p><p>但最後還有個小問題，如果我們要算 sum(1~1)，該怎麼做？如果寫成 1 + sum(1~0) 似乎有點不合理，所以這就是我們所謂的<strong>最小問題需要額外的處理</strong>，很幸運的是我們的最小問題非常容易，因為我們已經知道答案是 1。因此將上面的程式碼稍作修改後，最終答案如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sum_1_to_n</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> x + sum_1_to_n(x-<span class="number">1</span>)</span><br></pre></td></tr></table></figure><p>到此為止，我們用兩種方法解決了相同的問題，而他們兩個思維本質上的差異在於：</p><ol><li>迴圈（Iteration）：當用迴圈（Iteration）思考時，你則總是得很明確的告訴電腦<em>每一個變數的值要如何改變</em>，所以得想清楚這些值的所有變化過程。</li><li>遞迴（Recursion）：當用遞迴（Recursion）思考時，我們並不直接思考如何解決問題，而是先思考<em>問題能否被拆小</em>，還有<em>大問題跟小問題間的關聯性</em>。</li></ol><p>迴圈應該對大多工程師來說都非常的直覺了，那我們為何還需要學遞迴的做法呢？以上述例子來說，<em>Recursion雖然讓程式碼簡潔了一點點，不過思考起來稍微難了點</em>，似乎有利有弊。但我們要把吃苦當吃補，這是因為這種思維的轉換，是遞迴最重要的地方，因為有些演算法，靠遞迴的思路來寫可能會非常容易，像是Binary Tree</p><p>重新用遞迴思維看一次上面的例子，當我們有了一個空殼的 function 如下</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sum_1_to_n</span>(<span class="params">x</span>):</span><br><span class="line">    ???</span><br></pre></td></tr></table></figure><p>我們並不清楚該如何實作他，但我想的是假如這個 function 可以運作，那我如何利用他自己來幫自己解決問題。於是我們想的東西是<br><strong>從大到小問題</strong></p><ol><li>我發現一個轉移式 <code>sum_1_to_n(x) = x+ sum_1_to_n(x-1)</code></li><li>那依此類推，<code>sum_1_to_n(x-1) = (x-1) + sum_1_to_n(x-2)</code> … 這個等式可以繼續無限循環下去。</li><li>而我也知道最小問題 <code>sum_1_to_n(1)</code> 的答案是 1，所以在最小問題可以停下直接給答案。<br><strong>從小問題到大問題</strong></li><li>我知道 <code>sum_1_to_n(1)</code> 的答案是 1</li><li>那套用轉移式，我可以知道 <code>sum_1_to_n(2) = 2 + sum_1_to_n(1) = 2 + 1 = 3</code>，你會發現 x 就是 2 而 x-1 要放入 <code>sum_1_to_n</code> 函式裡面</li><li>繼續以上，我們可以知道 <code>sum_1_to_n(3) = 3 + sum_1_to_n(2) = 3 + 3 = 6</code> … 如此循環下去，我就能知道任意的 <code>sum_1_to_n(x)</code> 的值了</li></ol><h2 id="河內塔">河內塔</h2><p><img src="https://i.imgur.com/4WMk1Fa.png" alt=""><br>我們有三根柱子，並有 N 個圓盤套在最左邊柱子上面（上圖 N = 4)，現在我們要把它們全部移動到最右邊的柱子上，請問我們最少需要移動幾次？<br>以下是移動的規則：</p><ol><li>每次只能移動一個最上方的圓盤到任意柱子上</li><li>大圓盤不能放在小圓盤上面</li></ol><p>遞迴思維：大問題沒頭緒的話，先想一下，如果能解決稍微小一點的問題，是不是就能靠他幫忙，來解決大問題了。</p><ol><li>大問題：移動 4 個圓盤總共需要幾步</li><li>小一點的問題：移動 3 個圓盤總共需要幾步（相同的問題，但範圍變小）</li></ol><p>假設我們知道小問題的答案（如何移動3個圓盤到特定柱子），我們可以把最後一步的步驟想成，假如移動3個盤子需要的步驟是K，那移動4個盤子就是</p><ol><li>先移動3個盤子到中間的柱子，這個步驟需要K步</li><li>先把最下面的盤子移動到最右邊，這個步驟需要1步</li><li>然後把剩下的3個盤子從中間移動到右邊的柱子，這個步驟需要K步</li></ol><p><img src="https://i.imgur.com/ypeMwOJ.png" alt=""></p><h3 id="1-找到關係式">1. 找到關係式</h3><div class="note warning flat"><p>因此我們得到了一個寶貴的關係式：<strong>（移動 X 個盤子的步驟數）= 2 * (移動 X - 1 個盤子的步驟數) + 1</strong></p></div><p>寫成程式碼的話就是：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hanoi_tower_step</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span> * hanoi_tower_step(x-<span class="number">1</span>) + <span class="number">1</span></span><br></pre></td></tr></table></figure><h3 id="2-最小問題的解答">2. 最小問題的解答</h3><p>當然，一樣不能忘記，我們都會有一個”最小問題”，他不能再繼續遞迴下去，在這邊我們的最小問題，當然就是<em>只有 1 個圓盤的時候該如何處理，而很顯然的，這個答案也是 1</em>。最終我們就會得到非常簡潔的答案如下。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hanoi_tower_step</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span> * hanoi_tower_step(x-<span class="number">1</span>) + <span class="number">1</span></span><br></pre></td></tr></table></figure><p>靠著遞迴的思維，我們<em>甚至根本就不知道移動盤子的最佳策略是什麼</em>，或說我們唯一需要知道的策略，只有如何移動 1 個盤子，也就是 1 步，或 0 個盤子也行，就是 0 步，<em>剩下的就只剩找到大小問題之間的關聯性就解決了</em>，是不是很強大。</p><p>其他常見的簡單經典例子還有：<a href="https://zh.wikipedia.org/wiki/%E9%9A%8E%E4%B9%98">階乘</a>、<a href="https://zh.wikipedia.org/zh-tw/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97">費氏數列</a>、<a href="https://zh.wikipedia.org/wiki/%E8%BC%BE%E8%BD%89%E7%9B%B8%E9%99%A4%E6%B3%95">輾轉相除法</a>、<a href="https://leetcode.com/problems/climbing-stairs/">爬梯子</a> 等等。</p><h2 id="費氏數列">費氏數列</h2><p>以費氏數列（Fibonacci）為例</p><ol><li>大問題：找到費氏數列中，第 X 個數的數值</li><li>小問題1：找到費氏數列中，第 X-1 個數的數值</li><li>小問題2：找到費氏數列中，第 X-2 個數的數值</li><li>大小問題的關聯式：fibonacci(x) = fibonacci(x-1) + fibonacci(x-2)</li><li>最小問題：第 1 個與第 2 個數的數值</li></ol><p>所以程式碼，照抄下來就是:</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fibonacci</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">1</span> <span class="keyword">or</span> x == <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> fibonacci(x-<span class="number">1</span>) + fibonacci(x-<span class="number">2</span>)</span><br></pre></td></tr></table></figure><div class="note warning flat"><p>遞迴還有另一個小缺點是<strong>深度限制</strong>。簡單來說，就是遞迴的過程中，由於每個 function 都還沒執行完就又 call 了自己，那你就會堆積一堆執行到半路的 function，電腦需要一定的記憶體去記錄這些狀態，所以當你深度太超過就會炸掉（Stack Overflow），有興趣更深入理解的讀者可以看這邊的解說，常見的處理方式叫做 <a href="https://tw.coderbridge.com/questions/b945143a4ed74799b06a96804bbc9e05">Tail Recursion</a>。若以刷 Leetcode 題來說，由於題目會設計好，你幾乎是不會遇到這問題的，但實務中則要小心注意。</p></div><h1 id="總結">總結</h1><p>思考的時候我們想三個方向</p><ol><li>他們的大問題跟小問題分別可以是什麼</li><li>大小問題的關聯式子怎麼寫</li><li>最小問題又是什麼</li></ol><h1 id="Ref">Ref</h1><ul><li><a href="https://medium.com/appworks-school/%E9%80%B2%E5%85%A5%E9%81%9E%E8%BF%B4-recursion-%E7%9A%84%E4%B8%96%E7%95%8C-%E4%B8%80-59fa4b394ef6">Medium | 一次看懂遞迴 (Recursion) 的思維模式（一</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 課前預期 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> Lecture </tag>
+            
+            <tag> Recursion </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode 課前預習 - 掌握 Binary Search Tree 指南</title>
       <link href="/posts/lecture-binary-search-tree/"/>
       <url>/posts/lecture-binary-search-tree/</url>
@@ -247,9 +313,9 @@
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -282,9 +348,9 @@
             
             <tag> Medium </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -315,11 +381,11 @@
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
+            <tag> linked-list </tag>
             
             <tag> Review-Needed </tag>
             
-            <tag> linked-list </tag>
+            <tag> Easy </tag>
             
         </tags>
       
@@ -579,11 +645,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -625,11 +691,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -685,11 +751,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -718,11 +784,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -751,11 +817,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -784,15 +850,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
-            <tag> Sliding-Window </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> Hash </tag>
+            
+            <tag> Sliding-Window </tag>
             
         </tags>
       
@@ -821,11 +887,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
