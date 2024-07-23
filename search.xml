@@ -60,6 +60,41 @@
     
     
     <entry>
+      <title>LeetCode #106 Construct Binary Tree from Postorder and Inorder Traversal - 刷題之旅</title>
+      <link href="/posts/leetcode-106-construct-binary-tree-from-postorder-and-inorder-traversal/"/>
+      <url>/posts/leetcode-106-construct-binary-tree-from-postorder-and-inorder-traversal/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/jnQmebm.png" alt=""><br><img src="https://i.imgur.com/hoBcab1.png" alt=""></p><p>提供給你 postorder 與 inorder 的數列，請你建立一個二元樹。首先 讓我們先了解 postorder 與 inorder 的定義。<br><em>Inorder Traversal</em> -&gt; LEFT -&gt; ROOT -&gt; RIGHT<br><em>Postorder Traversal</em> -&gt; LEFT -&gt; RIGHT -&gt; ROOT</p><h1 id="2-解法">2 解法</h1><p>這題跟 <a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal">105 題</a>很像，只是順序不同，這題是 postorder 與 inorder，105 題是 preorder 與 inorder。這題的解法也是利用遞迴的方式來建立二元樹。</p><p>你會發現，postorder <em>最後一筆</em>會是 Root，<em>前面</em>會先遍歷left sub-tree整顆跑完，才會再遍歷right sub-tree。而 inorder 是先遍歷left sub-tree，再遍歷root，最後是right sub-tree。你會發現 preorder 跟 inorder 的優缺點如下：</p><ul><li><strong>postorder</strong>:<ul><li>好處：因為最後一個值是root，所以可以直接取得root的值</li><li>缺點：無法知道左右子樹的範圍</li></ul></li><li><strong>inorder</strong>:<ul><li>好處：可以知道左右子樹的範圍</li><li>缺點：無法知道root的值</li></ul></li></ul><p>因此我們要利用彼此雙方的好處，互補彼此的缺點。這時候我們就可以利用遞迴的方式來建立二元樹。<br><img src="https://i.imgur.com/AFlFEyn.png" alt=""></p><h2 id="2-1-取subtree的範圍">2.1 取subtree的範圍</h2><p><strong>Step1: 在postorder找到root + 在 inorder找到左右子樹長度</strong></p><ol><li>那就是如果我們先取得postorder的最後一個值，就可以知道root的值是什麼</li><li>然後再根據這個值去inorder中找到root的位置，這樣就可以知道左右子樹的範圍。<ol><li>左子樹起點=0 ~ 左子樹 root_index (不包含) 簡單來說就是 <code>inorder[0:root_index]</code></li><li>右子樹起點=root_index+1 ~ 右子樹結束點=len(inorder) (包含) 簡單來說就是 <code>inorder[root_index+1:]</code></li></ol></li></ol><p>大概是這種感覺：<br><img src="https://i.imgur.com/PJOP42Y.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">buildTree</span>(<span class="params">self, inorder: <span class="type">List</span>[<span class="built_in">int</span>], postorder: <span class="type">List</span>[<span class="built_in">int</span>], </span>) -&gt; <span class="type">Optional</span>[TreeNode]:</span><br><span class="line">    <span class="comment"># 1. 找到 inorder 的 root 位置以切出左右子樹</span></span><br><span class="line">    root_val = postorder[-<span class="number">1</span>]</span><br><span class="line">    root = TreeNode(root_val)</span><br><span class="line">    root_index = inorder.index(root_val)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 找到 inorder 的左右子樹</span></span><br><span class="line">    i_left = inorder[:root_index]</span><br><span class="line">    i_right = inorder[root_index + <span class="number">1</span>:]</span><br></pre></td></tr></table></figure><p><strong>Step2: 根據左右子樹的長度，在postorder切割左右子樹</strong><br>因為我們用inorder知道了左右子樹的，我們就可以在 postorder 裡面開始切割左右子樹</p><ol><li>使用 <code>i_left</code> 的長度，在 <code>[1:]</code> 切割左子樹</li><li>[0+1:] 這個區間是由 左子樹 + 右子樹 所組成<ol><li>左子樹起點=0 ~ 左子樹結束點=1+left_len (不包含) 簡單來說就是 <code>postorder[0:left_len+1]</code></li><li>右子樹起點=1+left_len ~ 右子樹結束點=-1 (包含) 簡單來說就是 <code>postorder[left_len+1:-1]</code></li></ol></li><li>從 postorder 得到的左右子樹，取最後一個值，又可以得到 root</li><li>把postorder從[:-1] 切成兩半左右子樹後，我們又可以開始遞迴，找到這兩個子樹的 root</li></ol><p>大概是這種感覺：<br><img src="https://i.imgur.com/WM2sQ6n.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">buildTree</span>(<span class="params">self, inorder: <span class="type">List</span>[<span class="built_in">int</span>], postorder: <span class="type">List</span>[<span class="built_in">int</span>], </span>) -&gt; <span class="type">Optional</span>[TreeNode]:</span><br><span class="line">    <span class="comment"># Step 1: The last element in postorder is the root</span></span><br><span class="line">    root_val = postorder[-<span class="number">1</span>]</span><br><span class="line">    root = TreeNode(root_val)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 2: Find the index of the root in inorder</span></span><br><span class="line">    root_index = inorder.index(root_val)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 3: Split the inorder list into left and right subtrees</span></span><br><span class="line">    i_left = inorder[:root_index]</span><br><span class="line">    i_right = inorder[root_index + <span class="number">1</span>:]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 4: Split the postorder list into left and right subtrees</span></span><br><span class="line">    p_left = postorder[:<span class="built_in">len</span>(i_left)]</span><br><span class="line">    p_right = postorder[<span class="built_in">len</span>(i_left):-<span class="number">1</span>]  <span class="comment"># Exclude the last element which is the root</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 5: Recursively build the left and right subtrees</span></span><br><span class="line">    root.left = self.buildTree(i_left, p_left)</span><br><span class="line">    root.right = self.buildTree(i_right, p_right)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure><p><strong>Step3: 當左右子樹為空時，回傳None</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">buildTree</span>(<span class="params">self, inorder: <span class="type">List</span>[<span class="built_in">int</span>], postorder: <span class="type">List</span>[<span class="built_in">int</span>], </span>) -&gt; <span class="type">Optional</span>[TreeNode]:</span><br><span class="line">    <span class="comment"># Base case: if inorder or postorder is empty, return None</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> inorder <span class="keyword">or</span> <span class="keyword">not</span> postorder:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Step 1: The last element in postorder is the root</span></span><br><span class="line">    root_val = postorder[-<span class="number">1</span>]</span><br><span class="line">    root = TreeNode(root_val)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 2: Find the index of the root in inorder</span></span><br><span class="line">    root_index = inorder.index(root_val)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 3: Split the inorder list into left and right subtrees</span></span><br><span class="line">    i_left = inorder[:root_index]</span><br><span class="line">    i_right = inorder[root_index + <span class="number">1</span>:]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 4: Split the postorder list into left and right subtrees</span></span><br><span class="line">    p_left = postorder[:<span class="built_in">len</span>(i_left)]</span><br><span class="line">    p_right = postorder[<span class="built_in">len</span>(i_left):-<span class="number">1</span>]  <span class="comment"># Exclude the last element which is the root</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Step 5: Recursively build the left and right subtrees</span></span><br><span class="line">    root.left = self.buildTree(i_left, p_left)</span><br><span class="line">    root.right = self.buildTree(i_right, p_right)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure><h3 id="精簡">精簡</h3><p>稍微整理以下就可以變成這樣</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">buildTree</span>(<span class="params">self, inorder: <span class="type">List</span>[<span class="built_in">int</span>], postorder: <span class="type">List</span>[<span class="built_in">int</span>], </span>) -&gt; <span class="type">Optional</span>[TreeNode]:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> inorder <span class="keyword">or</span> <span class="keyword">not</span> postorder:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    root = TreeNode(postorder[-<span class="number">1</span>])</span><br><span class="line">    root_index = inorder.index(root.val)</span><br><span class="line">    root.left = self.buildTree(inorder[:root_index], postorder[:root_index])</span><br><span class="line">    root.right = self.buildTree(inorder[root_index + <span class="number">1</span>:], postorder[root_index:-<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure><p>總結一下順序：</p><ol><li><strong>inorder切出左右子樹</strong>: 在 inorder 用 root 切出左右子樹的範圍</li><li><strong>inorder找出左右子樹長度</strong>:拿 inorder 左右子樹的長度，在 postorder 切出左右子樹的範圍</li><li><strong>postorder 切出左右子樹，以找出root</strong>: postorder 的左右子樹一出來，就可以知道左右子樹的 root 是什麼（因為 postorder 的第一個值是root）</li><li><strong>大小問題關係式</strong>: 然後把 root.left 與 root.right 填入</li></ol><h2 id="2-2-queue-的解法">2.2 queue 的解法</h2><p>跟 105 題一樣，可以使用queue去解這題，這樣就不用一直切割list，可以直接用index去取值，這樣會比較快。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">buildTree</span>(<span class="params">self, preorder: <span class="type">List</span>[<span class="built_in">int</span>], inorder: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">Optional</span>[TreeNode]:</span><br><span class="line">    <span class="keyword">if</span> inorder:</span><br><span class="line">        INDEX = inorder.index(postorder.pop(-<span class="number">1</span>))</span><br><span class="line">        root = TreeNode(inorder[INDEX])</span><br><span class="line">        root.left = self.buildTree(inorder[<span class="number">0</span>:INDEX], postorder[<span class="number">0</span>:INDEX])</span><br><span class="line">        root.right = self.buildTree(inorder[INDEX+<span class="number">1</span>:], postorder[INDEX:])</span><br><span class="line">        <span class="keyword">return</span> root</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>因為已經寫過了，所以大概30分鐘內就可以解決</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Recursion </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>[自然語言處理] Word Embedding: Word2Vec 實作與理論</title>
       <link href="/posts/word2vec/"/>
       <url>/posts/word2vec/</url>
@@ -148,9 +183,9 @@
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -183,9 +218,9 @@
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -218,9 +253,9 @@
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -249,13 +284,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
+            <tag> DFS </tag>
             
-            <tag> Tree </tag>
+            <tag> Lecture </tag>
             
             <tag> BFS </tag>
             
-            <tag> DFS </tag>
+            <tag> Tree </tag>
             
         </tags>
       
@@ -284,13 +319,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -319,13 +354,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -354,13 +389,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -389,13 +424,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -424,13 +459,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -492,9 +527,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> BST </tag>
-            
             <tag> Tree </tag>
+            
+            <tag> BST </tag>
             
         </tags>
       
@@ -2403,9 +2438,9 @@
       
         <tags>
             
-            <tag> 德國 </tag>
-            
             <tag> 簽證 </tag>
+            
+            <tag> 德國 </tag>
             
         </tags>
       
