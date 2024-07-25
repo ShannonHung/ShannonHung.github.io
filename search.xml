@@ -60,6 +60,41 @@
     
     
     <entry>
+      <title>LeetCode #102 Binary Tree Level Order Traversal - 刷題之旅</title>
+      <link href="/posts/leetcode-102-Binary-Tree-Level-Order-Traversal/"/>
+      <url>/posts/leetcode-102-Binary-Tree-Level-Order-Traversal/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/wlANRzM.png" alt=""><br><img src="https://i.imgur.com/6McfWmL.png" alt=""></p><p>給定一個二元樹，返回其節點值的<em>層序遍歷</em>。換句話說，從左到右，逐層遍歷所有節點。</p><h1 id="2-解法">2 解法</h1><p>這題很明顯，我們可以使用<code>BFS</code>的方式來解，因為<code>BFS</code>是一種逐層遍歷的方式。</p><p>我們會需要</p><ul><li><code>next_level</code> 來存放下一層的節點，然後透過呼叫自己，放入<code>next_level</code>的節點。</li><li><code>nodes</code> 是當層的所有節點。</li><li><code>values</code> 是用來存放當層的節點值。</li><li><code>result</code> 就是結果。</li></ul><p><strong>Recursive</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>: </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">levelOrder</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">bfs_helper</span>(<span class="params">nodes</span>):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> nodes:</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            next_level, values = [], []</span><br><span class="line">            <span class="keyword">for</span> node <span class="keyword">in</span> nodes:</span><br><span class="line">                values.append(node.val)</span><br><span class="line">                <span class="keyword">if</span> node.left:</span><br><span class="line">                    next_level.append(node.left)</span><br><span class="line">                <span class="keyword">if</span> node.right:</span><br><span class="line">                    next_level.append(node.right)</span><br><span class="line">            result.append(values)</span><br><span class="line">            bfs_helper(next_level)</span><br><span class="line">        </span><br><span class="line">        result = []</span><br><span class="line">        <span class="keyword">if</span> root:</span><br><span class="line">            helper(root, <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure><p><strong>Iterator</strong><br>也可以把它寫成迭代的方式。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">levelOrder</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        </span><br><span class="line">        result = []</span><br><span class="line">        nodes = [root]</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> nodes:    <span class="comment"># 當nodes不為空</span></span><br><span class="line">            next_level = []</span><br><span class="line">            values = []</span><br><span class="line">            <span class="keyword">for</span> node <span class="keyword">in</span> nodes:</span><br><span class="line">                values.append(node.val)</span><br><span class="line">                <span class="keyword">if</span> node.left:</span><br><span class="line">                    next_level.append(node.left)</span><br><span class="line">                <span class="keyword">if</span> node.right:</span><br><span class="line">                    next_level.append(node.right)</span><br><span class="line">            result.append(values)</span><br><span class="line">            nodes = next_level  <span class="comment"># 每次遍歷完當層的節點後，把next_level放入nodes，這樣下次迭代就會遍歷下一層的節點</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題是一個簡單的<code>BFS</code>問題，只要熟悉<code>BFS</code>的遍歷方式，就可以很快解出來。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #173 Binary Search Tree Iterator - 刷題之旅</title>
       <link href="/posts/leetcode-173-Binary-Search-Tree-Iterator/"/>
       <url>/posts/leetcode-173-Binary-Search-Tree-Iterator/</url>
@@ -80,13 +115,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -115,13 +150,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -179,13 +214,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -214,13 +249,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -249,13 +284,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -284,13 +319,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -321,11 +356,11 @@
             
             <tag> Lecture </tag>
             
+            <tag> Tree </tag>
+            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
-            
-            <tag> Tree </tag>
             
         </tags>
       
@@ -354,13 +389,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -389,13 +424,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -424,13 +459,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -459,13 +494,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -494,13 +529,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -562,9 +597,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BST </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -762,9 +797,9 @@
             
             <tag> Medium </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -797,9 +832,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1268,11 +1303,11 @@
             
             <tag> Medium </tag>
             
+            <tag> Review-Needed </tag>
+            
             <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
-            
-            <tag> Review-Needed </tag>
             
         </tags>
       
