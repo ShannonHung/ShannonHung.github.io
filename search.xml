@@ -64,7 +64,7 @@
       <link href="/posts/leetcode-199-Binary-Tree-Right-Side-View/"/>
       <url>/posts/leetcode-199-Binary-Tree-Right-Side-View/</url>
       
-        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/YpOQfHv.png" alt=""><br><img src="https://i.imgur.com/VcwVcNu.png" alt=""></p><p>假如你站在樹的右邊，看著樹，你會看到樹的右邊的節點。紀錄下來這些節點。</p><h1 id="2-解法">2 解法</h1><p>一開始我看到這題的時候，腦子浮現的是，我就是努力的往右邊走，如果右邊沒辦法走了，就往左邊走，這樣就可以記錄下來右邊的節點了。但是我的想法無法解決以下這個情境：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  1</span><br><span class="line"> / \</span><br><span class="line">2   3</span><br><span class="line"> \</span><br><span class="line">  5</span><br></pre></td></tr></table></figure><p>以下的程式碼是錯誤的，他只會記錄到right subtree的最右邊，但是left subtree也就是 2 跟 5 節點不會被尋訪。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">rightSideView</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        <span class="keyword">if</span> root: </span><br><span class="line">            self.res.append(root.val)</span><br><span class="line">        <span class="comment"># 如果右邊有節點，就往右邊走</span></span><br><span class="line">        <span class="keyword">if</span> root.right:</span><br><span class="line">            self.rightSideView(root.right)</span><br><span class="line">        <span class="comment"># 如果右邊沒有節點，但左邊有，就往左邊走</span></span><br><span class="line">        <span class="keyword">elif</span> root.left: </span><br><span class="line">            self.rightSideView(root.left)</span><br><span class="line">        <span class="keyword">return</span> self.res </span><br></pre></td></tr></table></figure><p>因此我們希望，當發現右邊已經走到底時，但是左邊的高度比較時，我們還是要繼續往左邊走，這樣才能記錄到左邊的節點。他的關鍵在，<em>回傳的答案會與樹的高度有關</em>。我們需要有兩個思維：</p><ul><li>如果右邊可以走，優先走右邊，並且把最右邊的節點記錄下來。</li><li>如果發現右邊已經觸底了，那就換左樹走，但是左樹也不是每個最右邊的節點都要記錄，<em>只有當高度比右樹高時，才要記錄</em>。</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rightSideView</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">node, depth</span>): </span><br><span class="line">        <span class="keyword">if</span> node:</span><br><span class="line">            <span class="comment"># 只有如果目前的高度與答案的長度相等時，才要記錄</span></span><br><span class="line">            <span class="keyword">if</span> depth == <span class="built_in">len</span>(ans):</span><br><span class="line">                ans.append(node.val)</span><br><span class="line">            <span class="comment"># 右邊繼續往下走，depth + 1</span></span><br><span class="line">            helper(node.right, depth + <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 左邊繼續往下走，depth + 1</span></span><br><span class="line">            helper(node.left, depth + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    ans = []</span><br><span class="line">    helper(root, <span class="number">0</span>)</span><br></pre></td></tr></table></figure><p>也可以用BFS的方式來解這題，我們可以用queue來記錄每一層的節點，並且每次只記錄每一層的最右邊的節點。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rightSideView</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    res = []</span><br><span class="line">    queue = deque([root])</span><br><span class="line">    <span class="keyword">while</span> queue:</span><br><span class="line">        size = <span class="built_in">len</span>(queue)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(size):</span><br><span class="line">            node = queue.popleft()</span><br><span class="line">            <span class="keyword">if</span> i == size - <span class="number">1</span>:</span><br><span class="line">                res.append(node.val)</span><br><span class="line">            <span class="keyword">if</span> node.left:</span><br><span class="line">                queue.append(node.left)</span><br><span class="line">            <span class="keyword">if</span> node.right:</span><br><span class="line">                queue.append(node.right)</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題很快就可以解出來，只是在於有沒有意識到，<em>當右邊長度比左邊短時，要怎麼遍歷左子樹，並且在適當的時機（最新高度的最右邊）塞入左子樹的節點</em>，關鍵在要紀錄depth。當達到新的高度時，但是這個高度還沒有紀錄任何節點時，就要記錄下來。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/YpOQfHv.png" alt=""><br><img src="https://i.imgur.com/VcwVcNu.png" alt=""></p><p>假如你站在樹的右邊，看著樹，你會看到樹的右邊的節點。紀錄下來這些節點。</p><h1 id="2-解法">2 解法</h1><p>一開始我看到這題的時候，腦子浮現的是，我就是努力的往右邊走，如果右邊沒辦法走了，就往左邊走，這樣就可以記錄下來右邊的節點了。但是我的想法無法解決以下這個情境：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  1</span><br><span class="line"> / \</span><br><span class="line">2   3</span><br><span class="line"> \</span><br><span class="line">  5</span><br></pre></td></tr></table></figure><p>以下的程式碼是錯誤的，他只會記錄到right subtree的最右邊，但是left subtree也就是 2 跟 5 節點不會被尋訪。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">rightSideView</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        <span class="keyword">if</span> root: </span><br><span class="line">            self.res.append(root.val)</span><br><span class="line">        <span class="comment"># 如果右邊有節點，就往右邊走</span></span><br><span class="line">        <span class="keyword">if</span> root.right:</span><br><span class="line">            self.rightSideView(root.right)</span><br><span class="line">        <span class="comment"># 如果右邊沒有節點，但左邊有，就往左邊走</span></span><br><span class="line">        <span class="keyword">elif</span> root.left: </span><br><span class="line">            self.rightSideView(root.left)</span><br><span class="line">        <span class="keyword">return</span> self.res </span><br></pre></td></tr></table></figure><p>因此我們希望，當發現右邊已經走到底時，但是左邊的高度比較高時，我們還是要繼續往left subtree走，這樣才能記錄到左邊的節點。他的關鍵在，<em>回傳的答案會與樹的高度有關</em>。我們需要有兩個思維：</p><ul><li>如果右邊可以走，<em>優先走右邊，並且把最右邊的節點記錄</em>下來。</li><li>如果發現右邊已經觸底了，那就換左樹走，但是左樹也不是每個最右邊的節點都要記錄，<em>只有當高度比右樹高時，才要記錄</em>。</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rightSideView</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">node, depth</span>): </span><br><span class="line">        <span class="keyword">if</span> node:</span><br><span class="line">            <span class="comment"># 只有如果目前的高度與答案的長度相等時，才要記錄</span></span><br><span class="line">            <span class="keyword">if</span> depth == <span class="built_in">len</span>(ans):</span><br><span class="line">                ans.append(node.val)</span><br><span class="line">            <span class="comment"># 右邊繼續往下走，depth + 1</span></span><br><span class="line">            helper(node.right, depth + <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 左邊繼續往下走，depth + 1</span></span><br><span class="line">            helper(node.left, depth + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    ans = []</span><br><span class="line">    helper(root, <span class="number">0</span>)</span><br></pre></td></tr></table></figure><p>也可以用BFS的方式來解這題，我們可以用queue來記錄每一層的節點，並且每次只記錄每一層的最右邊的節點。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rightSideView</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    res = []</span><br><span class="line">    queue = deque([root])</span><br><span class="line">    <span class="keyword">while</span> queue:</span><br><span class="line">        size = <span class="built_in">len</span>(queue)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(size):</span><br><span class="line">            node = queue.popleft()</span><br><span class="line">            <span class="keyword">if</span> i == size - <span class="number">1</span>:</span><br><span class="line">                res.append(node.val)</span><br><span class="line">            <span class="keyword">if</span> node.left:</span><br><span class="line">                queue.append(node.left)</span><br><span class="line">            <span class="keyword">if</span> node.right:</span><br><span class="line">                queue.append(node.right)</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題很快就可以解出來，只是在於有沒有意識到，<em>當右邊長度比左邊短時，要怎麼遍歷左子樹，並且在適當的時機（最新高度的最右邊）塞入左子樹的節點</em>，關鍵在要紀錄depth。當達到新的高度時，但是這個高度還沒有紀錄任何節點時，就要記錄下來。</p>]]></content>
       
       
       <categories>
@@ -80,13 +80,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
+            <tag> Recursion </tag>
             
             <tag> BFS </tag>
             
@@ -117,13 +117,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -154,9 +154,9 @@
             
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> BFS </tag>
             
@@ -189,9 +189,9 @@
             
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> DFS </tag>
             
@@ -222,13 +222,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -288,9 +288,9 @@
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Easy </tag>
             
             <tag> DFS </tag>
             
@@ -323,9 +323,9 @@
             
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> BFS </tag>
             
@@ -358,9 +358,9 @@
             
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> DFS </tag>
             
@@ -393,9 +393,9 @@
             
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> BFS </tag>
             
@@ -461,13 +461,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -496,13 +496,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -531,13 +531,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -566,13 +566,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -601,13 +601,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -968,11 +968,11 @@
             
             <tag> practice </tag>
             
+            <tag> Review-Needed </tag>
+            
             <tag> Stack </tag>
             
             <tag> Hard </tag>
-            
-            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1375,11 +1375,11 @@
             
             <tag> Medium </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -2205,9 +2205,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
@@ -2244,9 +2244,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
