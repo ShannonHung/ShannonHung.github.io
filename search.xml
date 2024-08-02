@@ -80,13 +80,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -115,13 +115,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
             <tag> Recursion </tag>
             
@@ -154,9 +154,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Recursion </tag>
             
@@ -187,13 +187,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -222,13 +222,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> DFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> DFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -259,9 +259,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Recursion </tag>
             
@@ -321,13 +321,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> DFS </tag>
             
-            <tag> binary-tree </tag>
+            <tag> practice </tag>
             
             <tag> Easy </tag>
             
-            <tag> DFS </tag>
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -356,13 +356,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -391,13 +391,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> DFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> DFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -426,13 +426,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -463,11 +463,11 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -498,11 +498,11 @@
             
             <tag> practice </tag>
             
+            <tag> Easy </tag>
+            
             <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
-            
-            <tag> Easy </tag>
             
         </tags>
       
@@ -533,11 +533,11 @@
             
             <tag> practice </tag>
             
+            <tag> Easy </tag>
+            
             <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
-            
-            <tag> Easy </tag>
             
         </tags>
       
@@ -568,9 +568,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Recursion </tag>
             
@@ -603,11 +603,11 @@
             
             <tag> practice </tag>
             
+            <tag> Easy </tag>
+            
             <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
-            
-            <tag> Easy </tag>
             
         </tags>
       
@@ -638,11 +638,11 @@
             
             <tag> practice </tag>
             
+            <tag> Easy </tag>
+            
             <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
-            
-            <tag> Easy </tag>
             
         </tags>
       
@@ -704,9 +704,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> BST </tag>
-            
             <tag> Tree </tag>
+            
+            <tag> BST </tag>
             
         </tags>
       
@@ -2251,13 +2251,13 @@
             
             <tag> Database </tag>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Cloud Storage </tag>
             
             <tag> Security </tag>
             
             <tag> NIST SP 800-209 </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -2290,13 +2290,13 @@
             
             <tag> Database </tag>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Cloud Storage </tag>
             
             <tag> Security </tag>
             
             <tag> NIST SP 800-209 </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -2327,9 +2327,9 @@
             
             <tag> Database </tag>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Connection Pool </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -2360,9 +2360,9 @@
             
             <tag> Database </tag>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Connection Pool </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
