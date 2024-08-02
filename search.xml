@@ -60,6 +60,41 @@
     
     
     <entry>
+      <title>LeetCode #103 Binary Tree Zigzag Level Order Traversal - 刷題之旅</title>
+      <link href="/posts/leetcode-103-Binary-Tree-Zigzag-Level-Order-Traversal/"/>
+      <url>/posts/leetcode-103-Binary-Tree-Zigzag-Level-Order-Traversal/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/MvVz5Uv.png" alt=""><br><img src="https://i.imgur.com/XenNvxk.png" alt=""></p><p>給定一個二元樹，返回其節點值的<em>之字形層序遍歷</em>。換句話說，從左到右，逐層遍歷所有節點，然後每一層的節點值交替方向。<br>第 1 層從左到右，第 2 層從右到左，第 3 層從左到右，第 4 層從右到左，交替進行。</p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的解法">2.1 我的解法</h2><p>仔細看會發現一個規律，就是當我們在做層序遍歷的時候，我們可以透過<code>BFS</code>的方式，在不同的層，當發現是偶數層時，要從左到右，我們可以stack先塞right再left。而在奇數層時，要從右到左，我們可以stack先塞left再right。<br><img src="https://i.imgur.com/P8TWjjF.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 透過pop的方式取出最晚進去的節點</span></span><br><span class="line">node = nodes.pop()</span><br><span class="line"><span class="comment"># 紀錄當前的層</span></span><br><span class="line">cur_level.append(node.val)</span><br><span class="line"><span class="comment"># 如果是偶數層 Left到Right，因此我們先塞Right再Left，按照後進先出的方式達到 Left -&gt; Right </span></span><br><span class="line"><span class="keyword">if</span> level % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">    <span class="keyword">if</span> node.right: next_level.append(node.right)</span><br><span class="line">    <span class="keyword">if</span> node.left: next_level.append(node.left)</span><br><span class="line"><span class="comment"># 如果是奇數層 Right到Left，因此我們先塞Left再Right，按照後進先出的方式達到 Right -&gt; Left</span></span><br><span class="line"><span class="keyword">else</span>: </span><br><span class="line">    <span class="keyword">if</span> node.left: next_level.append(node.left)</span><br><span class="line">    <span class="keyword">if</span> node.right: next_level.append(node.right)</span><br></pre></td></tr></table></figure><p>基本上我們就完成了</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">zigzagLevelOrder</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">nodes, lvl</span>):</span><br><span class="line">            cur_lvl = []</span><br><span class="line">            next_lvl = []</span><br><span class="line">            <span class="comment"># 如果沒有節點了，就停止</span></span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(nodes) == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="comment"># 如果 nodes 存在</span></span><br><span class="line">            <span class="keyword">while</span> nodes:</span><br><span class="line">                node = nodes.pop()</span><br><span class="line">                cur_lvl.append(node.val)</span><br><span class="line">                <span class="comment"># 如果是偶數層 Left到Right，因此我們先塞Right再Left，按照後進先出的方式達到 Left -&gt; Right</span></span><br><span class="line">                <span class="keyword">if</span> lvl % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">                    <span class="keyword">if</span> node.left: next_lvl.append(node.left)</span><br><span class="line">                    <span class="keyword">if</span> node.right: next_lvl.append(node.right)</span><br><span class="line">                <span class="comment"># 如果是奇數層 Right到Left，因此我們先塞Left再Right，按照後進先出的方式達到 Right -&gt; Left</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">if</span> node.right: next_lvl.append(node.right)</span><br><span class="line">                    <span class="keyword">if</span> node.left: next_lvl.append(node.left)</span><br><span class="line">            <span class="comment"># 將當前層的節點值存放在答案中</span></span><br><span class="line">            ans.append(cur_lvl)</span><br><span class="line">            <span class="comment"># 遞迴下一層</span></span><br><span class="line">            helper(next_lvl, lvl+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        ans = []</span><br><span class="line">        <span class="keyword">if</span> root:</span><br><span class="line">            helper([root], <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><h2 id="2-2-使用迭代的方式">2.2 使用迭代的方式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">zigzagLevelOrder</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        result = []</span><br><span class="line">        stack = [root]</span><br><span class="line">        level = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> stack:</span><br><span class="line">            next_level, values = [], []</span><br><span class="line">            <span class="keyword">for</span> node <span class="keyword">in</span> stack:</span><br><span class="line">                values.append(node.val)</span><br><span class="line">                <span class="comment"># 每一層從左到右</span></span><br><span class="line">                <span class="keyword">if</span> node.left: next_level.append(node.left)</span><br><span class="line">                <span class="keyword">if</span> node.right: next_level.append(node.right)</span><br><span class="line">            <span class="comment"># 如果是奇數層，就反轉</span></span><br><span class="line">            <span class="keyword">if</span> level % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">                values = values[::-<span class="number">1</span>]</span><br><span class="line">            <span class="comment"># 然後直接塞入答案</span></span><br><span class="line">            result.append(values)</span><br><span class="line">            stack = next_level</span><br><span class="line">            level += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題也是自己寫出來的，大概有知道一些想法，寫出來所花費的時間大概是30分鐘。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #199 Binary Tree Right Side View - 刷題之旅</title>
       <link href="/posts/leetcode-199-Binary-Tree-Right-Side-View/"/>
       <url>/posts/leetcode-199-Binary-Tree-Right-Side-View/</url>
@@ -80,13 +115,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
             <tag> Recursion </tag>
             
@@ -101,7 +136,7 @@
       <link href="/posts/leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree/"/>
       <url>/posts/leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree/</url>
       
-        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/uOjMZRy.png" alt=""><br><img src="https://i.imgur.com/tYD4R1G.png" alt=""></p><p>給一個二元樹，找到兩個節點的最低共同祖先。（祖先可以是自己）</p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的解法">2.1 我的解法</h2><p>看到這題的時候我腦子裡面出現兩種情況：</p><ol><li>如果兩個節點在同一個子樹下（p是q的子節點或是q是p的子節點），那祖先會是p或是q。</li><li>如果兩個節點在不同的子樹下（p和q分別在左右子樹下），那祖先會是把他們倆分開時的root。</li></ol><blockquote><p>情境1: p 是 q 的祖先 或是 q 是 p 的祖先<br><img src="https://i.imgur.com/EyQsSZB.png" alt=""></p></blockquote><blockquote><p>情境2: p 和 q 在不同的子樹下<br><img src="https://i.imgur.com/Sygutbi.png" alt=""></p></blockquote><p>因此我們可以針對這兩種情況來寫遞歸。</p><p><em>情境1</em><br>我們可以建立一個function檢查兩個點是否在同一個子樹下，如果是的話，回傳p或是q。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">check_same_subtree</span>(<span class="params">parent, child</span>):</span><br><span class="line">    <span class="keyword">if</span> parent <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">if</span> parent == child:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> check_same_subtree(parent.left, child) <span class="keyword">or</span> check_same_subtree(parent.right, child)</span><br></pre></td></tr></table></figure><p>所以主程式可以這樣寫：</p><ul><li>先檢查 p 是否為 q 的祖先（在同一個樹下），如果是就回傳 p</li><li>再檢查 q 是否為 p 的祖先（在同一個樹下），如果是就回傳 q</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">    <span class="keyword">if</span> check_same_subtree(p, q):</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    <span class="keyword">if</span> check_same_subtree(q, p):</span><br><span class="line">        <span class="keyword">return</span> q</span><br></pre></td></tr></table></figure><p><em>情境2</em><br>接下來我們開始處理情境2，也就是 p 和 q 在不同的子樹下。他的特點是在，我們一但同時在當前的root的left subtree與right subtree找到p 或是 q，就回傳當前的root。否則若只有一邊有，但是另一邊的subtree還沒有，那就代表還不夠高，繼續往上找。<br><img src="https://i.imgur.com/JmvSTow.png" alt=""><br>從上圖可以看到，</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    ans = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">        <span class="keyword">if</span> check_same_subtree(p, q):</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        <span class="keyword">elif</span> check_same_subtree(q, p):</span><br><span class="line">            <span class="keyword">return</span> q</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find_parent</span>(<span class="params">root</span>):</span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> root == p <span class="keyword">or</span> root == q: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        </span><br><span class="line">        left = find_parent(root.left)</span><br><span class="line">        right = find_parent(root.right)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果左右子樹都有找到，代表當前的root就是答案</span></span><br><span class="line">        <span class="keyword">if</span> left <span class="keyword">and</span> right: </span><br><span class="line">            self.ans = root </span><br><span class="line">        <span class="comment"># 如果左右子樹有一個找到，代表還不夠高，繼續往上找</span></span><br><span class="line">        <span class="keyword">elif</span> left <span class="keyword">or</span> right: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># 如果左右子樹都沒有找到，回傳False</span></span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span> </span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">check_same_subtree</span>(<span class="params">parent, child</span>):</span><br><span class="line">        <span class="keyword">if</span> parent <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> parent == child:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">return</span> check_same_subtree(parent.left, child) <span class="keyword">or</span> check_same_subtree(parent.right, child)</span><br></pre></td></tr></table></figure><p>最後結果就是</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    ans = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">        <span class="keyword">if</span> check_same_subtree(p, q):</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        <span class="keyword">elif</span> check_same_subtree(q, p):</span><br><span class="line">            <span class="keyword">return</span> q</span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            self.find_parent(root)</span><br><span class="line">        <span class="keyword">return</span> self.ans </span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find_parent</span>(<span class="params">root</span>):</span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> root == p <span class="keyword">or</span> root == q: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        </span><br><span class="line">        left = find_parent(root.left)</span><br><span class="line">        right = find_parent(root.right)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果左右子樹都有找到，代表當前的root就是答案</span></span><br><span class="line">        <span class="keyword">if</span> left <span class="keyword">and</span> right: </span><br><span class="line">            self.ans = root </span><br><span class="line">        <span class="comment"># 如果左右子樹有一個找到，代表還不夠高，繼續往上找</span></span><br><span class="line">        <span class="keyword">elif</span> left <span class="keyword">or</span> right: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># 如果左右子樹都沒有找到，回傳False</span></span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span> </span><br></pre></td></tr></table></figure><h2 id="2-2-更好的解法">2.2 更好的解法</h2><p>在上面你會發現一個精神：</p><ul><li>我們會檢查當前root的left subtree和right subtree是否有找到p或是q，如果有找到，就回傳當前的root。</li><li>如果只有一邊有找到，另一邊沒有，但還是回傳True</li><li>如果兩邊都沒找到，回傳False</li></ul><p>那我們是否可以改變一下觀念，把Ture, False的概念換成回傳 True =  p 或是 q 以及 False = None，這樣我們就可以把情境1和情境2合併在一起了。<br><img src="https://i.imgur.com/otrdABF.png" alt=""><br>具體來說是怎麼把情境1和2合併在一起呢？</p><ul><li>情境1: 如果發現一邊是None，那我們就回傳另一邊<ul><li>如果另一邊有值就會回傳最早碰到的節點（p或是q）那就是祖先。</li><li>如果另一邊沒有值，代表兩邊都沒有找到，就回傳None（但題目有說明p跟q一定會在樹裡面，所以這個情況不會發生）</li></ul></li><li>情境2: 如果發現兩邊都有值，就代表我們找到 p 跟 q 節點了，但是因為他們在不同的子樹下，所以當前的root就是祖先。</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>: </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">        <span class="comment"># 回傳 Ture 或是 False 概念 只是都是 root </span></span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> root == p <span class="keyword">or</span> root == q:</span><br><span class="line">            <span class="keyword">return</span> root</span><br><span class="line"></span><br><span class="line">        left = self.lowestCommonAncestor(root.left, p, q)</span><br><span class="line">        right = self.lowestCommonAncestor(root.right, p, q)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> left <span class="keyword">is</span> <span class="literal">None</span>: </span><br><span class="line">            <span class="keyword">return</span> right <span class="comment"># 當發現一邊subtree是None，就回傳另一邊（p或是q | None) 因為可能是父子關係，所以一定會先回傳父節點</span></span><br><span class="line">        <span class="keyword">if</span> right <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> left <span class="comment"># 當發現一邊subtree是None，就回傳另一邊（p或是q | None) 因為可能是父子關係，所以一定會先回傳父節點</span></span><br><span class="line">        <span class="comment"># 剩下的狀況就是 left 和 right 都有找到 （p 跟 q 分別在不同的 subtree），那就回傳當前的root</span></span><br><span class="line">        <span class="keyword">return</span> root </span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題的關鍵思想在於 找left subtree 跟 right subtree 是否存在 p 與 q</p><ul><li>如果只有一邊存在，那代表 p 與 q 一定是父子關係，所以回傳最早找到的那個節點（父節點）</li><li>如果兩邊subtree各自找到 p 與 q，那代表 p 與 q 在不同的子樹下，所以回傳當前的root</li></ul><p>這題我有自己想出來，可惜的是花了兩個小時，後來看到更好的解法，才發現自己的解法太複雜了，但是核心思想是一樣的。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/uOjMZRy.png" alt=""><br><img src="https://i.imgur.com/tYD4R1G.png" alt=""></p><p>給一個二元樹，找到兩個節點的最低共同祖先。（祖先可以是自己）</p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的解法">2.1 我的解法</h2><p>看到這題的時候我腦子裡面出現兩種情況：</p><ol><li>如果兩個節點在同一個子樹下（p是q的子節點或是q是p的子節點），那祖先會是p或是q。</li><li>如果兩個節點在不同的子樹下（p和q分別在左右子樹下），那祖先會是把他們倆分開時的root。</li></ol><blockquote><p>情境1: p 是 q 的祖先 或是 q 是 p 的祖先<br><img src="https://i.imgur.com/EyQsSZB.png" alt=""></p></blockquote><blockquote><p>情境2: p 和 q 在不同的子樹下<br><img src="https://i.imgur.com/Sygutbi.png" alt=""></p></blockquote><p>因此我們可以針對這兩種情況來寫遞歸。</p><p><em>情境1</em><br>我們可以建立一個function檢查兩個點是否在同一個子樹下，如果是的話，回傳p或是q。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">check_same_subtree</span>(<span class="params">parent, child</span>):</span><br><span class="line">    <span class="keyword">if</span> parent <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">if</span> parent == child:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> check_same_subtree(parent.left, child) <span class="keyword">or</span> check_same_subtree(parent.right, child)</span><br></pre></td></tr></table></figure><p>所以主程式可以這樣寫：</p><ul><li>先檢查 p 是否為 q 的祖先（在同一個樹下），如果是就回傳 p</li><li>再檢查 q 是否為 p 的祖先（在同一個樹下），如果是就回傳 q</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">    <span class="keyword">if</span> check_same_subtree(p, q):</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    <span class="keyword">if</span> check_same_subtree(q, p):</span><br><span class="line">        <span class="keyword">return</span> q</span><br></pre></td></tr></table></figure><p><em>情境2</em><br>接下來我們開始處理情境2，也就是 p 和 q 在不同的子樹下。他的特點是在，我們一但同時在當前的root的left subtree與right subtree找到p 或是 q，就回傳當前的root。否則若只有一邊有，但是另一邊的subtree還沒有，那就代表還不夠高，繼續往上找。<br><img src="https://i.imgur.com/JmvSTow.png" alt=""><br>從上圖可以看到，</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    ans = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">        <span class="keyword">if</span> check_same_subtree(p, q):</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        <span class="keyword">elif</span> check_same_subtree(q, p):</span><br><span class="line">            <span class="keyword">return</span> q</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find_parent</span>(<span class="params">root</span>):</span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> root == p <span class="keyword">or</span> root == q: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        </span><br><span class="line">        left = find_parent(root.left)</span><br><span class="line">        right = find_parent(root.right)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果左右子樹都有找到，代表當前的root就是答案</span></span><br><span class="line">        <span class="keyword">if</span> left <span class="keyword">and</span> right: </span><br><span class="line">            self.ans = root </span><br><span class="line">        <span class="comment"># 如果左右子樹有一個找到，代表還不夠高，繼續往上找</span></span><br><span class="line">        <span class="keyword">elif</span> left <span class="keyword">or</span> right: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># 如果左右子樹都沒有找到，回傳False</span></span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span> </span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">check_same_subtree</span>(<span class="params">parent, child</span>):</span><br><span class="line">        <span class="keyword">if</span> parent <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> parent == child:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">return</span> check_same_subtree(parent.left, child) <span class="keyword">or</span> check_same_subtree(parent.right, child)</span><br></pre></td></tr></table></figure><p>最後結果就是</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    ans = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">        <span class="keyword">if</span> check_same_subtree(p, q):</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        <span class="keyword">elif</span> check_same_subtree(q, p):</span><br><span class="line">            <span class="keyword">return</span> q</span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            self.find_parent(root)</span><br><span class="line">        <span class="keyword">return</span> self.ans </span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find_parent</span>(<span class="params">root</span>):</span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> root == p <span class="keyword">or</span> root == q: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        </span><br><span class="line">        left = find_parent(root.left)</span><br><span class="line">        right = find_parent(root.right)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果左右子樹都有找到，代表當前的root就是答案</span></span><br><span class="line">        <span class="keyword">if</span> left <span class="keyword">and</span> right: </span><br><span class="line">            self.ans = root </span><br><span class="line">        <span class="comment"># 如果左右子樹有一個找到，代表還不夠高，繼續往上找</span></span><br><span class="line">        <span class="keyword">elif</span> left <span class="keyword">or</span> right: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># 如果左右子樹都沒有找到，回傳False</span></span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span> </span><br></pre></td></tr></table></figure><h2 id="2-2-更好的解法">2.2 更好的解法</h2><p>在上面你會發現一個精神：</p><ul><li>我們會檢查當前root的left subtree和right subtree是否有找到p或是q，如果有找到，就回傳當前的root。</li><li>如果只有一邊有找到，另一邊沒有，但還是回傳True</li><li>如果兩邊都沒找到，回傳False</li></ul><p>那我們是否可以改變一下觀念，把Ture, False的概念換成回傳 True =  p 或是 q 以及 False = None，這樣我們就可以把情境1和情境2合併在一起了。<br><img src="https://i.imgur.com/otrdABF.png" alt=""><br>具體來說是怎麼把情境1和2合併在一起呢？</p><ul><li>情境1: 如果發現一邊是None，那我們就回傳另一邊<ul><li>如果另一邊有值就會回傳最早碰到的節點（p或是q）那就是祖先。</li><li>如果另一邊沒有值，代表兩邊都沒有找到，就回傳None（但題目有說明p跟q一定會在樹裡面，所以這個情況不會發生）</li></ul></li><li>情境2: 如果發現兩邊都有值，就代表我們找到 p 跟 q 節點了，但是因為他們在不同的子樹下，所以當前的root就是祖先。</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>: </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">lowestCommonAncestor</span>(<span class="params">self, root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:</span><br><span class="line">        <span class="comment"># 回傳 Ture 或是 False 概念 只是都是 root </span></span><br><span class="line">        <span class="keyword">if</span> root <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> root == p <span class="keyword">or</span> root == q:</span><br><span class="line">            <span class="keyword">return</span> root</span><br><span class="line"></span><br><span class="line">        left = self.lowestCommonAncestor(root.left, p, q)</span><br><span class="line">        right = self.lowestCommonAncestor(root.right, p, q)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 情境2 兩邊都有值，代表找到 p 跟 q，但是在不同的子樹下 回傳當前的root</span></span><br><span class="line">        <span class="keyword">if</span> left <span class="keyword">and</span> right: </span><br><span class="line">            <span class="keyword">return</span> root</span><br><span class="line">        <span class="comment"># 情境1 一邊有值，另一邊沒有值，回傳有值的那一邊</span></span><br><span class="line">        <span class="keyword">if</span> left <span class="keyword">or</span> right: </span><br><span class="line">            <span class="keyword">return</span> left <span class="keyword">or</span> right</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題的關鍵思想在於 找left subtree 跟 right subtree 是否存在 p 與 q</p><ul><li>如果只有一邊存在，那代表 p 與 q 一定是父子關係，所以回傳最早找到的那個節點（父節點）</li><li>如果兩邊subtree各自找到 p 與 q，那代表 p 與 q 在不同的子樹下，所以回傳當前的root</li></ul><p>這題我有自己想出來，可惜的是花了兩個小時，後來看到更好的解法，才發現自己的解法太複雜了，但是核心思想是一樣的。</p>]]></content>
       
       
       <categories>
@@ -152,13 +187,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -187,13 +222,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -286,13 +321,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Easy </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -321,13 +356,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -356,13 +391,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -391,13 +426,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -428,11 +463,11 @@
             
             <tag> Lecture </tag>
             
+            <tag> Tree </tag>
+            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
-            
-            <tag> Tree </tag>
             
         </tags>
       
@@ -465,9 +500,9 @@
             
             <tag> binary-tree </tag>
             
-            <tag> Easy </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -500,9 +535,9 @@
             
             <tag> binary-tree </tag>
             
-            <tag> Easy </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -570,9 +605,9 @@
             
             <tag> binary-tree </tag>
             
-            <tag> Easy </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -605,9 +640,9 @@
             
             <tag> binary-tree </tag>
             
-            <tag> Easy </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -669,9 +704,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BST </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
