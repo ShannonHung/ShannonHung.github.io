@@ -91,37 +91,6 @@
     
     
     <entry>
-      <title>Amazon Textract Layout 教學</title>
-      <link href="/posts/textract-guide/"/>
-      <url>/posts/textract-guide/</url>
-      
-        <content type="html"><![CDATA[<h1 id=""></h1><p>Amazon Textract 是一個透過機器學習來達到文字辨識的服務，這篇文章將會介紹如何使用Amazon Textract來辨識文字</p><p>AnalyzeDocument Layout</p><ul><li>使用 <code>Layout</code> 功能的 AnalyzeDocument API 可以辨識整個paragraph</li><li><code>LAYOUT_TEXT</code> 包含多個 Line 的文字段落</li><li><code>LAYOUT_HEADER</code> 位於文檔頂部的文字段落</li><li><code>LAYOUT_FOOTER</code> 位於文檔底部的文字段落</li><li><code>LAYOUT_SECTION_HEADER</code> 主要標題下面的標題</li><li><code>LAYOUT_PAGE_NUMBER</code> 頁碼</li><li><code>LAYOUT_LIST</code> 以清單形式組合在一起的文字段落</li><li><code>LAYOUT_KEY_VALUE</code> 以鍵值對形式組合在一起的文字段落</li></ul><p><img src="https://i.imgur.com/qQtTXyb.png" alt=""></p><p>可以怎麼利用LAYOUT功能？</p><ul><li>可以透過來找到所有標題</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> Tech </category>
-          
-          <category> OCR </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> aws </tag>
-            
-            <tag> textract </tag>
-            
-            <tag> textract-layout </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>LeetCode #98 Validate Binary Search Tree - 刷題之旅</title>
       <link href="/posts/leetcode-98-Validate-Binary-Search-Tree/"/>
       <url>/posts/leetcode-98-Validate-Binary-Search-Tree/</url>
@@ -142,11 +111,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -179,11 +148,11 @@
             
             <tag> BST </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -251,11 +220,11 @@
             
             <tag> BFS </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -286,11 +255,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -391,11 +360,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -630,13 +599,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -665,13 +634,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -700,11 +669,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -735,13 +704,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -770,13 +739,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -1038,9 +1007,9 @@
             
             <tag> Medium </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1073,9 +1042,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1546,9 +1515,9 @@
             
             <tag> Hash </tag>
             
-            <tag> Sliding-Window </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> Sliding-Window </tag>
             
         </tags>
       
@@ -2374,9 +2343,9 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
@@ -2413,9 +2382,9 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
@@ -2749,9 +2718,9 @@
       
         <tags>
             
-            <tag> 簽證 </tag>
-            
             <tag> 德國 </tag>
+            
+            <tag> 簽證 </tag>
             
         </tags>
       
