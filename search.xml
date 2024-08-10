@@ -60,6 +60,41 @@
     
     
     <entry>
+      <title>LeetCode #70 Climbing Stairs - 刷題之旅</title>
+      <link href="/posts/leetcode-70-Climbing-Stairs/"/>
+      <url>/posts/leetcode-70-Climbing-Stairs/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/h0bwqls.png" alt=""></p><p>爬樓梯，每次可以爬一階或是兩階，求爬到第n階有幾種方法。</p><h1 id="2-解法">2 解法</h1><p>按照之前的介紹<a href="/posts/lecture-dp">LeetCode 課前預習 - 掌握 Dynamic Programming 的思維指南</a>，我很推薦把每一種步驟都嘗試寫出來看看，分別是：</p><ol><li>Step1: Recursive</li><li>Step2: Recursive with Memoization</li><li>Step3: Iterative + Tabulation</li><li>Step4: Iterative with Constant Space</li></ol><h2 id="Step1-Recursive">Step1: Recursive</h2><p>最基本也是最蠢的就是我們要先發現，基本上走樓梯的方法數量是<code>f(n) = f(n-1) + f(n-2)</code>，這樣的遞迴式，我們可以直接寫出來。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">climbStairs</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> climbStairs(n-<span class="number">1</span>) + climbStairs(n-<span class="number">2</span>)</span><br></pre></td></tr></table></figure><h2 id="Step2-Recursive-with-Memoization">Step2: Recursive with Memoization</h2><p>那我們就思考，是不是某些已經算過的子問題，我們可以直接拿來用，這樣就不用重複計算了。<br>因此我們需要一個dict來記錄已經算過的子問題。使用dict的好處是可以使用O(1)的時間複雜度來查找。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">climbStairs_step2</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 因為每個數字都會被計算一次</span></span><br><span class="line"><span class="string">    space: O(n) 需要存儲從 1 到 n 的每個狀態</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">i: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> i <span class="keyword">in</span> dp:</span><br><span class="line">            <span class="keyword">return</span> dp[i]</span><br><span class="line"></span><br><span class="line">        dp[i] = self.climbStairs_step2(i - <span class="number">1</span>) + self.climbStairs_step2(i - <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[i]</span><br><span class="line"></span><br><span class="line">    dp = &#123;<span class="number">1</span>: <span class="number">1</span>, <span class="number">2</span>: <span class="number">2</span>&#125;</span><br><span class="line">    <span class="keyword">return</span> helper(n)</span><br></pre></td></tr></table></figure><h2 id="Step3-Iterative-Tabulation">Step3: Iterative + Tabulation</h2><p>接下來，因為Recursive的缺點是有call stack size的限制，所以我們可以使用Iterative，來避免這個問題</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">climbStairs_step3</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n)</span></span><br><span class="line"><span class="string">    space: O(1)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    dp = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    dp[<span class="number">1</span>] = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>, n + <span class="number">1</span>):</span><br><span class="line">        dp[i] = dp[i - <span class="number">1</span>] + dp[i - <span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dp[n]</span><br></pre></td></tr></table></figure><h2 id="Step4-Iterative-with-Constant-Space">Step4: Iterative with Constant Space</h2><p>最後，我們再思考一下，目前時間複雜度已經到極限了，但是空間複雜度是不是可以再省一點？因為我們只需要前面兩個步驟的結果就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">climbStairs_step4</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n)  因為我們只需要計算n次</span></span><br><span class="line"><span class="string">    space: O(1) 只需要3個變數</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    pre_1 = <span class="number">1</span></span><br><span class="line">    pre_2 = <span class="number">2</span></span><br><span class="line">    i = <span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> i &lt; n:</span><br><span class="line">        sumPrev = pre_1 + pre_2</span><br><span class="line">        pre_1 = pre_2</span><br><span class="line">        pre_2 = sumPrev</span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> pre_2</span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題是Easy，所有的dynamic最基本的就是要先想到Recursive的解法，才可以進去DP的大門。否則一切都是空談。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 課前預期 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Easy </tag>
+            
+            <tag> Dynamic Programming </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode 課前預習 - 掌握 Dynamic Programming 的思維指南</title>
       <link href="/posts/lecture-dp/"/>
       <url>/posts/lecture-dp/</url>
@@ -1007,9 +1042,9 @@
             
             <tag> Medium </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -1042,9 +1077,9 @@
             
             <tag> Easy </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -1515,9 +1550,9 @@
             
             <tag> Hash </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> Sliding-Window </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -2343,9 +2378,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
@@ -2382,9 +2417,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
@@ -2718,9 +2753,9 @@
       
         <tags>
             
-            <tag> 德國 </tag>
-            
             <tag> 簽證 </tag>
+            
+            <tag> 德國 </tag>
             
         </tags>
       
