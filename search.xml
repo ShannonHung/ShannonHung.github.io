@@ -60,6 +60,41 @@
     
     
     <entry>
+      <title>LeetCode #198 House Robber - 刷題之旅</title>
+      <link href="/posts/leetcode-198-House-Robber/"/>
+      <url>/posts/leetcode-198-House-Robber/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/gJcLzLy.png" alt=""></p><p>有一排房子，每個房子裡面有一定的錢，但是不能連續偷兩個房子，否則會報警，在不觸發報警的狀況下求最多可以偷到多少錢。</p><h1 id="2-解法">2 解法</h1><p>按照之前的介紹<a href="/posts/lecture-dp">LeetCode 課前預習 - 掌握 Dynamic Programming 的思維指南</a>，我很推薦把每一種步驟都嘗試寫出來看看，分別是：</p><ol><li>Step1: Recursive</li><li>Step2: Recursive with Memoization</li><li>Step3: Iterative + Tabulation</li><li>Step4: Iterative with Constant Space</li></ol><h2 id="Step1-Recursive">Step1: Recursive</h2><p>一道很典型的通過子問題去解決原問題的題目，所以可以透過遞歸以及動態規劃解決。<br><strong>假設</strong>：知道了<code>前 n - 1 家店</code>最多能偷的錢數，<code>前 n - 2 家店</code>最多能偷的錢數。<br><strong>關係式</strong>：如果我們想要知道<code>前 n 家商店</code>最多能偷多少錢，我們可以選擇偷</p><ul><li>偷：偷<code>第 n 家商店</code> + <code>前 n - 2 家商店</code>最多能偷的錢數。</li><li>不偷：不偷<code>第 n 家商店</code> + <code>前 n - 1 家商店</code>最多能偷的錢數。<br><strong>最小問題</strong>：如果今天 <code>n = 0</code>，那麼就是<code>0</code>，如果<code>n = 1</code>，那麼就是<code>nums[0]</code>。</li><li><code>n = 0</code>：表示沒有店家可以偷</li><li><code>n = 1</code>：表示只有一家店可以偷，那也只能偷了</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(2^n) </span></span><br><span class="line"><span class="string">    - 對於長度為 n 的數組，時間複雜度為 O(2^n)。</span></span><br><span class="line"><span class="string">    - 因為每次遞歸函數都會將問題分成兩個子問題，並且繼續遞歸處理，這種情況會產生一個大小為 2^n 的遞歸樹。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    space: O(n) 遞迴的深度</span></span><br><span class="line"><span class="string">    - 由於遞歸呼叫使用了函數呼叫棧，空間複雜度等於遞歸的深度。</span></span><br><span class="line"><span class="string">    - 每次遞歸呼叫時，棧的深度會增加 1。最壞情況下，遞歸深度為 O(n)，因此空間複雜度為 O(n)。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = <span class="built_in">len</span>(nums)</span><br><span class="line">    <span class="comment"># 最小問題</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 偷與不偷</span></span><br><span class="line">    steal = self.rob(nums[:-<span class="number">2</span>]) + nums[-<span class="number">1</span>]  <span class="comment"># 偷：前 n - 2 家店最多能偷的錢數 + 第 n 家店</span></span><br><span class="line">    not_steal = self.rob(nums[:-<span class="number">1</span>])         <span class="comment"># 不偷：前 n - 1 家店最多能偷的錢數</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回最大值</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(steal, not_steal)</span><br></pre></td></tr></table></figure><h2 id="Step2-Recursive-with-Memoization">Step2: Recursive with Memoization</h2><p>那我們就思考，是不是某些已經算過的子問題，我們可以直接拿來用，這樣就不用重複計算了。<br>因此我們需要一個dict來記錄已經算過的子問題。使用dict的好處是可以使用O(1)的時間複雜度來查找。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob2</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(n)</span></span><br><span class="line"><span class="string">    - call stack space O(n): 最壞情況下，遞歸深度為 O(n)，即 n 次遞歸呼叫會佔用 O(n) 的堆疊空間。</span></span><br><span class="line"><span class="string">    - dp dict O(n): dp 字典中儲存了 n+1 個子問題的結果，因此需要 O(n) 的額外空間。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        n = <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="comment"># 檢查是否已經計算過</span></span><br><span class="line">        <span class="keyword">if</span> n <span class="keyword">in</span> dp:</span><br><span class="line">            <span class="keyword">return</span> dp[n]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 偷與不偷</span></span><br><span class="line">            steal = helper(nums[:-<span class="number">2</span>]) + nums[-<span class="number">1</span>]    <span class="comment"># 前n-2店家能偷的最佳解 + 第n家店（-1是因爲python的index是從0開始）</span></span><br><span class="line">            not_steal = helper(nums[:-<span class="number">1</span>])           <span class="comment"># 前n-1店家能偷的最佳解</span></span><br><span class="line">            dp[n] = <span class="built_in">max</span>(steal, not_steal)</span><br><span class="line">            <span class="keyword">return</span> dp[n]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建立一個 dict 來儲存已經計算過的子問題 也把最小問題放進去</span></span><br><span class="line">    dp = &#123;<span class="number">0</span>: <span class="number">0</span>, <span class="number">1</span>: nums[<span class="number">0</span>]&#125;</span><br><span class="line">    <span class="keyword">return</span> helper(nums)</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="Step3-Iterative-Tabulation">Step3: Iterative + Tabulation</h2><p>接下來，因為Recursive的缺點是有call stack size的限制，所以我們可以使用Iterative，來避免這個問題</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob3</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(n) 只需要一個dp list</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    dp = [<span class="number">0</span>, nums[<span class="number">0</span>]]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(nums)+<span class="number">1</span>):</span><br><span class="line">        steal = dp[i-<span class="number">2</span>] + nums[i-<span class="number">1</span>] <span class="comment"># 偷到前兩個的最佳解 + 偷當前的因為從0開始所以要-1</span></span><br><span class="line">        not_steal = dp[i-<span class="number">1</span>]         <span class="comment"># 只偷到前一個的最佳解</span></span><br><span class="line">        dp.append(<span class="built_in">max</span>(steal, not_steal))</span><br><span class="line">    <span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure><h2 id="Step4-Iterative-with-Constant-Space">Step4: Iterative with Constant Space</h2><p>最後，我們再思考一下，目前時間複雜度已經到極限了，但是空間複雜度是不是可以再省一點？因為我們只需要前面兩個步驟的結果就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob4</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(1) 只需要constant個變數</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = <span class="built_in">len</span>(nums)</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>: <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> n == <span class="number">1</span>: <span class="keyword">return</span> nums[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    prev2, prev1 = <span class="number">0</span>, nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(nums)+<span class="number">1</span>):</span><br><span class="line">        best = <span class="built_in">max</span>(prev2 + nums[i-<span class="number">1</span>], prev1)    <span class="comment"># 偷（偷到前兩個+目前） 與 不偷（偷到前一個）</span></span><br><span class="line">        prev2 = prev1                       <span class="comment"># 更新pre變成prev2</span></span><br><span class="line">        prev1 = best                        <span class="comment"># 目前的best是prev1繼續算下一個</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> prev1</span><br></pre></td></tr></table></figure><h1 id="3-題目描述">3 題目描述</h1><p>這題不難，我覺得所有的dp題目最有挑戰性的就是要先知道他的recursive formula，只要能夠實作出來，其他的優化都是小case。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 課前預期 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> Dynamic Programming </tag>
+            
+            <tag> Medium </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #70 Climbing Stairs - 刷題之旅</title>
       <link href="/posts/leetcode-70-Climbing-Stairs/"/>
       <url>/posts/leetcode-70-Climbing-Stairs/</url>
@@ -80,13 +115,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> Easy </tag>
+            <tag> Recursion </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -115,9 +150,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
-            
             <tag> Dynamic Programming </tag>
+            
+            <tag> Lecture </tag>
             
         </tags>
       
@@ -146,13 +181,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -181,15 +216,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> BST </tag>
+            <tag> practice </tag>
             
             <tag> Recursion </tag>
             
-            <tag> practice </tag>
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> Medium </tag>
+            <tag> BST </tag>
             
         </tags>
       
@@ -218,13 +253,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -253,15 +288,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
+            <tag> practice </tag>
             
             <tag> Recursion </tag>
             
-            <tag> practice </tag>
+            <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -290,13 +325,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -325,13 +360,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -360,13 +395,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -395,13 +430,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -459,11 +494,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> DFS </tag>
             
             <tag> binary-tree </tag>
             
@@ -494,13 +529,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -529,13 +564,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -564,13 +599,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -634,9 +669,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -669,9 +704,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -704,13 +739,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -739,9 +774,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -774,9 +809,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -809,9 +844,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Lecture </tag>
             
         </tags>
       
@@ -1141,11 +1176,11 @@
             
             <tag> practice </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> Stack </tag>
             
             <tag> Hard </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1306,9 +1341,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
-            
             <tag> Stack </tag>
+            
+            <tag> Lecture </tag>
             
             <tag> Queue </tag>
             
@@ -1548,11 +1583,11 @@
             
             <tag> Medium </tag>
             
+            <tag> Review-Needed </tag>
+            
             <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
-            
-            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -2378,9 +2413,9 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
@@ -2417,9 +2452,9 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
