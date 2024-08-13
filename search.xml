@@ -60,11 +60,11 @@
     
     
     <entry>
-      <title>LeetCode #198 House Robber - 刷題之旅</title>
-      <link href="/posts/leetcode-198-House-Robber/"/>
-      <url>/posts/leetcode-198-House-Robber/</url>
+      <title>LeetCode #139 Word Break - 刷題之旅</title>
+      <link href="/posts/leetcode-139-Word-Break/"/>
+      <url>/posts/leetcode-139-Word-Break/</url>
       
-        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/gJcLzLy.png" alt=""></p><p>有一排房子，每個房子裡面有一定的錢，但是不能連續偷兩個房子，否則會報警，在不觸發報警的狀況下求最多可以偷到多少錢。</p><h1 id="2-解法">2 解法</h1><p>按照之前的介紹<a href="/posts/lecture-dp">LeetCode 課前預習 - 掌握 Dynamic Programming 的思維指南</a>，我很推薦把每一種步驟都嘗試寫出來看看，分別是：</p><ol><li>Step1: Recursive</li><li>Step2: Recursive with Memoization</li><li>Step3: Iterative + Tabulation</li><li>Step4: Iterative with Constant Space</li></ol><h2 id="Step1-Recursive">Step1: Recursive</h2><p>一道很典型的通過子問題去解決原問題的題目，所以可以透過遞歸以及動態規劃解決。<br><strong>假設</strong>：知道了<code>前 n - 1 家店</code>最多能偷的錢數，<code>前 n - 2 家店</code>最多能偷的錢數。<br><strong>關係式</strong>：如果我們想要知道<code>前 n 家商店</code>最多能偷多少錢，我們可以選擇偷</p><ul><li>偷：偷<code>第 n 家商店</code> + <code>前 n - 2 家商店</code>最多能偷的錢數。</li><li>不偷：不偷<code>第 n 家商店</code> + <code>前 n - 1 家商店</code>最多能偷的錢數。</li></ul><p><strong>最小問題</strong>：如果今天 <code>n = 0</code>，那麼就是<code>0</code>，如果<code>n = 1</code>，那麼就是<code>nums[0]</code>。</p><ul><li><code>n = 0</code>：表示沒有店家可以偷</li><li><code>n = 1</code>：表示只有一家店可以偷，那也只能偷了</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(2^n) </span></span><br><span class="line"><span class="string">    - 對於長度為 n 的數組，時間複雜度為 O(2^n)。</span></span><br><span class="line"><span class="string">    - 因為每次遞歸函數都會將問題分成兩個子問題，並且繼續遞歸處理，這種情況會產生一個大小為 2^n 的遞歸樹。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    space: O(n) 遞迴的深度</span></span><br><span class="line"><span class="string">    - 由於遞歸呼叫使用了函數呼叫棧，空間複雜度等於遞歸的深度。</span></span><br><span class="line"><span class="string">    - 每次遞歸呼叫時，棧的深度會增加 1。最壞情況下，遞歸深度為 O(n)，因此空間複雜度為 O(n)。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = <span class="built_in">len</span>(nums)</span><br><span class="line">    <span class="comment"># 最小問題</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 偷與不偷</span></span><br><span class="line">    steal = self.rob(nums[:-<span class="number">2</span>]) + nums[-<span class="number">1</span>]  <span class="comment"># 偷：前 n - 2 家店最多能偷的錢數 + 第 n 家店</span></span><br><span class="line">    not_steal = self.rob(nums[:-<span class="number">1</span>])         <span class="comment"># 不偷：前 n - 1 家店最多能偷的錢數</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回最大值</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(steal, not_steal)</span><br></pre></td></tr></table></figure><h2 id="Step2-Recursive-with-Memoization">Step2: Recursive with Memoization</h2><p>那我們就思考，是不是某些已經算過的子問題，我們可以直接拿來用，這樣就不用重複計算了。<br>因此我們需要一個dict來記錄已經算過的子問題。使用dict的好處是可以使用O(1)的時間複雜度來查找。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob2</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(n)</span></span><br><span class="line"><span class="string">    - call stack space O(n): 最壞情況下，遞歸深度為 O(n)，即 n 次遞歸呼叫會佔用 O(n) 的堆疊空間。</span></span><br><span class="line"><span class="string">    - dp dict O(n): dp 字典中儲存了 n+1 個子問題的結果，因此需要 O(n) 的額外空間。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        n = <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="comment"># 檢查是否已經計算過</span></span><br><span class="line">        <span class="keyword">if</span> n <span class="keyword">in</span> dp:</span><br><span class="line">            <span class="keyword">return</span> dp[n]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 偷與不偷</span></span><br><span class="line">            steal = helper(nums[:-<span class="number">2</span>]) + nums[-<span class="number">1</span>]    <span class="comment"># 前n-2店家能偷的最佳解 + 第n家店（-1是因爲python的index是從0開始）</span></span><br><span class="line">            not_steal = helper(nums[:-<span class="number">1</span>])           <span class="comment"># 前n-1店家能偷的最佳解</span></span><br><span class="line">            dp[n] = <span class="built_in">max</span>(steal, not_steal)</span><br><span class="line">            <span class="keyword">return</span> dp[n]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建立一個 dict 來儲存已經計算過的子問題 也把最小問題放進去</span></span><br><span class="line">    dp = &#123;<span class="number">0</span>: <span class="number">0</span>, <span class="number">1</span>: nums[<span class="number">0</span>]&#125;</span><br><span class="line">    <span class="keyword">return</span> helper(nums)</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="Step3-Iterative-Tabulation">Step3: Iterative + Tabulation</h2><p>接下來，因為Recursive的缺點是有call stack size的限制，所以我們可以使用Iterative，來避免這個問題</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob3</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(n) 只需要一個dp list</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    dp = [<span class="number">0</span>, nums[<span class="number">0</span>]]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(nums)+<span class="number">1</span>):</span><br><span class="line">        steal = dp[i-<span class="number">2</span>] + nums[i-<span class="number">1</span>] <span class="comment"># 偷到前兩個的最佳解 + 偷當前的因為從0開始所以要-1</span></span><br><span class="line">        not_steal = dp[i-<span class="number">1</span>]         <span class="comment"># 只偷到前一個的最佳解</span></span><br><span class="line">        dp.append(<span class="built_in">max</span>(steal, not_steal))</span><br><span class="line">    <span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure><h2 id="Step4-Iterative-with-Constant-Space">Step4: Iterative with Constant Space</h2><p>最後，我們再思考一下，目前時間複雜度已經到極限了，但是空間複雜度是不是可以再省一點？因為我們只需要前面兩個步驟的結果就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob4</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(1) 只需要constant個變數</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = <span class="built_in">len</span>(nums)</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>: <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> n == <span class="number">1</span>: <span class="keyword">return</span> nums[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    prev2, prev1 = <span class="number">0</span>, nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(nums)+<span class="number">1</span>):</span><br><span class="line">        best = <span class="built_in">max</span>(prev2 + nums[i-<span class="number">1</span>], prev1)    <span class="comment"># 偷（偷到前兩個+目前） 與 不偷（偷到前一個）</span></span><br><span class="line">        prev2 = prev1                       <span class="comment"># 更新pre變成prev2</span></span><br><span class="line">        prev1 = best                        <span class="comment"># 目前的best是prev1繼續算下一個</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> prev1</span><br></pre></td></tr></table></figure><h1 id="3-題目描述">3 題目描述</h1><p>這題不難，我覺得所有的dp題目最有挑戰性的就是要先知道他的recursive formula，只要能夠實作出來，其他的優化都是小case。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/pmrcgaG.png" alt=""></p><p>這題簡單來說就是給定一個字串<code>s</code>和一個字典<code>wordDict</code>，判斷<code>s</code>是否可以被空格分割成一個或多個在字典中出現的單詞。</p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法">2.1 我的作法</h2><p>但是這個為什麼說他是一個dp問題，是因為他就像背包問題一樣，s是背包，wordDict是物品，我們要看看s能不能裝下wordDict裡面的物品。如果裝錯物品可能導致裝不下。<br>我的想法一開始是一個用切割的方式切成兩塊，然後把所有可能的組合都存到字典裡面，最後找到可以把目前切割結果組合成s的組合。</p><p><em>切割成兩塊</em></p><ul><li>例如：<code>applepenapple</code></li></ul><ol><li><code>a</code> + <code>pplepenapple</code></li><li><code>ap</code> + <code>plepenapple</code></li><li><code>app</code> + <code>lepenapple</code></li><li>…</li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n):</span><br><span class="line">    check_w = word[<span class="number">0</span>:i]</span><br><span class="line">    rest_w = word[i:n]</span><br></pre></td></tr></table></figure><p><em>如果找到一組，切成兩塊的結果都是True就找到了</em></p><ul><li>假設<code>helper</code>是一個可以判斷是否可以切割成wordDict的函數</li><li>關係式：<code>helper(word[0:i])</code> and <code>helper(word[i:n])</code></li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n):</span><br><span class="line">    check_w = helper(word[<span class="number">0</span>:i])</span><br><span class="line">    rest_w = helper(word[i:n])</span><br><span class="line">    <span class="keyword">if</span> check_w <span class="keyword">and</span> rest_w:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure><p><em>終止條件</em></p><ul><li>我們需要一個字典來存放已經切割過的結果，避免重複計算</li><li>如果是空字串，就是True</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果是空字串或是在wordDict裡面，就是True</span></span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;&quot;</span> <span class="keyword">or</span> s <span class="keyword">in</span> wordDict:</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果已經計算過，就直接返回</span></span><br><span class="line"><span class="keyword">if</span> s <span class="keyword">in</span> dp:</span><br><span class="line">    <span class="keyword">return</span> dp[s]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n):</span><br><span class="line">    check_w = helper(word[<span class="number">0</span>:i])</span><br><span class="line">    rest_w = helper(word[i:n])</span><br><span class="line">    <span class="keyword">if</span> check_w <span class="keyword">and</span> rest_w:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure><p><em>最後</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n^2)</span></span><br><span class="line"><span class="string">    - T(n)=T(n-1)+T(n-2)+...+T(1)，這是一個等比數列，總和為 O(n^2)。</span></span><br><span class="line"><span class="string">    space: O(n)</span></span><br><span class="line"><span class="string">    - 使用了一個長度為 n 的字典來存儲已經計算過的結果。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wordBreak</span>(<span class="params">self, s: <span class="built_in">str</span>, wordDict: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">word: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">            <span class="keyword">if</span> word == <span class="string">&quot;&quot;</span> <span class="keyword">or</span> word <span class="keyword">in</span> wordDict:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">           <span class="keyword">if</span> word <span class="keyword">in</span> dp:</span><br><span class="line">                <span class="keyword">return</span> dp[word]</span><br><span class="line"></span><br><span class="line">            n = <span class="built_in">len</span>(word)</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n):</span><br><span class="line">                check_w = word[<span class="number">0</span>:i]</span><br><span class="line">                rest_w = word[i:n]</span><br><span class="line"></span><br><span class="line">                dp[check_w] = helper(check_w)</span><br><span class="line">                dp[rest_w] = helper(rest_w)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> dp[check_w] <span class="keyword">and</span> dp[rest_w]:</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        dp = <span class="built_in">dict</span>()</span><br><span class="line">        <span class="keyword">return</span> helper(s)</span><br></pre></td></tr></table></figure><p>可見這個solution的時間複雜度是O(n^2)，空間複雜度是O(n)。不太好．．．</p><h2 id="2-2-優化">2.2 優化</h2><p>我們想一下，如果今天有個共同重要的是，我們需要從index=0開始找s的每一種長度的字串，是否滿足在wordDict裡面，舉例來說，我們希望dp紀錄的是，不同狀態的s是否可以被wordDict裡面的字串組合而成。</p><ul><li><code>dp[apple] = True</code> 我們可以用長度來代表不同的狀態，例如可以寫成這樣<code>dp[5] = True</code>，這樣就可以<code>s</code>的前面<code>5</code>個字元是否可以被wordDict裡面的字串組合而成。</li><li><code>dp[applepen] = True</code> = <code>dp[9] = True</code></li><li>其他狀態就是False，除了<code>dp[0] = True</code>，因為空字串是True</li></ul><p><em>初始化 + 終止條件</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dp = [<span class="literal">True</span>] + [<span class="literal">False</span>] * (<span class="built_in">len</span>(s) + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">    check_w = s[i]</span><br><span class="line">    <span class="keyword">for</span> w <span class="keyword">in</span> wordDict:</span><br><span class="line">        <span class="keyword">if</span> check_w == w:</span><br><span class="line">            dp[i] = <span class="literal">True</span></span><br></pre></td></tr></table></figure><p>但是我們會發現一個問題，就是當找到<code>apple</code>的時候，我們要繼續往後比較<code>penapple</code>該怎麼做？如果我們知道<code>i</code>的位置是True，我們繼續往後比較時，我們可以直接從<code>i</code>的位置開始比較，這樣就可以省下很多時間。</p><p>然後我們的<code>dictWord=['apple', 'pena','pen']</code>這三組好了，我很喜歡用這個例子，因為如果你先選了<code>pena</code>，那麼可能會因為邏輯錯誤無法回傳True(apple, pen)的組。</p><ol><li>我們目前已經確定<code>apple</code>前五個字<code>dp[5]=True</code></li><li>然後我們會需要走到<code>s[i:len(w)]</code>開始看從<code>apple</code>之後的文字數加上<code>len(w)</code>是否等於<code>w</code><ol><li>就像是目前<code>w</code>是<code>pena</code></li><li><code>i</code> 是 <code>5</code></li><li><code>s[i:i+len(w)]</code> 是 <code>pena</code></li></ol></li><li>然後我們檢查<code>s[i:i+len(w)]</code>是否等於<code>w</code>，如果是的話，我們就可以把<code>dp[i+len(w)]</code>設為True，也就是目前的長度<code>applepena</code> 是滿足的，寫成 <code>dp[9] = True</code></li><li>但是在<code>i+len(w)</code>的時候要注意不要超過<code>len(s)</code>的長度喔，否則會發生index out of range的問題。</li><li>最後回傳<code>dp[-1]</code>就是我們的答案，也就是長度最長的那個字串是否滿足。</li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">dp = [<span class="literal">True</span>] + [<span class="literal">False</span>] * (<span class="built_in">len</span>(s) + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">    <span class="keyword">for</span> w <span class="keyword">in</span> wordDict:</span><br><span class="line">        <span class="comment"># note1: 只有當dp[i]是True的時候，我們才需要繼續比較，也就是說`apple`（i=0:4）之前都不用比較，因為已經找到最佳解</span></span><br><span class="line">        <span class="keyword">if</span> dp[i]: </span><br><span class="line">            <span class="keyword">if</span> i+<span class="built_in">len</span>(w) &lt;= <span class="built_in">len</span>(s):      <span class="comment"># note4: 注意不要超過s的長度</span></span><br><span class="line">                check_w = s[i:i+<span class="built_in">len</span>(w)] <span class="comment"># note2: 從最佳解之後的字串開始比較，只取出跟wordDict一樣長度的字串</span></span><br><span class="line">                <span class="keyword">if</span> check_w == w:</span><br><span class="line">                    dp[i+<span class="built_in">len</span>(w)] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> dp[-<span class="number">1</span>]   <span class="comment"># note5: 最後一個就是最佳解</span></span><br></pre></td></tr></table></figure><p><em>寫乾淨一點</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">time: O(n*m)</span></span><br><span class="line"><span class="string">- 從 i 到 len(s) 的時間複雜度是 O(n)</span></span><br><span class="line"><span class="string">- wordDict裡面有m個字串，所以時間複雜度是 O(n*m)</span></span><br><span class="line"><span class="string">space: O(n)</span></span><br><span class="line"><span class="string">- 使用了一個長度為 n 的字典來存儲已經計算過的結果。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">wordBreak3</span>(<span class="params">self, s: <span class="built_in">str</span>, wordDict: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    dp = [<span class="literal">True</span>] + [<span class="literal">False</span>] * <span class="built_in">len</span>(s)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">        <span class="keyword">for</span> w <span class="keyword">in</span> wordDict:</span><br><span class="line">            <span class="keyword">if</span> dp[i]:</span><br><span class="line">                <span class="keyword">if</span> i + <span class="built_in">len</span>(w) &lt;= <span class="built_in">len</span>(s) <span class="keyword">and</span> s[i:i+<span class="built_in">len</span>(w)] == w:</span><br><span class="line">                    dp[i+<span class="built_in">len</span>(w)] = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題我真的想了很久，一整天都在慢慢沈澱這個問題…dp真不簡單，真的很難想到怎麼用for loop的方式實現。這種類似背包問題，就是要想辦法找到<em>前一步的最佳解</em>，例如，在<code>applepenapple</code>中，如果比較到<code>i=5</code>時，我們要知道以當前的狀態最佳解是<code>i=4</code>時，所以應該考量的是<code>i=4</code> + 當前的字串，是否可以更新目前得最佳解？舉例來說：</p><ul><li>比較<code>apple</code>的時候，更新最佳解<code>dp[5]=True</code></li><li>比較<code>applep</code>的時候<ul><li>因為最佳解是<code>dp[5]=True</code></li><li>所以我們可以從<code>i=4</code>開始往後到目前的<code>i=5</code>考慮是否能夠更新最佳解</li><li>因為<code>s[4:5]=p</code>不滿足任何wordDict的字串，所以<code>dp[6]=False</code></li></ul></li><li>比較<code>applepe</code>的時候<ul><li>因為最佳解是<code>dp[5]=True</code></li><li>所以我們可以從<code>i=4</code>開始往後到目前的<code>i=6</code>考慮是否能夠更新最佳解</li><li>因為<code>s[4:6]=pe</code>不滿足任何wordDict的字串，所以<code>dp[7]=False</code></li></ul></li><li>比較<code>applepen</code>的時候<ul><li>因為最佳解是<code>dp[5]=True</code></li><li>所以我們可以從<code>i=4</code>開始往後到目前的<code>i=8</code>考慮是否能夠更新最佳解</li><li>因為<code>s[4:8]=pen</code>是滿足wordDict的字串，所以<code>dp[8]=True</code></li></ul></li><li>比較<code>applepena</code>的時候<ul><li>因為最佳解是<code>dp[8]=True</code></li><li>所以我們可以從<code>i=7</code>開始往後到目前的<code>i=9</code>考慮是否能夠更新最佳解</li><li>因為<code>s[7:9]=a</code>不滿足任何wordDict的字串，所以<code>dp[9]=False</code></li></ul></li><li>比較<code>applepenap</code>的時候<ul><li>因為最佳解是<code>dp[8]=True</code></li><li>所以我們可以從<code>i=7</code>開始往後到目前的<code>i=10</code>考慮是否能夠更新最佳解</li><li>因為<code>s[7:10]=ap</code>不滿足任何wordDict的字串，所以<code>dp[10]=False</code></li></ul></li><li>比較<code>applepenapp</code>…以此類推</li></ul>]]></content>
       
       
       <categories>
@@ -80,13 +80,48 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
+            <tag> Dynamic Programming </tag>
             
             <tag> practice </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> Medium </tag>
             
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #198 House Robber - 刷題之旅</title>
+      <link href="/posts/leetcode-198-House-Robber/"/>
+      <url>/posts/leetcode-198-House-Robber/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/gJcLzLy.png" alt=""></p><p>有一排房子，每個房子裡面有一定的錢，但是不能連續偷兩個房子，否則會報警，在不觸發報警的狀況下求最多可以偷到多少錢。</p><h1 id="2-解法">2 解法</h1><p>按照之前的介紹<a href="/posts/lecture-dp">LeetCode 課前預習 - 掌握 Dynamic Programming 的思維指南</a>，我很推薦把每一種步驟都嘗試寫出來看看，分別是：</p><ol><li>Step1: Recursive</li><li>Step2: Recursive with Memoization</li><li>Step3: Iterative + Tabulation</li><li>Step4: Iterative with Constant Space</li></ol><h2 id="Step1-Recursive">Step1: Recursive</h2><p>一道很典型的通過子問題去解決原問題的題目，所以可以透過遞歸以及動態規劃解決。<br><strong>假設</strong>：知道了<code>前 n - 1 家店</code>最多能偷的錢數，<code>前 n - 2 家店</code>最多能偷的錢數。<br><strong>關係式</strong>：如果我們想要知道<code>前 n 家商店</code>最多能偷多少錢，我們可以選擇偷</p><ul><li>偷：偷<code>第 n 家商店</code> + <code>前 n - 2 家商店</code>最多能偷的錢數。</li><li>不偷：不偷<code>第 n 家商店</code> + <code>前 n - 1 家商店</code>最多能偷的錢數。</li></ul><p><strong>最小問題</strong>：如果今天 <code>n = 0</code>，那麼就是<code>0</code>，如果<code>n = 1</code>，那麼就是<code>nums[0]</code>。</p><ul><li><code>n = 0</code>：表示沒有店家可以偷</li><li><code>n = 1</code>：表示只有一家店可以偷，那也只能偷了</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(2^n) </span></span><br><span class="line"><span class="string">    - 對於長度為 n 的數組，時間複雜度為 O(2^n)。</span></span><br><span class="line"><span class="string">    - 因為每次遞歸函數都會將問題分成兩個子問題，並且繼續遞歸處理，這種情況會產生一個大小為 2^n 的遞歸樹。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    space: O(n) 遞迴的深度</span></span><br><span class="line"><span class="string">    - 由於遞歸呼叫使用了函數呼叫棧，空間複雜度等於遞歸的深度。</span></span><br><span class="line"><span class="string">    - 每次遞歸呼叫時，棧的深度會增加 1。最壞情況下，遞歸深度為 O(n)，因此空間複雜度為 O(n)。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = <span class="built_in">len</span>(nums)</span><br><span class="line">    <span class="comment"># 最小問題</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 偷與不偷</span></span><br><span class="line">    steal = self.rob(nums[:-<span class="number">2</span>]) + nums[-<span class="number">1</span>]  <span class="comment"># 偷：前 n - 2 家店最多能偷的錢數 + 第 n 家店</span></span><br><span class="line">    not_steal = self.rob(nums[:-<span class="number">1</span>])         <span class="comment"># 不偷：前 n - 1 家店最多能偷的錢數</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回最大值</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(steal, not_steal)</span><br></pre></td></tr></table></figure><h2 id="Step2-Recursive-with-Memoization">Step2: Recursive with Memoization</h2><p>那我們就思考，是不是某些已經算過的子問題，我們可以直接拿來用，這樣就不用重複計算了。<br>因此我們需要一個dict來記錄已經算過的子問題。使用dict的好處是可以使用O(1)的時間複雜度來查找。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob2</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(n)</span></span><br><span class="line"><span class="string">    - call stack space O(n): 最壞情況下，遞歸深度為 O(n)，即 n 次遞歸呼叫會佔用 O(n) 的堆疊空間。</span></span><br><span class="line"><span class="string">    - dp dict O(n): dp 字典中儲存了 n+1 個子問題的結果，因此需要 O(n) 的額外空間。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        n = <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="comment"># 檢查是否已經計算過</span></span><br><span class="line">        <span class="keyword">if</span> n <span class="keyword">in</span> dp:</span><br><span class="line">            <span class="keyword">return</span> dp[n]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 偷與不偷</span></span><br><span class="line">            steal = helper(nums[:-<span class="number">2</span>]) + nums[-<span class="number">1</span>]    <span class="comment"># 前n-2店家能偷的最佳解 + 第n家店（-1是因爲python的index是從0開始）</span></span><br><span class="line">            not_steal = helper(nums[:-<span class="number">1</span>])           <span class="comment"># 前n-1店家能偷的最佳解</span></span><br><span class="line">            dp[n] = <span class="built_in">max</span>(steal, not_steal)</span><br><span class="line">            <span class="keyword">return</span> dp[n]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建立一個 dict 來儲存已經計算過的子問題 也把最小問題放進去</span></span><br><span class="line">    dp = &#123;<span class="number">0</span>: <span class="number">0</span>, <span class="number">1</span>: nums[<span class="number">0</span>]&#125;</span><br><span class="line">    <span class="keyword">return</span> helper(nums)</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="Step3-Iterative-Tabulation">Step3: Iterative + Tabulation</h2><p>接下來，因為Recursive的缺點是有call stack size的限制，所以我們可以使用Iterative，來避免這個問題</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob3</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(n) 只需要一個dp list</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    dp = [<span class="number">0</span>, nums[<span class="number">0</span>]]</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>: <span class="keyword">return</span> dp[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">elif</span> n == <span class="number">1</span>: <span class="keyword">return</span> dp[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(nums)+<span class="number">1</span>):</span><br><span class="line">        steal = dp[i-<span class="number">2</span>] + nums[i-<span class="number">1</span>] <span class="comment"># 偷到前兩個的最佳解 + 偷當前的因為從0開始所以要-1</span></span><br><span class="line">        not_steal = dp[i-<span class="number">1</span>]         <span class="comment"># 只偷到前一個的最佳解</span></span><br><span class="line">        dp.append(<span class="built_in">max</span>(steal, not_steal))</span><br><span class="line">    <span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure><h2 id="Step4-Iterative-with-Constant-Space">Step4: Iterative with Constant Space</h2><p>最後，我們再思考一下，目前時間複雜度已經到極限了，但是空間複雜度是不是可以再省一點？因為我們只需要前面兩個步驟的結果就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob4</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(n) 每個子問題只會被計算一次，並且儲存在 dp 字典中</span></span><br><span class="line"><span class="string">    space: O(1) 只需要constant個變數</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = <span class="built_in">len</span>(nums)</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>: <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> n == <span class="number">1</span>: <span class="keyword">return</span> nums[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    prev2, prev1 = <span class="number">0</span>, nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(nums)+<span class="number">1</span>):</span><br><span class="line">        best = <span class="built_in">max</span>(prev2 + nums[i-<span class="number">1</span>], prev1)    <span class="comment"># 偷（偷到前兩個+目前） 與 不偷（偷到前一個）</span></span><br><span class="line">        prev2 = prev1                       <span class="comment"># 更新pre變成prev2</span></span><br><span class="line">        prev1 = best                        <span class="comment"># 目前的best是prev1繼續算下一個</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> prev1</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題不難，我覺得所有的dp題目最有挑戰性的就是要先知道他的recursive formula，只要能夠實作出來，其他的優化都是小case。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 課前預期 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
             <tag> Dynamic Programming </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -115,13 +150,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
+            <tag> Dynamic Programming </tag>
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
+            <tag> Recursion </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Easy </tag>
             
         </tags>
       
@@ -181,13 +216,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -216,15 +251,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> BST </tag>
+            <tag> practice </tag>
             
             <tag> Recursion </tag>
             
-            <tag> practice </tag>
+            <tag> Medium </tag>
+            
+            <tag> BST </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -253,13 +288,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -288,15 +323,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
+            <tag> practice </tag>
             
             <tag> Recursion </tag>
             
-            <tag> practice </tag>
+            <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -325,13 +360,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -360,13 +395,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -395,13 +430,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -430,13 +465,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -494,11 +529,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> DFS </tag>
             
             <tag> binary-tree </tag>
             
@@ -529,13 +564,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -564,13 +599,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -599,13 +634,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -669,9 +704,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -704,9 +739,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -739,13 +774,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -774,9 +809,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -809,9 +844,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Easy </tag>
             
@@ -1277,9 +1312,9 @@
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> Stack </tag>
+            
+            <tag> Easy </tag>
             
         </tags>
       
@@ -2120,9 +2155,9 @@
       
         <tags>
             
-            <tag> DLP </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> DLP </tag>
             
         </tags>
       
@@ -2413,18 +2448,18 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Database </tag>
+            
+            <tag> 碩士論文 </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -2452,18 +2487,18 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Database </tag>
+            
+            <tag> 碩士論文 </tag>
             
             <tag> Cloud Storage </tag>
             
@@ -2498,11 +2533,11 @@
       
         <tags>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -2531,11 +2566,11 @@
       
         <tags>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Database </tag>
             
             <tag> Connection Pool </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
