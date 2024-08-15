@@ -60,6 +60,39 @@
     
     
     <entry>
+      <title>LeetCode #322 Coin Change - 刷題之旅</title>
+      <link href="/posts/leetcode-322-Coin-Change/"/>
+      <url>/posts/leetcode-322-Coin-Change/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/iRg3o3m.png" alt=""></p><p>給定不同面額的硬幣<code>coin</code>和一個總金額<code>amount</code>，寫一個函數來計算可以製造出總金額的最少硬幣數量。如果無法製造出總金額，則返回<code>-1</code>。</p><h1 id="2-解法">2 解法</h1><p>其實dp的題目中有個共通點，都像是書包題目，為什麼是 dp 問題是因為可以拆分成小問題，而 amount 的小問題基本上就是 <code>range(1, amount+1)</code> 這些範圍如果都能夠找到最佳解ㄝ那自然<code>amount</code>也能找到最佳解。所以我們腦子有個思路，就是我們可以先從<code>1</code>開始。而最小值就是<code>0</code>，因為<code>0</code>元不需要硬幣。</p><p><em>小問題開始</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化 dp 碰到 0 的 amount 就是 0</span></span><br><span class="line">dp = &#123;<span class="number">0</span>: <span class="number">0</span>&#125; </span><br><span class="line"><span class="comment"># 因為 range 是不包含最後一個數字，所以要 +1 </span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, amount+<span class="number">1</span>): </span><br><span class="line">    <span class="comment"># 初始化 dp[i] 為無限大</span></span><br><span class="line">    dp[i] = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br></pre></td></tr></table></figure><p>接下來，我們假設: <code>amount=11</code> 且 <code>coins=[3, 5]</code>，我們可以看到<code>dp</code>的變化如下：</p><ul><li><code>dp[0] = 0</code></li><li><code>dp[1] = inf</code> 沒有對應的 coin</li><li><code>dp[2] = inf</code> 沒有對應的 coin</li><li><code>dp[3] = 1</code>  因為有 coin 3 可以組成</li><li><code>dp[4] = inf</code> 沒有對應的 coin</li><li><code>dp[5] = 1</code>  因為有 coin 5 可以組成</li><li><code>dp[6] = 2</code>  當 <code>i&gt;coin</code>時基本上有2種可能取最小<ul><li><code>dp[6-3] + dp[3] = 1+1 = 2</code></li><li><code>dp[6-5] + dp[5] = inf+1 = inf</code></li></ul></li><li><code>dp[7] = 2</code>  當 <code>i&gt;coin</code>時基本上有2種可能取最小<ul><li><code>dp[7-3] + dp[3] = 1+1 = 2</code></li><li><code>dp[7-5] + dp[5] = inf+1 = inf</code></li></ul></li><li><code>dp[8] = 2</code>  當 <code>i&gt;coin</code>時基本上有2種可能取最小<ul><li><code>dp[8-3] + dp[3] = 1+1 = 2</code></li><li><code>dp[8-5] + dp[5] = 1+1 = 2</code></li></ul></li></ul><p>有沒有發現上面有個規律</p><ul><li>當<code>i &gt; coin</code>時，我們可以看到<code>dp[i]</code>的值是<code>dp[i-coin] + dp[coin]</code></li><li>當<code>i &lt; coin</code>時，<code>dp[i]</code>的值是<code>float('inf')</code>，因為無法組成</li><li>當<code>i == coin</code>時，<code>dp[i]</code>的值是<code>1</code>，因為只有一個硬幣就可以組成，但其實他也可以寫成<code>dp[i] = dp[i-coin]+dp[coin]</code>因為會得到<code>dp[0]+dp[coin]</code></li></ul><p>然後所有的<code>dp[coin]</code>都是<code>1</code>，最後回傳值就是<code>dp[amount]</code>，如果<code>dp[amount]</code>是<code>inf</code>就回傳<code>-1</code>。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dp = &#123;<span class="number">0</span>: <span class="number">0</span>&#125; </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, amount+<span class="number">1</span>):</span><br><span class="line">    dp[i] = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">        <span class="keyword">if</span> i == coin:</span><br><span class="line">            dp[i] = <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> i &gt; coin:</span><br><span class="line">            dp[i] = <span class="built_in">min</span>(dp[i], dp[i-coin]+<span class="number">1</span>) <span class="comment"># dp[i-coin] + dp[coin] = dp[i-coin] + 1 </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> dp[amount] <span class="keyword">if</span> dp[amount] != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure><h2 id="2-2-反過來">2.2 反過來</h2><p>如果我們<code>for loop</code>外層先從<code>coin</code>開始，內層再<code>for loop i</code>的好處是不用比較<code>i</code>和<code>coin</code>的大小，因為<code>i</code>一定大於等於<code>coin</code>。<br>可以讓程式碼更簡潔</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dp = [<span class="number">0</span>] + [<span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)] * amount</span><br><span class="line"><span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(coin, amount+<span class="number">1</span>):</span><br><span class="line">        dp[i] = <span class="built_in">min</span>(dp[i], dp[i-coin]+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> dp[amount] <span class="keyword">if</span> dp[amount] != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure><p>時間複雜度：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo>∗</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n*m)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span></p><ul><li>n 是 amount</li><li>m 是 coins<br>空間複雜度：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></li><li>n 是 amount</li></ul><h1 id="3-總結">3 總結</h1><p>所有碰到dp的題目，這種類似的背包問題都有個共通性…<br>那就是如果使用<code>for loop</code>的時候，要從包背最小空間開始找到最佳解，也就是題目的<code>for i in range(i, amount+1)</code>作為最外層開始。然後裡面的物品<code>coin</code>就是內層的<code>for coin in coins</code>，最後找到每個<code>dp[i]</code>的最佳解。並且找到<code>dp[i]</code>與上一個可行的最佳解。舉例來說：</p><ul><li>目前i是<code>6</code>，coin是<code>3</code></li><li>那就是<code>dp[6]</code>的最佳解是上一個最佳解<code>dp[6-3]</code>是否要加上<code>dp[3]</code>？</li></ul><p>這感覺有點像是，我目前碰到<code>3</code>的物品，要不要偷當前的<code>3</code>來達成書包的最大化。</p><ul><li>偷：<code>dp[6-3] + dp[3]</code> = <code>至少空出3的書包空間</code> + <code>3</code></li><li>不偷： <code>dp[6]</code> = <code>目前塞滿的狀態</code></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 課前預期 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> Dynamic Programming </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #139 Word Break - 刷題之旅</title>
       <link href="/posts/leetcode-139-Word-Break/"/>
       <url>/posts/leetcode-139-Word-Break/</url>
@@ -531,9 +564,9 @@
             
             <tag> practice </tag>
             
-            <tag> Easy </tag>
-            
             <tag> DFS </tag>
+            
+            <tag> Easy </tag>
             
             <tag> binary-tree </tag>
             
@@ -1312,9 +1345,9 @@
             
             <tag> practice </tag>
             
-            <tag> Stack </tag>
-            
             <tag> Easy </tag>
+            
+            <tag> Stack </tag>
             
         </tags>
       
@@ -2448,9 +2481,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
@@ -2487,9 +2520,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
