@@ -64,7 +64,7 @@
       <link href="/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/"/>
       <url>/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/</url>
       
-        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/IgWuwKn.png" alt=""></p><p>這是我的第一次參加 LeetCode Contest，這次的題目是一道簡單的滑動窗口問題，給定一個數組<code>nums</code>和一個整數<code>k</code>，你需要針對大小為 k 的所有子陣列計算它們的 “power”：</p><ol><li>如果子陣列的所有元素是連續且按升序排列，則該子陣列的 power 是其最大元素。</li><li>如果子陣列的元素不符合條件，則返回 -1。</li></ol><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的解法">2.1 我的解法</h2><p>我一開始的想法很簡單，我需要有一個function負責檢查是否為連續且按升序排列，如果是就返回最後一個數值，如果不是就返回-1。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">sub_nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, k):</span><br><span class="line">        <span class="keyword">if</span> sub_nums[j - <span class="number">1</span>] + <span class="number">1</span> != sub_nums[j]:</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> sub_nums[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure><p>接下來我們只要根據 k 的長度，把數組分成大小為 k 的子陣列，然後檢查每個子陣列是否符合條件，如果符合就找出最大值，如果不符合就返回-1。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    N = len(nums)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    time: O(N*K)</span></span><br><span class="line"><span class="string">    space: O(N-k+1)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">sub_nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, k):</span><br><span class="line">            <span class="keyword">if</span> sub_nums[j - <span class="number">1</span>] + <span class="number">1</span> != sub_nums[j]:</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> sub_nums[-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    ans = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="keyword">if</span> i + k &lt;= <span class="built_in">len</span>(nums):</span><br><span class="line">            ans.append(helper(nums[i:i + k]))</span><br><span class="line">    <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><p>但是以上的時間複雜度是 O(N*K)，<strong>有沒有辦法可以得到時間複雜度是 O(N) 呢？</strong></p><h2 id="2-2-進階解法">2.2 進階解法</h2><p>他有個很重要的概念，什麼樣的狀況可以是可以紀錄當前的值，而非 -1 呢？<br><em>所謂的合格是，兩個值，要連續且按升序排列</em></p><ol><li>當前的值，與前一個值相差 1（合格）</li><li>並且，過去從<code>i - k</code>開始，往後的數值到 <code>i</code> 為止，都是連續且按升序排列</li></ol><p>當時我看到有個人的解法是，他用了一個變數<code>bad</code>來記錄，從上面的條件來看，如果<em>當前的值不是連續升序時，這個影響必須後面連續 k 個值</em>，只有在被影響的要素慢慢消除時，才可以反回當前的值（也就是最大值），從這裡可以看到就有點像是一個累積毒素的感覺。</p><ol><li>當檢查到當下的值不符合條件時，我們就要把<code>bad</code>的值<code>+1</code>，這就身體沈澱的毒素。</li><li>那我們什麼時候變得健康呢？那就是當我們的毒素都清理乾淨後<code>bad==0</code>。<ul><li>我們要確保前面從 <code>i - k</code> 開始到<code>i</code>的都沒有毒素，如果遇到毒素</li><li>其實只要<code>bad</code>不要增加持續一段時間即可，也就是說當遇到毒素時，<code>bad+=1</code>當遇到健康的時候<code>bad-=1</code></li></ul></li><li><code>bad</code>可能會有2種狀態<ul><li><code>bad &gt; 0</code>：代表我們有毒素，因此我們要回傳<code>-1</code></li><li><code>bad == 0</code>：代表我們健康，我們要紀錄當前的值<code>nums[i]</code></li></ul></li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray3</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="comment"># 如果 k == 1，直接返回 nums 即為答案</span></span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums</span><br><span class="line">    bad = <span class="number">0</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="comment"># 從 1 開始，因為我們要從第二個數字開始往後比較</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="comment"># 健康當前是健康的</span></span><br><span class="line">        <span class="keyword">if</span> nums[i] - <span class="number">1</span> == nums[i - <span class="number">1</span>]:</span><br><span class="line">            <span class="comment"># 但是身體有毒素 bad &gt; 0，因爲當下是健康的，所以毒素-1</span></span><br><span class="line">            <span class="keyword">if</span> bad &gt; <span class="number">0</span>:</span><br><span class="line">                bad -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 不健康！如果當前的值不是連續升序，我們就要增加毒素</span></span><br><span class="line">            bad += <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 從 k - 1 開始記錄 </span></span><br><span class="line">        <span class="keyword">if</span> i &gt;= k - <span class="number">1</span>:</span><br><span class="line">            <span class="comment"># 如果毒素為 0，代表我們健康，記錄當前的值否則返回 -1</span></span><br><span class="line">            res.append(nums[i] <span class="keyword">if</span> bad == <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><p>上面的邏輯可能會通過題目的三個測試，但是如果我們碰到<code>[5, 5, 5, 5, 5, 1, 2, 3]</code> 就是前面簡直就是垃圾人生，吃一堆毒素…，導致後面儘管很健康，但是也清理不掉毒素，可是這不是我們要的結果！我們希望，只要確保前<code>k</code>個值沒有毒素就好。</p><p><img src="https://i.imgur.com/IeUtdjg.png" alt=""><br>從上圖來看，我們會希望<code>i=7</code>時，<code>bad</code>會被歸零，這樣我們就可以開始記錄當前的值了！這意味著，我們要確保<code>i=7</code>時<code>bad</code>是歸零的，也就是說我們上面的程式碼要對<code>bad+=1</code>的時機做調整。你會看到上圖中，我們共畫了4個箭頭，也就是說這就是我們希望<code>bad+=1</code>的時幾，總共要<code>+4</code>次。</p><ul><li>從<code>i=4</code>開始往回看<code>i=2</code>時，我們發現<code>i=2</code>是 <code>+1</code>，所以我們這時候應該 <code>-1</code></li><li>從<code>i=5</code>開始往回看<code>i=3</code>時，我們發現<code>i=3</code>是 <code>+1</code>，所以我們這時候應該 <code>-1</code></li><li>從<code>i=6</code>開始往回看<code>i=4</code>時，我們發現<code>i=4</code>是 <code>+1</code>，所以我們這時候應該 <code>-1</code></li><li>從<code>i=7</code>開始往回看<code>i=5</code>時，我們發現<code>i=5</code>是 <code>+1</code>，所以我們這時候應該 <code>-1</code></li><li>從<code>i=8</code>開始往回看<code>i=6</code>時，我們發現<code>i=6</code>是 <code>+0</code>，所以我們這時候就不做任何事情</li></ul><div class="note info flat"><p>你會發現一個點，<code>bad+=1</code>的時機是：<br><strong>往回看<code>nums[i-k+1]</code>這個值，是否為不健康</strong><br><strong>怎麼知道不健康？也就是說<code>nums[i-k+1]</code>與<code>nums[i-k]</code>在比較時否為連續升序？</strong></p></div><p><em>bad+=1的時機可以寫成這樣(要注意範圍不要變成負的 <code>i&gt;=k</code>)</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> i &gt;= k <span class="keyword">and</span> nums[i-k+<span class="number">1</span>] - <span class="number">1</span> != nums[i-k]:</span><br><span class="line">    bad -= <span class="number">1</span></span><br></pre></td></tr></table></figure><p><em>那我們重新調整一下程式</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums</span><br><span class="line">    bad = <span class="number">0</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="comment"># 從 1 開始，因為我們要從第二個數字開始往後比較</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="comment"># &quot;增加毒素&quot;的時機：如果當前的值 - 1 不等於前一個值，但表不健康</span></span><br><span class="line">        <span class="keyword">if</span> nums[i] - <span class="number">1</span> != nums[i - <span class="number">1</span>]:</span><br><span class="line">            bad += <span class="number">1</span></span><br><span class="line">        <span class="comment"># &quot;減少毒素&quot;的時機：往回看 nums[i-k+1] 這個值，是否為不健康</span></span><br><span class="line">        <span class="keyword">if</span> i &gt;= k <span class="keyword">and</span> nums[i-k+<span class="number">1</span>] - <span class="number">1</span> != nums[i-k]:</span><br><span class="line">            bad -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> i &gt;= k - <span class="number">1</span>:</span><br><span class="line">            res.append(nums[i] <span class="keyword">if</span> bad == <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><p>還可以更精簡喔，下面是世界選手最簡潔的程式碼：</p><p><em>我們是否可以利用False的特性，直接加在bad上，這樣就不用判斷了！</em></p><ul><li>True: 代表 0</li><li>False: 代表 1</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums</span><br><span class="line">    bad = <span class="number">0</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="comment"># 我們透過 False 來判斷是否要增加毒素 +1 </span></span><br><span class="line">        bad += nums[i] - <span class="number">1</span> != nums[i - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">if</span> i &gt;= k:</span><br><span class="line">            <span class="comment"># 我們透過 False 來判斷是否要減少毒素 -1</span></span><br><span class="line">            bad -= nums[i-k+<span class="number">1</span>] - <span class="number">1</span> != nums[i-k]</span><br><span class="line">        <span class="keyword">if</span> i &gt;= k - <span class="number">1</span>:</span><br><span class="line">            res.append(nums[i] <span class="keyword">if</span> bad == <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h1 id="3-結語">3 結語</h1><p>這個題目的解法是我看到別人排名很前面的人寫出來的，因為我還沒刷過sliding window的題目，所以當時完全沒想到這個解法，這次的比賽讓我學到了很多，希望下次可以更好。</p><h1 id="4-參考">4 參考</h1><ul><li><a href="https://leetcode.com/contest/biweekly-contest-137/ranking/">Biweekly Contest 137 - Ranking</a></li></ul>]]></content>
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/IgWuwKn.png" alt=""></p><p>這是我的第一次參加 LeetCode Contest，這次的題目是一道簡單的滑動窗口問題，給定一個數組<code>nums</code>和一個整數<code>k</code>，你需要針對大小為 k 的所有子陣列計算它們的 “power”：</p><ol><li>如果子陣列的所有元素是連續且按升序排列，則該子陣列的 power 是其最大元素。</li><li>如果子陣列的元素不符合條件，則返回 -1。</li></ol><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的解法">2.1 我的解法</h2><p>我一開始的想法很簡單，我需要有一個function負責檢查是否為連續且按升序排列，如果是就返回最後一個數值，如果不是就返回-1。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">sub_nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, k):</span><br><span class="line">        <span class="keyword">if</span> sub_nums[j - <span class="number">1</span>] + <span class="number">1</span> != sub_nums[j]:</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> sub_nums[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure><p>接下來我們只要根據 k 的長度，把數組分成大小為 k 的子陣列，然後檢查每個子陣列是否符合條件，如果符合就找出最大值，如果不符合就返回-1。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    N = len(nums)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    time: O(N*K)</span></span><br><span class="line"><span class="string">    space: O(N-k+1)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">helper</span>(<span class="params">sub_nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, k):</span><br><span class="line">            <span class="keyword">if</span> sub_nums[j - <span class="number">1</span>] + <span class="number">1</span> != sub_nums[j]:</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> sub_nums[-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    ans = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="keyword">if</span> i + k &lt;= <span class="built_in">len</span>(nums):</span><br><span class="line">            ans.append(helper(nums[i:i + k]))</span><br><span class="line">    <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><p>但是以上的時間複雜度是 O(N*K)，<strong>有沒有辦法可以得到時間複雜度是 O(N) 呢？</strong></p><h2 id="2-2-進階解法">2.2 進階解法</h2><p>他有個很重要的概念，什麼樣的狀況可以是可以紀錄當前的值，而非 -1 呢？<br><em>所謂的合格是，兩個值，要連續且按升序排列</em></p><ol><li>當前的值，與前一個值相差 1（合格）</li><li>並且，過去從<code>i - k</code>開始，往後的數值到 <code>i</code> 為止，都是連續且按升序排列</li></ol><p>當時我看到有個人的解法是，他用了一個變數<code>bad</code>來記錄，從上面的條件來看，如果<em>當前的值不是連續升序時，這個影響必須後面連續 k 個值</em>，只有在被影響的要素慢慢消除時，才可以反回當前的值（也就是最大值），從這裡可以看到就有點像是一個累積毒素的感覺。</p><ol><li>當檢查到當下的值不符合條件時，我們就要把<code>bad</code>的值<code>+1</code>，這就身體沈澱的毒素。</li><li>那我們什麼時候變得健康呢？那就是當我們的毒素都清理乾淨後<code>bad==0</code>。<ul><li>我們要確保前面從 <code>i - k</code> 開始到<code>i</code>的都沒有毒素，如果遇到毒素</li><li>其實只要<code>bad</code>不要增加持續一段時間即可，也就是說當遇到毒素時，<code>bad+=1</code>當遇到健康的時候<code>bad-=1</code></li></ul></li><li><code>bad</code>可能會有2種狀態<ul><li><code>bad &gt; 0</code>：代表我們有毒素，因此我們要回傳<code>-1</code></li><li><code>bad == 0</code>：代表我們健康，我們要紀錄當前的值<code>nums[i]</code></li></ul></li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray3</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="comment"># 如果 k == 1，直接返回 nums 即為答案</span></span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums</span><br><span class="line">    bad = <span class="number">0</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="comment"># 從 1 開始，因為我們要從第二個數字開始往後比較</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="comment"># 健康當前是健康的</span></span><br><span class="line">        <span class="keyword">if</span> nums[i] - <span class="number">1</span> == nums[i - <span class="number">1</span>]:</span><br><span class="line">            <span class="comment"># 但是身體有毒素 bad &gt; 0，因爲當下是健康的，所以毒素-1</span></span><br><span class="line">            <span class="keyword">if</span> bad &gt; <span class="number">0</span>:</span><br><span class="line">                bad -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 不健康！如果當前的值不是連續升序，我們就要增加毒素</span></span><br><span class="line">            bad += <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 從 k - 1 開始記錄 </span></span><br><span class="line">        <span class="keyword">if</span> i &gt;= k - <span class="number">1</span>:</span><br><span class="line">            <span class="comment"># 如果毒素為 0，代表我們健康，記錄當前的值否則返回 -1</span></span><br><span class="line">            res.append(nums[i] <span class="keyword">if</span> bad == <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><p>上面的邏輯可能會通過題目的三個測試，但是如果我們碰到<code>[5, 5, 5, 5, 5, 1, 2, 3, 4]</code> 就是前面簡直就是垃圾人生，吃一堆毒素…，導致後面儘管很健康，但是也清理不掉毒素，可是這不是我們要的結果！我們希望，只要確保前<code>k</code>個值沒有毒素就好。</p><p><img src="https://i.imgur.com/8V7Frf9.png" alt=""></p><p>從上圖來看，我們希望<code>i=7</code>時，<code>bad</code>是歸零的狀態因為<code>[1, 2, 3]</code>是合法的，當<code>bad==0</code>時我們才可以把<code>nums[7]</code>塞到<code>res</code>裡面。這意味著，為了確保遍歷到<code>i=7</code>時<code>bad</code>是歸零的，也就是說我們上面的程式碼要對<code>bad+=1</code>的時機做調整。</p><p><img src="https://i.imgur.com/zhT58mY.png" alt=""></p><p>你會看到上圖中，我們共畫了5個箭頭，我們要知道只要確保前<code>k</code>個值沒有毒素就好，也就是說<em>如果毒素離<code>i</code>太遠，就會自動代謝掉，就是要毒素自動<code>-1</code></em>。</p><ul><li>從<code>i=3</code>時<code>bad</code>已經累積了3<code>(1+1+1)</code>個毒素<ul><li>我們往前看距離<code>k</code>的位置<code>i=1</code>時，發現當時毒素有<code>+1</code></li><li>但是其實<code>i=1</code>已經距離<code>i=4</code>太遠了！這個毒素的影響性應該要代謝掉</li><li>我們只關心前<code>k</code>個值是否有毒素，所以我們這時候應該 <code>-1</code>把這個太過於遙遠的毒素代謝掉</li><li>最後<code>bad</code>變成<code>(1+1+1)-1=2</code></li></ul></li><li>從<code>i=4</code>時<code>bad</code>此時是3<code>(2+1)</code><ul><li>因為上一個殘留的毒素是2，加上當前<code>i=4</code>是不健康的所以<code>+1</code></li><li>我們往前看距離<code>k</code>的位置<code>i=2</code>時，發現當時毒素有<code>+1</code></li><li>但是其實<code>i=2</code>已經距離<code>i=5</code>太遠了！這個毒素的影響性應該要被代謝掉了</li><li>我們只關心前<code>k</code>個值是否有毒素，所以我們這時候應該 <code>-1</code>，把這個太過於遙遠的毒素代謝掉</li><li>最後<code>bad</code>變成<code>(2+1)-1=2</code></li></ul></li><li>從<code>i=5</code>時<code>bad</code>此時仍是3<code>(2+1)</code><ul><li>因為上一個殘留的毒素是2，加上當前<code>i=5</code>是不健康的所以<code>+1</code></li><li>我們往前看距離<code>k</code>的位置<code>i=3</code>時，發現當時毒素有<code>+1</code>，但是其實<code>i=3</code>已經距離<code>i=6</code>太遠了！這個毒素的影響性應該要代謝掉</li><li>我們只關心前<code>k</code>個值是否有毒素，所以我們這時候應該 <code>-1</code>，把這個太過於遙遠的毒素代謝掉</li><li>最後<code>bad</code>變成<code>(2+1)-1=2</code></li></ul></li><li>從<code>i=6</code>時<code>bad</code>此時是2<code>(2+0)</code><ul><li>因為上一個殘留的毒素是2，加上當前<code>i=6</code>是健康的所以<code>+0</code></li><li>我們往前看距離<code>k</code>的位置<code>i=4</code>時，發現當時毒素有<code>+1</code>，但是其實<code>i=4</code>已經距離<code>i=6</code>太遠了！這個毒素的影響性應該要代謝掉</li><li>我們只關心前<code>k</code>個值是否有毒素，所以我們這時候應該 <code>-1</code>，把這個太過於遙遠的毒素代謝掉</li><li>最後<code>bad</code>變成<code>(2)-1=1</code></li></ul></li><li>從<code>i=7</code>時<code>bad</code>此時是1<code>(1+0)</code><ul><li>因為上一個殘留的毒素是1，加上當前<code>i=7</code>是健康的所以<code>+0</code></li><li>我們往前看距離<code>k</code>的位置<code>i=5</code>時，發現當時毒素有<code>+1</code>，但是其實<code>i=5</code>已經距離<code>i=7</code>太遠了！這個毒素的影響性應該要代謝掉</li><li>我們只關心前<code>k</code>個值是否有毒素，所以我們這時候應該 <code>-1</code>，把這個太過於遙遠的毒素代謝掉變成<code>(1)-1=0</code></li><li>這時候我們<code>bad==0</code>就可以把<code>nums[i]</code>塞到<code>res</code>裡面。</li></ul></li></ul><div class="note info flat"><p>你會發現一個點，<code>bad+=1</code>的時機是：<br><strong>往回看<code>nums[i-k+1]</code>這個值，是否為不健康，但是因為已經過太久了，應該被代謝掉</strong><br><strong>怎麼知道不健康？也就是說<code>nums[i-k+1]</code>與<code>nums[i-k]</code>在比較時否為連續升序？</strong></p></div><p><em>bad+=1的時機可以寫成這樣(要注意範圍不要變成負的 <code>i&gt;=k</code>)</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># i-k+1 看最久遠的病毒，如果是不健康，但是已經過太久，應該代謝掉(-1)</span></span><br><span class="line"><span class="keyword">if</span> i &gt;= k <span class="keyword">and</span> nums[i-k+<span class="number">1</span>] - <span class="number">1</span> != nums[i-k]:</span><br><span class="line">    bad -= <span class="number">1</span></span><br></pre></td></tr></table></figure><p><em>那我們重新調整一下程式</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums</span><br><span class="line">    bad = <span class="number">0</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="comment"># 從 1 開始，因為我們要從第二個數字開始往後比較</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="comment"># &quot;增加毒素&quot;的時機：如果當前的值 - 1 不等於前一個值，但表不健康</span></span><br><span class="line">        <span class="keyword">if</span> nums[i] - <span class="number">1</span> != nums[i - <span class="number">1</span>]:</span><br><span class="line">            bad += <span class="number">1</span></span><br><span class="line">        <span class="comment"># &quot;減少毒素&quot;的時機：往回看 nums[i-k+1] 這個值，是否為不健康</span></span><br><span class="line">        <span class="keyword">if</span> i &gt;= k <span class="keyword">and</span> nums[i-k+<span class="number">1</span>] - <span class="number">1</span> != nums[i-k]:</span><br><span class="line">            bad -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> i &gt;= k - <span class="number">1</span>:</span><br><span class="line">            res.append(nums[i] <span class="keyword">if</span> bad == <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><p>還可以更精簡喔，下面是世界選手最簡潔的程式碼：</p><p><em>我們是否可以利用False的特性，直接加在bad上，這樣就不用判斷了！</em></p><ul><li>True: 代表 0</li><li>False: 代表 1</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">resultsArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> nums</span><br><span class="line">    bad = <span class="number">0</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="comment"># 我們透過 False 來判斷是否要增加毒素 +1 </span></span><br><span class="line">        bad += nums[i] - <span class="number">1</span> != nums[i - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">if</span> i &gt;= k:</span><br><span class="line">            <span class="comment"># 我們透過 False 來判斷是否要減少毒素 -1</span></span><br><span class="line">            bad -= nums[i-k+<span class="number">1</span>] - <span class="number">1</span> != nums[i-k]</span><br><span class="line">        <span class="keyword">if</span> i &gt;= k - <span class="number">1</span>:</span><br><span class="line">            res.append(nums[i] <span class="keyword">if</span> bad == <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h1 id="3-結語">3 結語</h1><p>這個題目的解法是我看到別人排名很前面的人寫出來的，因為我還沒刷過sliding window的題目，所以當時完全沒想到這個解法，這次的比賽讓我學到了很多，希望下次可以更好。</p><h1 id="4-參考">4 參考</h1><ul><li><a href="https://leetcode.com/contest/biweekly-contest-137/ranking/">Biweekly Contest 137 - Ranking</a></li></ul>]]></content>
       
       
       <categories>
@@ -80,11 +80,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Medium </tag>
+            
             <tag> Leetcode Contest </tag>
             
             <tag> Sliding Window </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -113,11 +113,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> practice </tag>
+            
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> practice </tag>
             
         </tags>
       
@@ -146,11 +146,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> practice </tag>
+            
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> practice </tag>
             
         </tags>
       
@@ -179,13 +179,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -214,13 +214,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -249,13 +249,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Easy </tag>
             
             <tag> Recursion </tag>
             
-            <tag> Easy </tag>
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -315,13 +315,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -350,15 +350,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> BST </tag>
             
             <tag> practice </tag>
             
+            <tag> binary-tree </tag>
+            
             <tag> Recursion </tag>
             
-            <tag> BST </tag>
-            
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -387,13 +387,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> BFS </tag>
             
             <tag> practice </tag>
             
-            <tag> BFS </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -422,15 +422,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> BFS </tag>
             
             <tag> practice </tag>
             
+            <tag> binary-tree </tag>
+            
             <tag> Recursion </tag>
             
-            <tag> BFS </tag>
-            
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -459,13 +459,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -494,13 +494,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> BFS </tag>
             
             <tag> practice </tag>
             
-            <tag> BFS </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -529,13 +529,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> DFS </tag>
             
             <tag> practice </tag>
             
-            <tag> DFS </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -564,13 +564,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -628,11 +628,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> DFS </tag>
             
             <tag> binary-tree </tag>
             
@@ -663,13 +663,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> BFS </tag>
             
             <tag> practice </tag>
             
-            <tag> BFS </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -698,13 +698,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> DFS </tag>
             
             <tag> practice </tag>
             
-            <tag> DFS </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -733,13 +733,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
+            <tag> BFS </tag>
             
             <tag> practice </tag>
             
-            <tag> BFS </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -770,11 +770,11 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -805,11 +805,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -840,11 +840,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -873,13 +873,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -910,11 +910,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -945,11 +945,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1011,9 +1011,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> BST </tag>
-            
             <tag> Tree </tag>
+            
+            <tag> BST </tag>
             
         </tags>
       
@@ -1042,9 +1042,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> linked-list </tag>
             
@@ -1075,9 +1075,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> linked-list </tag>
             
@@ -1108,9 +1108,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> linked-list </tag>
             
@@ -1141,9 +1141,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> linked-list </tag>
             
@@ -1207,9 +1207,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Review-Needed </tag>
             
@@ -1310,11 +1310,11 @@
             
             <tag> practice </tag>
             
+            <tag> Review-Needed </tag>
+            
             <tag> Stack </tag>
             
             <tag> Hard </tag>
-            
-            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1343,9 +1343,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Stack </tag>
             
@@ -1376,9 +1376,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Stack </tag>
             
@@ -1442,9 +1442,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Stack </tag>
             
@@ -1508,9 +1508,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Hash </tag>
             
@@ -1554,9 +1554,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Hash </tag>
             
@@ -1647,9 +1647,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Hash </tag>
             
@@ -1680,9 +1680,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Hash </tag>
             
@@ -1713,15 +1713,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> Medium </tag>
-            
             <tag> practice </tag>
             
-            <tag> Review-Needed </tag>
+            <tag> Medium </tag>
             
             <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -2547,9 +2547,9 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
@@ -2586,9 +2586,9 @@
           
           <category> Database </category>
           
-          <category> 畢業論文 </category>
-          
           <category> Security </category>
+          
+          <category> 畢業論文 </category>
           
       </categories>
       
