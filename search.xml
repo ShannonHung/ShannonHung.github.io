@@ -31,6 +31,39 @@
     
     
     <entry>
+      <title>LeetCode 課前預習 - 掌握 Two Pointer 和 Sliding Window 捕捉使用時機</title>
+      <link href="/posts/lecture-two-pointer-and-sliding-window/"/>
+      <url>/posts/lecture-two-pointer-and-sliding-window/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>今天想要深度的去了解Two pointer與sliding window 的使用，這也是面試常見的技巧。主要整理出『如何辨識要使用這些技巧』。</p><h1 id="Two-Pointer">Two Pointer</h1><p>那我們先從two pointer開始，因為sliding window其實是two pointer的一種特例，或是進階應用。</p><p>那麼什麼是two pinter呢？pinter 俗稱指標，指標用來儲存另一個物件的記憶體位置，通常在leetcode中，指標只是一個整數，用來指向陣列的某個物件索引。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pointer = <span class="number">0</span></span><br><span class="line">arr = [<span class="number">10</span>, <span class="number">30</span>, <span class="number">50</span>, <span class="number">70</span>, <span class="number">100</span>]</span><br><span class="line">       ^</span><br><span class="line">arr[pointer] = arr[<span class="number">0</span>] = <span class="number">10</span></span><br><span class="line">pointer = <span class="number">3</span></span><br><span class="line">arr = [<span class="number">10</span>, <span class="number">30</span>, <span class="number">50</span>, <span class="number">70</span>, <span class="number">100</span>]</span><br><span class="line">                    ^</span><br><span class="line">arr[pointer] = arr[<span class="number">3</span>] = <span class="number">70</span></span><br></pre></td></tr></table></figure><p>Two pointer就是指向陣列的兩個指標，通常是指向陣列的頭尾，然後向中間移動，或是指向陣列的兩個不同位置，然後向中間移動。雙指標允許我們同時查看兩個不同的值，然後我們根據這兩個值的關係來決定下一步的操作。</p><h2 id="Example-Valid-Palidorme">Example: Valid Palidorme</h2><p>Palidorme 就是一個經典的 two pointer 例子，Palidorme 又稱作『回文』，向前讀和向後讀是一樣的，例如：<code>&quot;racecar&quot;</code>(倒過來也長一樣)。為了開始檢查，我們在兩端初始化一個指標，left和right，分別指向字串的開頭和結尾。然後我們每次檢查兩個指標指向的字元是否相同，如果不同，就返回False，如果相同，就繼續檢查下一個字元，直到兩個指標相遇。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">string = <span class="string">&#x27;racecar&#x27;</span></span><br><span class="line">          l     r</span><br><span class="line">left = <span class="number">0</span>     </span><br><span class="line">right = <span class="number">6</span>     </span><br><span class="line">string[left] = <span class="string">&#x27;r&#x27;</span></span><br><span class="line">string[right] = <span class="string">&#x27;r&#x27;</span></span><br><span class="line"><span class="string">&#x27;r&#x27;</span> == <span class="string">&#x27;r&#x27;</span></span><br><span class="line"><span class="comment"># The letters are equal, decision -&gt; bring left and right closer.</span></span><br><span class="line">string = <span class="string">&#x27;racecar&#x27;</span></span><br><span class="line">           l   r</span><br><span class="line">left = <span class="number">1</span>    </span><br><span class="line">right = <span class="number">5</span></span><br><span class="line">string[left] = <span class="string">&#x27;a&#x27;</span></span><br><span class="line">string[right] = <span class="string">&#x27;a&#x27;</span></span><br><span class="line"><span class="string">&#x27;a&#x27;</span> == <span class="string">&#x27;a&#x27;</span></span><br><span class="line"><span class="comment"># The letters are equal, decision -&gt; bring left and right closer.</span></span><br><span class="line">string = <span class="string">&#x27;racecar&#x27;</span></span><br><span class="line">            l r</span><br><span class="line">left = <span class="number">2</span>   </span><br><span class="line">right = <span class="number">4</span></span><br><span class="line">string[left] = <span class="string">&#x27;c&#x27;</span></span><br><span class="line">string[right] = <span class="string">&#x27;c&#x27;</span></span><br><span class="line"><span class="string">&#x27;c&#x27;</span> == <span class="string">&#x27;c&#x27;</span></span><br><span class="line"><span class="comment"># The letters are equal, decision -&gt; bring left and right closer.</span></span><br><span class="line">string = <span class="string">&#x27;racecar&#x27;</span></span><br><span class="line">             l </span><br><span class="line">             r</span><br><span class="line">left = <span class="number">3</span></span><br><span class="line">right = <span class="number">3</span></span><br><span class="line">string[left] = <span class="string">&#x27;c&#x27;</span></span><br><span class="line">string[right] = <span class="string">&#x27;c&#x27;</span></span><br><span class="line"><span class="string">&#x27;c&#x27;</span> == <span class="string">&#x27;c&#x27;</span></span><br></pre></td></tr></table></figure><p><em>以下是python代碼</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">is_palindrome</span>(<span class="params">string</span>):</span><br><span class="line">    <span class="comment"># Initialize pointers</span></span><br><span class="line">    left = <span class="number">0</span> </span><br><span class="line">    right = <span class="built_in">len</span>(string) - <span class="number">1</span></span><br><span class="line">    <span class="comment"># Check all letters in the string </span></span><br><span class="line">    <span class="keyword">while</span> left &lt; right:</span><br><span class="line">        <span class="comment"># If letters are not equal</span></span><br><span class="line">        <span class="comment"># Decision -&gt; Return False</span></span><br><span class="line">        <span class="keyword">if</span> string[left] != string[right]:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span>  </span><br><span class="line">        <span class="comment"># Else, the letters are equal</span></span><br><span class="line">        <span class="comment"># Decision -&gt; Bring left and right closer and compare again</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            left += <span class="number">1</span>        </span><br><span class="line">            right -= <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span>   </span><br></pre></td></tr></table></figure><h2 id="Other-Scenarios">Other Scenarios</h2><p>two pinter通常不像是上面的例子這麼簡單，有時候需要發揮想像力。以下是常見使用two pointer的情境：</p><ol><li>Binary Search 二元搜尋</li><li>Slow and Fast Pointer to detect a cycle</li><li>One pointer as a boundary and one another to search</li><li>Pointer at the beginning of two sorted arrays</li><li>Sliding Window (Advanced)</li></ol><p>Leetcode 題目：</p><p><em>難度較低</em></p><ul><li><a href="https://leetcode.com/problems/valid-palindrome/">Valid Palindrome</a></li><li><a href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/">Two Sum Sorted</a></li><li><a href="https://leetcode.com/problems/remove-duplicates-from-sorted-array/">Remove Duplicates from Sorted Array</a></li><li><a href="https://leetcode.com/problems/merge-sorted-array/">Merged Two Sorted Arrays</a></li><li><a href="https://leetcode.com/problems/intersection-of-two-arrays-ii/">Intersection of Two Arrays II</a></li><li><a href="https://leetcode.com/problems/binary-search/">Binary Search</a></li><li><a href="https://leetcode.com/problems/reverse-string/">Reverse a String</a></li></ul><p><em>難度較高</em></p><ul><li><a href="https://leetcode.com/problems/sort-colors/">Sorted Colors</a></li><li><a href="https://leetcode.com/problems/container-with-most-water/">Container with Most Water</a></li><li><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/">Sliding Window</a></li><li><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/">Binary Search Rotated Array</a></li></ul><h2 id="How-to-Recognize-it">How to Recognize it</h2><p>我們可以通過幾種方式來辨識two pointer的使用時機：</p><ol><li><strong>O(N^2)降低成O(N)</strong>：把雙層for迴圈的循環減少到單層迴圈</li><li><strong>Input是有序的</strong>：如果input已經排序或是有順序</li><li><strong>兩個索引的比較</strong>：如果我們要將一個索引值跟另一個索引值進行比較</li><li><strong>兩個索引的交換</strong>：我們需要在索引之間交換</li><li><strong>陣列的分區</strong>：如果我們需要將陣列分區，然後在分區中進行操作</li></ol><h1 id="Sliding-Window">Sliding Window</h1><p>Sliding window 是雙指標的擴展，透過left和right兩個指標來建立window（窗口），通常問題是要我們反回<em>滿足特定條件的最大或最小子範圍</em>。因此我們透過滑動（收縮和擴展）『window』來找到最佳範圍。在這裡我們會使用<a href="https://leetcode.com/problems/max-consecutive-ones-iii/">Max Consecutive Ones III</a>來舉例。</p><h2 id="Key-Steps">Key Steps</h2><p>但是在開始之前，我們要先知道Sliding Window的三個關鍵步驟：</p><ol><li>Expand out Window 擴展窗口</li><li>Meet the condition and process the window 滿足條件並處理窗口</li><li>Shrink the window 收縮窗口</li></ol><p><em>以下是代碼中3個關鍵步驟的呈現方式</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sliding_window</span>(<span class="params">nums</span>):</span><br><span class="line">    <span class="comment"># Iterate over elements in our input</span></span><br><span class="line">        <span class="comment"># Expand the window</span></span><br><span class="line">        <span class="comment"># Meet the condition to stop expansion</span></span><br><span class="line">            <span class="comment"># Process the current window   </span></span><br><span class="line">            <span class="comment"># Contract the window</span></span><br></pre></td></tr></table></figure><h2 id="Other-Scenarios-2">Other Scenarios</h2><p>Leetcode 常見的Sliding Window題目：</p><ul><li><a href="https://leetcode.com/problems/max-consecutive-ones-i/">Max Consecutive Ones I</a></li><li><a href="https://leetcode.com/problems/max-consecutive-ones-ii/">Max Consecutive Ones II</a></li><li><a href="https://leetcode.com/problems/max-consecutive-ones-iii/">Max Consecutive Ones III</a></li><li><a href="https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/">Longest Substring with At Most K Distinct Characters</a></li><li><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/">Longest Substring Without Repeating Characters</a></li><li><a href="https://leetcode.com/problems/minimum-window-substring/">Minimum Window Substring</a></li></ul><h2 id="Example-Max-Consecutive-Ones-III">Example: Max Consecutive Ones III</h2><p>問題如下，我們可以替換1次0，找到最大的連續1的數量。但其實題目可以換句話說：<em>我們要找到最大的window，裡面最多只有1個0</em>。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MAX CONSECUTIVE ONES II </span><br><span class="line">Given a binary array, find the maximum number of consecutive 1s in this array if you can flip at most one 0.</span><br><span class="line">Input: [1,0,1,1,0]</span><br><span class="line">Output: 4</span><br></pre></td></tr></table></figure><p>那麼，促使我們<strong>停止擴大window的條件是什麼呢？</strong><br>就是當我們的window中0的數量超過1個時，我們就要停止擴大window。因為 0 太多拉！再擴大下去，會遠遠的超過偏差。換句話說我們需要<em>擴展window，直到我們的window中0的數量超過1個</em>，要停下腳步思考一下。</p><p>我們可以使用一個變數<code>count</code>來記錄0的數量：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CONDITION TO STOP EXPANSION</span></span><br><span class="line">count == <span class="number">2</span>:</span><br></pre></td></tr></table></figure><p><em>那我們重新把這個停止擴大的條件放入我們的sliding window結構</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sliding_window</span>(<span class="params">nums</span>):</span><br><span class="line">    left, right = <span class="number">0</span>, <span class="number">0</span>          <span class="comment"># Intialize our window&#x27;s bound</span></span><br><span class="line">    count = <span class="number">0</span>                   <span class="comment"># Track how many 0’s are in the window</span></span><br><span class="line">    <span class="comment"># Iterate over elements in our input</span></span><br><span class="line">    <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(nums):</span><br><span class="line">        <span class="comment"># Expand the window</span></span><br><span class="line">        <span class="comment"># Meet the condition to stop expansion</span></span><br><span class="line">        <span class="keyword">while</span> count &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="comment"># Process the current window   </span></span><br><span class="line">            <span class="comment"># Contract the window</span></span><br><span class="line">        right += <span class="number">1</span>  </span><br></pre></td></tr></table></figure><p>因此，我們透過向右擴展window，直到我們的window中0的數量超過1個，我們就要停止擴展window。但是等等！我們怎麼知道count什麼時候會被增加呢？我們需要在擴展window的時候，檢查我們的window中是否有0，如果有，我們就要增加count。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 向右擴展window時要檢查是否有0</span></span><br><span class="line"><span class="keyword">if</span> nums[right] == <span class="number">0</span>:</span><br><span class="line">    count += <span class="number">1</span></span><br></pre></td></tr></table></figure><p><em>那我們再把它加進去代碼中</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sliding_window</span>(<span class="params">nums</span>):</span><br><span class="line">left, right = <span class="number">0</span>, <span class="number">0</span>          <span class="comment"># Intialize our window&#x27;s bound</span></span><br><span class="line">count = <span class="number">0</span>                   <span class="comment"># Track how many 0’s are in the window</span></span><br><span class="line"><span class="comment"># Iterate over elements in our input</span></span><br><span class="line"><span class="keyword">while</span> right &lt; <span class="built_in">len</span>(nums):</span><br><span class="line">    <span class="comment"># Expand the window </span></span><br><span class="line">    <span class="keyword">if</span> nums[right] == <span class="number">0</span>:        </span><br><span class="line">        count += <span class="number">1</span></span><br><span class="line">    <span class="comment"># Meet the condition to stop expansion</span></span><br><span class="line">    <span class="keyword">while</span> count &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="comment"># Process the current window</span></span><br><span class="line">        <span class="comment"># Contract the window</span></span><br><span class="line">    right += <span class="number">1</span></span><br></pre></td></tr></table></figure><p>很好！現在我們已經擴展了視窗，直到滿足條件為止。那我們接下來要做什麼呢？就是開始尋找我們的最佳解，在這個題目就是找到最大長度的連續1，我們可以透過<code>global_max</code>來記錄最大的連續1的長度。一但發現更好的解，我們就要更新<code>global_max</code>。在最後作為結果返回。當我們已經檢查過當前的window是否最長後，我們透過增加left來縮小window，直到我們的window中0的數量小於等於1個。</p><p>但是要注意的是，當我們增加left之前，也要檢查left是否會讓我們0的數量遞減，因為已經不再window中了，我們要減少count。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sliding_window</span>(<span class="params">nums</span>):</span><br><span class="line">    left, right = <span class="number">0</span>, <span class="number">0</span>          <span class="comment"># Our window bounds</span></span><br><span class="line">    count = <span class="number">0</span>                   <span class="comment"># Track how many 0’s are in the window</span></span><br><span class="line">    global_max = <span class="number">0</span>              <span class="comment"># Track the maximum, overall</span></span><br><span class="line">    <span class="comment"># Iterate over elements in our input</span></span><br><span class="line">    <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(nums):</span><br><span class="line">        <span class="comment"># Expand the window </span></span><br><span class="line">        <span class="keyword">if</span> nums[right] == <span class="number">0</span>:        </span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># Meet the condition to stop expansion</span></span><br><span class="line">        <span class="keyword">while</span> count &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="comment"># Process the current window</span></span><br><span class="line">            global_max = <span class="built_in">max</span>(global_max, right - left)</span><br><span class="line">            <span class="comment"># Contract the window</span></span><br><span class="line">            <span class="keyword">if</span> nums[left] == <span class="number">0</span>:</span><br><span class="line">                count -= <span class="number">1</span></span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">        right += <span class="number">1</span></span><br><span class="line">   <span class="keyword">return</span> global_max</span><br></pre></td></tr></table></figure><p>作為最後步驟，我們需要處理邊緣情況，就是最大陣列其實是陣列的尾端。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[1, 0, 0, 1, 1, 1, 1, 1]</span><br><span class="line">       l                 r</span><br><span class="line">We never process the current window above because count_of_zeroes never has a chance to equal 2. </span><br><span class="line">So do this check at the end:</span><br><span class="line">if count_of_zeroes &lt; 2:</span><br><span class="line">    global_max = max(global_max, right-left)</span><br></pre></td></tr></table></figure><p>那我們把邊緣狀況加入我們的代碼中：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sliding_window</span>(<span class="params">nums</span>):</span><br><span class="line">    left, right = <span class="number">0</span>, <span class="number">0</span>        <span class="comment"># Our window bounds</span></span><br><span class="line">    count = <span class="number">0</span>                 <span class="comment"># Track how many 0’s are in the window</span></span><br><span class="line">    global_max = <span class="number">0</span>            <span class="comment"># Track the maximum, overall</span></span><br><span class="line">    <span class="comment"># Iterate over elements in our input</span></span><br><span class="line">    <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(nums):</span><br><span class="line">        <span class="comment"># Expand the window </span></span><br><span class="line">        <span class="keyword">if</span> nums[right] == <span class="number">0</span>:        </span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># Meet the condition to stop expansion</span></span><br><span class="line">        <span class="keyword">while</span> count &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="comment"># Process the current window</span></span><br><span class="line">            global_max = <span class="built_in">max</span>(global_max, right - left)</span><br><span class="line">        <span class="comment"># Contract the window</span></span><br><span class="line">            <span class="keyword">if</span> nums[left] == <span class="number">0</span>:</span><br><span class="line">                count -= <span class="number">1</span></span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">        right += <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> count &lt; <span class="number">2</span>:</span><br><span class="line">        global_max = <span class="built_in">max</span>(global_max, right-left)</span><br><span class="line">    <span class="keyword">return</span> global_max</span><br></pre></td></tr></table></figure><h2 id="How-to-Recognize-it-2">How to Recognize it</h2><p>總結來說 Sliding Window 就是需要定義出以下狀況：</p><ol><li>何時停止擴展？</li><li>處理當前window的時機？</li><li>何時收縮window？</li></ol><p>因此我們需要3個變數</p><ol><li>window bounds: 通常是 left, right 來表示window的邊界</li><li>Track condition: 通常是一個變數來追蹤滿足條件，這個例子裡面我們使用count</li><li>Return value: 通常是一個變數來記錄最終結果，這個例子裡面我們使用global_max</li></ol><p>我們的思考邏輯是這樣的：</p><ol><li>定義條件以停止擴展</li><li>展開視窗直到滿足條件，但是在展開視窗前，要在right處檢查或處理元素</li><li>如果滿足停止擴展的條件，則處理當前視窗</li><li>縮小視窗，直到滿足條件，但是在縮小視窗前，要在left處檢查或處理元素</li><li>最後，處理邊緣情況</li></ol><h1 id="參考">參考</h1><ul><li><a href="https://medium.com/@timpark0807/leetcode-is-easy-two-pointers-90b9b0f2eb43">Medium | Leetcode is Easy! The Two Pointer Pattern.</a></li><li><a href="https://medium.com/@timpark0807/leetcode-is-easy-sliding-window-c44c11cc33e1">Medium | Leetcode is Easy! The Sliding Window Pattern.</a></li><li><a href="https://medium.com/leetcode-patterns/leetcode-pattern-2-sliding-windows-for-strings-e19af105316b">Medium | Leetcode Pattern 2 | Sliding Windows for Strings</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 課前預期 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> Lecture </tag>
+            
+            <tag> Sliding Window </tag>
+            
+            <tag> Two Pointer </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #123 124 Best Time to Buy and Sell Stock - 刷題之旅</title>
       <link href="/posts/leetcode-123-124-Best-Time-to-Buy-and-Sell-Stock/"/>
       <url>/posts/leetcode-123-124-Best-Time-to-Buy-and-Sell-Stock/</url>
@@ -156,9 +189,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -191,9 +224,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -226,9 +259,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -420,9 +453,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -455,9 +488,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -554,9 +587,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
@@ -589,9 +622,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
             <tag> BST </tag>
             
@@ -661,9 +694,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
             <tag> BFS </tag>
             
@@ -698,9 +731,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
@@ -803,9 +836,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
@@ -978,11 +1011,11 @@
             
             <tag> Lecture </tag>
             
+            <tag> Tree </tag>
+            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
-            
-            <tag> Tree </tag>
             
         </tags>
       
@@ -1083,9 +1116,9 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Medium </tag>
             
             <tag> binary-tree </tag>
             
@@ -1248,9 +1281,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BST </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -1448,9 +1481,9 @@
             
             <tag> Medium </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -1483,9 +1516,9 @@
             
             <tag> Easy </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -2784,9 +2817,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
@@ -2823,9 +2856,9 @@
           
           <category> Database </category>
           
-          <category> Security </category>
-          
           <category> 畢業論文 </category>
+          
+          <category> Security </category>
           
       </categories>
       
