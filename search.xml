@@ -31,6 +31,111 @@
     
     
     <entry>
+      <title>LeetCode #209 Minimum Size Subarray Sum - 刷題之旅</title>
+      <link href="/posts/leetcode-209-Minimum-Size-Subarray-Sum/"/>
+      <url>/posts/leetcode-209-Minimum-Size-Subarray-Sum/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/jJIujhd.png" alt=""><br>找到一個subarray的和大於等於target，並且這個subarray的長度是最小的。</p><div class="note info flat"><p>subarray是指連續非空的元素。<br>題目要求時間複雜度為O(N)。</p></div><h1 id="2-解法">2 解法</h1><p>因為要找出最小長度，基本上就是找到一組window大小為最小，但是同時滿足&gt;=target的條件。因為<code>nums</code>是無序的，所以一定是要遍歷一次，因此時間複雜度是O(N)。<br>老樣子，Sliding Window 就是需要定義出以下狀況：</p><ol><li>何時停止擴展？<ul><li>我們希望當前的window &gt;= target時，停止擴展</li><li>在還沒超過target之前，我們會一直擴展window</li><li>right 指針會一直往右移動</li></ul></li><li>處理當前window的時機？<ul><li>因為接下來我們要開始收縮window找找看有沒有更小的window</li><li>計算當前window的總和數，以及當前window的長度是否有小於最小長度</li></ul></li><li>何時收縮window？<ul><li>如果發現當前window的總和數 &gt;= target，就開始收縮window</li><li>移動left指針，並且更新當前window的總和數</li><li>當當前window的總和數 &lt; target，就停止收縮window</li></ul></li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    time: O(N)</span></span><br><span class="line"><span class="string">    space: O(1)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">minSubArrayLen2</span>(<span class="params">self, target: <span class="built_in">int</span>, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        l, min_len = <span class="number">0</span>, <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">        tot = <span class="number">0</span></span><br><span class="line">        <span class="comment"># right 指針會一直往右移動 擴展window</span></span><br><span class="line">        <span class="keyword">for</span> r <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">            tot += nums[r]</span><br><span class="line">            <span class="comment"># 一但發現&gt;=target，就開始收縮window尋找最佳解</span></span><br><span class="line">            <span class="keyword">while</span> tot &gt;= target:</span><br><span class="line">                <span class="comment"># 更新最小長度</span></span><br><span class="line">                min_len = <span class="built_in">min</span>(min_len, r - l + <span class="number">1</span>)</span><br><span class="line">                <span class="comment"># 縮小長度，扣掉不在windows內的數字</span></span><br><span class="line">                tot -= nums[l]</span><br><span class="line">                <span class="comment"># 移動左指針</span></span><br><span class="line">                l += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> min_len <span class="keyword">if</span> min_len != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> <span class="number">0</span>        </span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題不難，但是我卡在如何要擴展window的時機，因為當初使用while來寫，但是這題不應該使用while，因為他不是two pointer從頭跟尾來縮window，他是two pointer從左到右來擴展跟收縮window。要檢查到right pointer觸底為止，所以不需要while。你也不用思考何時要right+1，因為for會處理掉這件事情。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+          <category> Two Pointer </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Two Pointer </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #392 Is Subsequence - 刷題之旅</title>
+      <link href="/posts/leetcode-392-Is-Subsequence/"/>
+      <url>/posts/leetcode-392-Is-Subsequence/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/oEHkhiv.png" alt=""></p><p>這題很easy，就是要找出<code>s</code>是否為<code>t</code>的subsequence。</p><h1 id="2-解法">2 解法</h1><p>我的想法一開始很簡單，two pointer從同一個起點0出發，如果相同，兩個pointer都往下走一步，如果不同，只有<code>t</code>的pointer往下走一步。如果<code>s</code>的pointer走到底，表示是subsequence，否則不是。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">isSubsequence</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        i, j = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(s) <span class="keyword">and</span> j &lt; <span class="built_in">len</span>(t):</span><br><span class="line">            <span class="keyword">if</span> s[i] == t[j]:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> i == <span class="built_in">len</span>(s)</span><br></pre></td></tr></table></figure><p>有另一個寫法也很特別，我以s為主，for迴圈iterate每個char在s裡面的。然後去判斷char是否在t裡面，如果有，就找出該char在t的位置<code>idx</code>，然後t變成<code>t[idx+1:]</code>，因為<code>t[:idx]</code>之前已經不需要了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">isSubsequence</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    <span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">        <span class="keyword">if</span> char <span class="keyword">in</span> t:</span><br><span class="line">            idx = t.find(char)</span><br><span class="line">            t = t[idx+<span class="number">1</span>:]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題目難，很快就想出來了，只差在怎麼把程式碼寫得漂亮些。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+          <category> Two Pointer </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Easy </tag>
+            
+            <tag> Two Pointer </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #15 3Sum - 刷題之旅</title>
+      <link href="/posts/leetcode-15-3Sum/"/>
+      <url>/posts/leetcode-15-3Sum/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/fwnuAJm.png" alt=""></p><p>找到所有可以使三個數字的和為零的不重複組合。</p><h1 id="2-解法">2 解法</h1><p>看到不重複，腦子第一個冒出來是set。應該要把所有的組合都放進去，然後再轉成list。</p><p>而這題是two pointer卻要找3個數字的和為0，而two pointer使用的前提最好是==排序==過的數組。我們可以透過固定一個數字，然後使用two pointer的方式找到另外兩個數字。</p><h2 id="2-1-Hash-Set">2.1 Hash Set</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">==== Step <span class="number">1</span> ====</span><br><span class="line"><span class="comment"># nums 排序過</span></span><br><span class="line"><span class="comment"># i 是固定的數值</span></span><br><span class="line"><span class="comment"># l, r 分別是 left pointer 和 right pointer</span></span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">  i  l        r</span><br><span class="line"><span class="comment"># 因為還太小，我們透過移動l來使總合變大</span></span><br><span class="line">nums[i] + nums[l] + nums[r] = -<span class="number">3</span></span><br><span class="line"></span><br><span class="line">==== Step <span class="number">2</span> ====</span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">  i     l     r</span><br><span class="line"><span class="comment"># 因為還太小，我們透過移動l來使總合變大</span></span><br><span class="line">nums[i] + nums[l] + nums[r] = -<span class="number">3</span></span><br><span class="line"></span><br><span class="line">==== Step <span class="number">3</span> ====</span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">  i       l   r</span><br><span class="line"><span class="comment"># 因為還太小，我們透過移動l來使總合變大</span></span><br><span class="line">nums[i] + nums[l] + nums[r] = -<span class="number">2</span></span><br><span class="line"></span><br><span class="line">==== Step <span class="number">4</span> ====</span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">  i         l r</span><br><span class="line"><span class="comment"># 因為還太小，我們透過移動l來使總合變大</span></span><br><span class="line">nums[i] + nums[l] + nums[r] = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">==== Step <span class="number">5</span> ====</span><br><span class="line"><span class="comment"># 觸底了...都還沒找到，表示當前的i無法找到解</span></span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">  i           r</span><br><span class="line">              l</span><br><span class="line"></span><br><span class="line">nums[i] + nums[l] + nums[r] = -<span class="number">1</span></span><br></pre></td></tr></table></figure><p><em>基本上從上面的程式碼就可以寫出以下程式</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">threeSum</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        ans = <span class="built_in">set</span>() <span class="comment"># 存放所有的組合 避免重複</span></span><br><span class="line">        nums.sort() <span class="comment"># 排序</span></span><br><span class="line">        target = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 固定i </span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">            l, r = <span class="number">0</span>, <span class="built_in">len</span>(nums)-<span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> l &lt; r: </span><br><span class="line">                tot = nums[i] + nums[l] + nums[r]</span><br><span class="line">                <span class="keyword">if</span> tot == target:</span><br><span class="line">                    ans.add((nums[i], nums[l], nums[r]))</span><br><span class="line">                    l += <span class="number">1</span></span><br><span class="line">                    r -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">elif</span> tot &lt; target:</span><br><span class="line">                    l += <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    r -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">list</span>(ans) <span class="comment"># 轉成list</span></span><br></pre></td></tr></table></figure><h2 id="2-2-List">2.2 List</h2><p>如果我們今天不想使用set，我們就要避免重複的組合，通常重複的組合怎麼出現的？如果我們今天的數組是<code>[-4,-1,-1,-1,1,2]</code>。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">==== Step <span class="number">1</span> ====</span><br><span class="line"><span class="comment"># 今天換下一個i</span></span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">     i  l     r</span><br><span class="line">nums[i] + nums[l] + nums[r] = <span class="number">0</span> <span class="comment"># [-1, -1, 2] 找到</span></span><br><span class="line"></span><br><span class="line">==== N Step ====</span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">       i  l    r</span><br><span class="line"><span class="comment"># 當我們發現l與上一個l是一樣的時候，我們就要跳過</span></span><br><span class="line">nums[i] + nums[l] + nums[r] = <span class="number">0</span> <span class="comment"># [-1, -1, 2] 找到</span></span><br><span class="line"></span><br><span class="line">==== N+<span class="number">1</span> Step ====</span><br><span class="line">[-<span class="number">4</span>,-<span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">       i     l r</span><br><span class="line"><span class="comment"># l 應該從與上一個不同時開始</span></span><br><span class="line">nums[i] + nums[l] + nums[r] = <span class="number">2</span></span><br></pre></td></tr></table></figure><p><em>基本上從上面的程式碼就可以寫出以下程式</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">threeSum</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">    res = []</span><br><span class="line">    nums.sort()</span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">        <span class="comment"># i 也是相同的意思，如果與上一個相同就跳過避免重複</span></span><br><span class="line">        <span class="keyword">if</span> idx &gt; <span class="number">0</span> <span class="keyword">and</span> nums[idx] == nums[idx-<span class="number">1</span>]:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        left, right = idx + <span class="number">1</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> left &lt; right:</span><br><span class="line">            total = nums[idx] + nums[left] + nums[right]</span><br><span class="line">            <span class="keyword">if</span> total &gt; <span class="number">0</span>:</span><br><span class="line">                right -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> total &lt; <span class="number">0</span>:</span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                res.append([nums[idx], nums[left], nums[right]])</span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                <span class="comment"># 使用list不重複的關鍵在，如果left下一個與上一個相同要繼續往下走否則會重複</span></span><br><span class="line">                <span class="keyword">while</span> nums[left] == nums[left-<span class="number">1</span>] <span class="keyword">and</span> left &lt; right:</span><br><span class="line">                    left += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題我當初卡的點有兩個</p><ul><li>怎麼把set換成list，沒想到<code>list(set)</code>就可以了</li><li>怎麼避免重複的組合，我沒想到要檢查i跟l是否與上一個相同，如果相同要一直往下走。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+          <category> Two Pointer </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> Two Pointer </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>LeetCode #11 Container With Most Water - 刷題之旅</title>
       <link href="/posts/leetcode-11-Container-With-Most-Water/"/>
       <url>/posts/leetcode-11-Container-With-Most-Water/</url>
@@ -43,6 +148,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Two Pointer </category>
           
       </categories>
       
@@ -76,6 +183,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Two Pointer </category>
           
       </categories>
       
@@ -143,6 +252,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -150,11 +261,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Hard </tag>
             
@@ -177,6 +288,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Dynamic Programming </category>
           
       </categories>
       
@@ -211,6 +324,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -244,6 +359,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -251,13 +368,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -279,6 +396,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -286,13 +405,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -314,6 +433,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -321,13 +442,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -348,6 +469,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Dynamic Programming </category>
           
       </categories>
       
@@ -409,6 +532,8 @@
           
           <category> 周賽 </category>
           
+          <category> Sliding Window </category>
+          
       </categories>
       
       
@@ -441,6 +566,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Dynamic Programming </category>
           
       </categories>
       
@@ -475,6 +602,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -508,6 +637,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -515,13 +646,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -543,6 +674,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -550,13 +683,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -578,6 +711,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Dynamic Programming </category>
+          
       </categories>
       
       
@@ -585,13 +720,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -644,6 +779,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -651,13 +788,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -679,6 +816,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -686,15 +825,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> BST </tag>
+            
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BST </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -716,6 +855,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -723,13 +864,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -751,6 +892,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -758,15 +901,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
+            <tag> BFS </tag>
             
             <tag> Recursion </tag>
             
-            <tag> BFS </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -788,6 +931,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -795,13 +940,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -823,6 +968,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -830,13 +977,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -858,6 +1005,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -865,13 +1014,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -893,6 +1042,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -900,13 +1051,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -928,6 +1079,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -935,11 +1088,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> DFS </tag>
             
             <tag> binary-tree </tag>
             
@@ -963,6 +1116,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -970,13 +1125,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -998,6 +1153,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -1005,13 +1162,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1033,6 +1190,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -1040,13 +1199,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1103,6 +1262,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -1110,11 +1271,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1138,6 +1299,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -1145,11 +1308,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1173,6 +1336,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -1180,13 +1345,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> Recursion </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1208,6 +1373,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -1215,11 +1382,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1243,6 +1410,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Tree </category>
+          
       </categories>
       
       
@@ -1250,11 +1419,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1371,6 +1540,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Linked List </category>
+          
       </categories>
       
       
@@ -1403,6 +1574,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Linked List </category>
           
       </categories>
       
@@ -1437,6 +1610,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Linked List </category>
+          
       </categories>
       
       
@@ -1470,6 +1645,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Linked List </category>
+          
       </categories>
       
       
@@ -1502,6 +1679,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Linked List </category>
           
       </categories>
       
@@ -1547,9 +1726,9 @@
             
             <tag> Medium </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -1571,6 +1750,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Linked List </category>
+          
       </categories>
       
       
@@ -1582,9 +1763,9 @@
             
             <tag> Easy </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -1637,6 +1818,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Stack &amp; Queue </category>
+          
       </categories>
       
       
@@ -1672,6 +1855,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Stack &amp; Queue </category>
+          
       </categories>
       
       
@@ -1704,6 +1889,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Stack &amp; Queue </category>
           
       </categories>
       
@@ -1738,6 +1925,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Stack &amp; Queue </category>
+          
       </categories>
       
       
@@ -1770,6 +1959,8 @@
           <category> LeetCode </category>
           
           <category> 刷題之旅 </category>
+          
+          <category> Stack &amp; Queue </category>
           
       </categories>
       
@@ -1837,6 +2028,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Hash Table </category>
+          
       </categories>
       
       
@@ -1844,11 +2037,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -1883,6 +2076,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Hash Table </category>
+          
       </categories>
       
       
@@ -1890,11 +2085,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -1943,51 +2138,20 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Hash Table </category>
+          
       </categories>
       
       
         <tags>
             
             <tag> leetcode </tag>
-            
-            <tag> Hash </tag>
             
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>LeetCode #13 Roman to Integer - 刷題之旅</title>
-      <link href="/posts/leetcode-13-roman-to-integer/"/>
-      <url>/posts/leetcode-13-roman-to-integer/</url>
-      
-        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>和<a href="/posts/leetcode-12-integer-to-roman">上一題</a>相反，將羅馬數字轉換成阿拉伯數字。<br><img src="https://i.imgur.com/6Dty492.png" alt=""><br><img src="https://i.imgur.com/UZQAQb9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法">2.1 我的作法</h2><p>我一開始想的比較複雜，是想要使用while迴圈，從第一個字串與第二個字串開始比較，一般來說羅馬字是由大排到小，因此一但發現“前面” &lt; &quot;後面“ （由小到大），前面要當減數，否則就是加法。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/YgsucYk.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        right = left + <span class="number">1</span></span><br><span class="line">        <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 如果只有一個字元，直接加上</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(s) &lt; <span class="number">2</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[left]]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(s):</span><br><span class="line">                left_val = num_dic[s[left]]</span><br><span class="line">                right_val = num_dic[s[right]]</span><br><span class="line">                <span class="comment"># 一但發現 left &lt; right，就是減法</span></span><br><span class="line">                <span class="keyword">if</span> left_val &lt; right_val:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val * (-<span class="number">1</span>)</span><br><span class="line">                <span class="comment"># 否則加法</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val</span><br><span class="line"></span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                right = left + <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 如果 right 已經到底了，那麼就加上最後一個</span></span><br><span class="line">                <span class="keyword">if</span> right == <span class="built_in">len</span>(s):</span><br><span class="line">                    <span class="built_in">sum</span> += right_val</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;final=<span class="subst">&#123;<span class="built_in">sum</span>&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(n)</strong></p><ul><li>n 是輸入字浮串的長度，這個解法只需要一次迭代。</li></ul><p><strong>空間複雜度：O(1)</strong></p><ul><li>固定空間：儲存字典 num_dic，這是固定的大小，包含 7 個元素。</li><li>變量：變量 left、right 和 sum 使用固定的額外空間。</li><li>函數沒有使用額外的空間來儲存與輸入大小相關的數據結構，因此空間複雜度為 O(1)</li></ul></div><h2 id="2-2-更簡潔">2.2 更簡潔</h2><p>但是有更簡潔的寫法，概念一樣，但是不用while迴圈，直接用for迴圈就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :type s: str</span></span><br><span class="line"><span class="string">    :rtype: int</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">        <span class="comment"># 關鍵是如果 i 已經到底的前一個，那麼就不用比較了，直接加上</span></span><br><span class="line">        <span class="comment"># -1 是為了讓 i+1 不會超過範圍</span></span><br><span class="line">        <span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s) - <span class="number">1</span> <span class="keyword">and</span> num_dic[s[i]] &lt; num_dic[s[i+<span class="number">1</span>]]:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]] * (-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題感覺難度也不會很難，是可以自己想出來的。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> LeetCode </category>
-          
-          <category> 刷題之旅 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> leetcode </tag>
-            
             <tag> Hash </tag>
-            
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -2009,6 +2173,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Hash Table </category>
+          
       </categories>
       
       
@@ -2016,11 +2182,46 @@
             
             <tag> leetcode </tag>
             
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
             <tag> Hash </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #13 Roman to Integer - 刷題之旅</title>
+      <link href="/posts/leetcode-13-roman-to-integer/"/>
+      <url>/posts/leetcode-13-roman-to-integer/</url>
+      
+        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>和<a href="/posts/leetcode-12-integer-to-roman">上一題</a>相反，將羅馬數字轉換成阿拉伯數字。<br><img src="https://i.imgur.com/6Dty492.png" alt=""><br><img src="https://i.imgur.com/UZQAQb9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法">2.1 我的作法</h2><p>我一開始想的比較複雜，是想要使用while迴圈，從第一個字串與第二個字串開始比較，一般來說羅馬字是由大排到小，因此一但發現“前面” &lt; &quot;後面“ （由小到大），前面要當減數，否則就是加法。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/YgsucYk.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        right = left + <span class="number">1</span></span><br><span class="line">        <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 如果只有一個字元，直接加上</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(s) &lt; <span class="number">2</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[left]]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(s):</span><br><span class="line">                left_val = num_dic[s[left]]</span><br><span class="line">                right_val = num_dic[s[right]]</span><br><span class="line">                <span class="comment"># 一但發現 left &lt; right，就是減法</span></span><br><span class="line">                <span class="keyword">if</span> left_val &lt; right_val:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val * (-<span class="number">1</span>)</span><br><span class="line">                <span class="comment"># 否則加法</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val</span><br><span class="line"></span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                right = left + <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 如果 right 已經到底了，那麼就加上最後一個</span></span><br><span class="line">                <span class="keyword">if</span> right == <span class="built_in">len</span>(s):</span><br><span class="line">                    <span class="built_in">sum</span> += right_val</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;final=<span class="subst">&#123;<span class="built_in">sum</span>&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(n)</strong></p><ul><li>n 是輸入字浮串的長度，這個解法只需要一次迭代。</li></ul><p><strong>空間複雜度：O(1)</strong></p><ul><li>固定空間：儲存字典 num_dic，這是固定的大小，包含 7 個元素。</li><li>變量：變量 left、right 和 sum 使用固定的額外空間。</li><li>函數沒有使用額外的空間來儲存與輸入大小相關的數據結構，因此空間複雜度為 O(1)</li></ul></div><h2 id="2-2-更簡潔">2.2 更簡潔</h2><p>但是有更簡潔的寫法，概念一樣，但是不用while迴圈，直接用for迴圈就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :type s: str</span></span><br><span class="line"><span class="string">    :rtype: int</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">        <span class="comment"># 關鍵是如果 i 已經到底的前一個，那麼就不用比較了，直接加上</span></span><br><span class="line">        <span class="comment"># -1 是為了讓 i+1 不會超過範圍</span></span><br><span class="line">        <span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s) - <span class="number">1</span> <span class="keyword">and</span> num_dic[s[i]] &lt; num_dic[s[i+<span class="number">1</span>]]:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]] * (-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題感覺難度也不會很難，是可以自己想出來的。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+          <category> Hash Table </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
             
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -2042,6 +2243,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Hash Table </category>
+          
       </categories>
       
       
@@ -2049,15 +2252,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
-            <tag> Review-Needed </tag>
+            <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -2079,6 +2282,8 @@
           
           <category> 刷題之旅 </category>
           
+          <category> Hash Table </category>
+          
       </categories>
       
       
@@ -2086,11 +2291,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
