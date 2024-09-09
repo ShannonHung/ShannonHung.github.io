@@ -3448,11 +3448,21 @@ h1.page-title + .tag-cloud-list {
   font-weight: 900 !important;
 }
 .cal tbody a {
-  background-color: #f76b61;
-  color: #fff;
+  color: #f76b61;
   display: block;
   font-weight: 700;
   border: 1px solid #fff;
+  position: relative;
+}
+.cal tbody a:after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background-color: #f76b61;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }
 .cal tbody .cal-today {
   background-color: #ffdfdd;
