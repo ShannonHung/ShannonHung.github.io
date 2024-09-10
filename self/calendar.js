@@ -435,10 +435,10 @@
     footArrows: { previous: "« ", next: " »" },
     weekOffset: 0,
     single: true,
-    root: "/en/calendar/",
-    url: "/en/calendar.json",
+    root: "/calendar/",
+    url: "/calendar.json",
   };
   $(document).ready(function () {
-    $("#calendar").aCalendar("en");
+    $("#calendar").aCalendar("zh-TW");
   });
 })(jQuery);
