@@ -1,9 +1,9 @@
 body {
   background-image: linear-gradient(
-    -225deg,
-    #f6cb9d6f 20%,
-    #efc8ce79 48%,
-    rgba(0, 153, 255, 0.149) 100%
+    -200deg,
+    #f386536f 50%,
+    #ddc8ef79 68%,
+    rgba(0, 153, 255, 0.149) 90%
   );
 }
 
@@ -23,7 +23,7 @@ p {
 /* 粗體字 特效 */
 strong {
   color: rgba(0, 153, 255);
-  padding: 0.3rem;
+  padding: 0 0.2rem;
   font-size: 18px;
   /* background: linear-gradient(180deg, transparent 50%, #fdda5a 0); */
 }
@@ -54,5 +54,5 @@ img {
 }
 
 .katex {
-  font-size: 2em !important;
+  font-size: 1.5em !important;
 }

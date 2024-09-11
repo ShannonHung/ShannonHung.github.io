@@ -1,0 +1,508 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>LeetCode - 刷題之旅的總結與心得 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="前言 這裡是我寫Leetcode總結核心概念的地方，不同的情境會使用到的武器不同，這裡我會描述在什麼樣的情境滿足下，適合的資料結構或是演算法。而這個演算法的核心概念是什麼，同時我也會紀錄一些我在刷題時的心得，以及刷題的時間，來慢慢看到成長與進步。 Leetcode時間紀錄  Hash Table 情境1: 快速找元素  通常使用 Hash 的關鍵在於要用 O(1) 的時間複雜度來查找元素，這樣就可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode - 刷題之旅的總結與心得">
+<meta property="og:url" content="https://shannonhung.github.io/posts/leetcode-sum-up/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="前言 這裡是我寫Leetcode總結核心概念的地方，不同的情境會使用到的武器不同，這裡我會描述在什麼樣的情境滿足下，適合的資料結構或是演算法。而這個演算法的核心概念是什麼，同時我也會紀錄一些我在刷題時的心得，以及刷題的時間，來慢慢看到成長與進步。 Leetcode時間紀錄  Hash Table 情境1: 快速找元素  通常使用 Hash 的關鍵在於要用 O(1) 的時間複雜度來查找元素，這樣就可">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://shannonhung.github.io/img/mountain-germany.jpg">
+<meta property="article:published_time" content="2025-06-07T02:33:54.000Z">
+<meta property="article:modified_time" content="2024-08-23T08:30:56.954Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="leetcode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shannonhung.github.io/img/mountain-germany.jpg"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/leetcode-sum-up/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XBNKVVH2P4');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LeetCode - 刷題之旅的總結與心得',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-23 16:30:56'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">111</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">68</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">38</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/mountain-germany.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LeetCode - 刷題之旅的總結與心得</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2025-06-07T02:33:54.000Z" title="發表於 2025-06-07 10:33:54">2025-06-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-08-23T08:30:56.954Z" title="更新於 2024-08-23 16:30:56">2024-08-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/">LeetCode</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/%E5%88%B7%E9%A1%8C%E4%B9%8B%E6%97%85/">刷題之旅</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">4.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>14分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LeetCode - 刷題之旅的總結與心得"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/leetcode-sum-up/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/leetcode/">leetcode</a></div></div><article class="post-content" id="article-container"><h1 id="前言">前言</h1>
+<p>這裡是我寫Leetcode總結核心概念的地方，不同的情境會使用到的武器不同，這裡我會描述在什麼樣的情境滿足下，適合的資料結構或是演算法。而這個演算法的核心概念是什麼，同時我也會紀錄一些我在刷題時的心得，以及刷題的時間，來慢慢看到成長與進步。</p>
+<div class="note info flat"><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.google.com/spreadsheets/d/1hPIzYcGlZV36lumGjxdZLx4_HmuvYNmc_RIRpt8uN18/edit?usp=sharing">Leetcode時間紀錄</a></p>
+</div>
+<h1 id="Hash-Table">Hash Table</h1>
+<h2 id="情境1-快速找元素">情境1: 快速找元素</h2>
+<ul>
+<li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li>
+<li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li>
+<li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境2-比對無序的東西">情境2: 比對無序的東西</h2>
+<ul>
+<li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境3-找連續的不重複元素">情境3: 找連續的不重複元素</h2>
+<ul>
+<li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li>
+<li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li>
+<li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境4-替換原本的node">情境4:替換原本的node</h2>
+<ul>
+<li>如果今天有需求把 <code>old_node</code> 變成 <code>new_node</code> 簡單來說就是建立一個一模一樣的 linked list，可以使用 HashTable 直接把 <code>old_node</code> 當作 key，<code>new_node</code> 當作 value。這樣不管是串 next 還是串 random 都只要拿 old_node 去找，就可以找到 new_node，然後開始串。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-138-copy-list-with-random-pointer">leetcode-138-copy-list-with-random-pointer</a>: 複製一個有 random node 的 linked list</li>
+</ul>
+</li>
+</ul>
+<h1 id="Stack-Queue">Stack &amp; Queue</h1>
+<h2 id="情境1-後進先出問題">情境1: 後進先出問題</h2>
+<ul>
+<li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li>
+<li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li>
+<li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境2-數字計算，括弧的優先">情境2: 數字計算，括弧的優先</h2>
+<ul>
+<li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li>
+<li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li>
+<li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境3-時間複雜度O-1-卻能取得Max或Min">情境3: 時間複雜度O(1)卻能取得Max或Min</h2>
+<ul>
+<li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li>
+<li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li>
+</ul>
+</li>
+</ul>
+<h1 id="Linked-List">Linked List</h1>
+<h2 id="情境1-判斷是否有循環">情境1: 判斷是否有循環</h2>
+<ul>
+<li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境2-dummy-head-的使用">情境2: dummy head 的使用</h2>
+<ul>
+<li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li>
+<li>我們最怕的是在取listNode的值時發現他是None而導致錯誤，<em>因此我們可以使用 <code>digit1 = list1.val if list1 else 極值</code> 的方式</em>，儘管遇到 none 仍然可以繼續執行迴圈，直到兩個 list1 跟 list2 都觸底，以避免 None 的問題。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li>
+<li><a href="/posts/leetcode-21-merge-two-sorted-lists">leetcode-21-merge-two-sorted-lists</a>：合併兩個有序的linked list</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境3-雙指針法">情境3: 雙指針法</h2>
+<ul>
+<li><strong>反轉操作</strong>：
+<ul>
+<li>如果今天要空間複雜度為O(1)的情況下，想要<em>透過反轉的方式做某些操作</em>，例如反轉linked list，或是取得倒數第n個node，這時候就可以使用雙指針法。只是怎麼跑這個指針的方式不一樣，一種是某個指針一直往前跑，然後<em>到目標位置執行操作</em>。另一個是比速度的，要<em>快的指針比慢的指針快n個位置</em>，以取得倒數第n個node。</li>
+<li>這真的經典，今天要<em>有順序的進行反轉或是整批的改變位置移動，雙指針會是一個Linked List的重點</em>。想像有兩個指針，一個指針<code>cur</code>慢往前，另一個指針會是目標節點<code>target</code> (在這裡是<code>next</code>)，<code>target</code> 會串到想要放的目標 location(在這裡是<code>pre.next</code>)，<code>cur</code> 會一直往前移動(<code>cur.next</code> 變成 <code>pre.next</code>)，直到達到目標節點，這樣就可以完成操作。</li>
+</ul>
+</li>
+<li><strong>依序比較</strong>：
+<ul>
+<li>如果只是在<em>有序的linkedlist中比較<code>隔壁</code>的元素關係</em>使用1個pointer以比較鄰居就好，另一個pointer放previous的訊息，到時候滿足條件時，就要把<code>pre.next</code>串到 <code>cur</code> 或 <code>cur.next</code>也就是當前的節點上。</li>
+</ul>
+</li>
+<li>相關題目：
+<ul>
+<li>反轉操作<a href="/posts/leetcode-92-reverse-linked-list-II">leetcode-92-reverse-linked-list-II</a>: 反轉linked list的一部分</li>
+<li>反轉操作<a href="/posts/leetcode-19-remove-nth-node-from-end-of-list">leetcode-19-remove-nth-node-from-end-of-list</a>: 刪除倒數第n個node</li>
+<li>依序比較<a href="/posts/leetcode-82-remove-duplicates-from-sorted-list-ll">leetcode-82-remove-duplicates-from-sorted-list-ll</a>: 移除重複的元素</li>
+</ul>
+</li>
+</ul>
+<h1 id="Recursion">Recursion</h1>
+<p>回到核心，我們應該要知道最小問題的狀況是什麼，以及小問題與大問題相同的關聯性，<strong>這個關聯性就是要回傳的答案</strong>，裡面不確定的東西可以先假設已經得知，<strong>通常這個假設就是呼叫Recursion的地方</strong>，舉例來說：<br>
+<strong>樹的左右子樹關係</strong></p>
+<ul>
+<li><a href="/posts/leetcode-101-Symmetric-Tree/">是否對稱 leetcode-101-Symmetric-Tree</a>
+<ul>
+<li>(關係式：當前的左右子樹第一個值相同且左右子樹對稱) <code>left_root.val == right_root.val &amp;&amp; recursion(left) == recursion(right)</code></li>
+<li>(假設：左右子樹對稱) <code>recursion(left) == recursion(right)</code>。</li>
+</ul>
+</li>
+<li><a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal/">建立樹 leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal</a>
+<ul>
+<li>(關係式：回傳已經串好left跟right的root) <code>return root</code></li>
+<li>(假設：左子樹已經建立好) <code>root.left = recursion(left)</code></li>
+<li>(假設：右子樹已經建立好) <code>root.right = recursion(right)</code></li>
+</ul>
+</li>
+<li><a href="/posts/leetcode-226-invert-binary-tree">左右子樹對調 leetcode-226-invert-binary-tree</a>
+<ul>
+<li>(關係式：<code>root.left, root.right = recursion(root.right), root.left = recursion(root.right)</code>)</li>
+</ul>
+</li>
+<li><a href="/posts/leetcode-100-same-tree">2棵樹是否相同 leetcode-100-same-tree</a>
+<ul>
+<li>(關係式：<code>p.val == q.val and recursion(p.left, q.left) and recursion(p.right, q.right)</code>)</li>
+<li>(最小的問題：都是 None 就代表 True，但是當其中一邊有值，另一邊沒有值，就不相同了)<br>
+<strong>深度DFS關係</strong></li>
+</ul>
+</li>
+<li><a href="/posts/leetcode-104-maximum-depth-of-binary-tree/">計算深度 leetcode-104-maximum-depth-of-binary-tree</a>
+<ul>
+<li>(關係式：左右子樹的最大深度 + 1) <code>max(recursion(left), recursion(right)) + 1</code></li>
+</ul>
+</li>
+<li><a href="/posts/leetcode-129-sum-root-to-leaf-numbers">計算root到left的總和 leetcode-129-sum-root-to-leaf-numbers</a>
+<ul>
+<li>(關係式：當前總額 + 左右子樹的總和) <code>cur_sum + recursion(left) + recursion(right)</code></li>
+</ul>
+</li>
+<li><a href="/posts/leetcode-112-path-sum">leetcode-112-path-sum</a>：在樹中找到是否有一條路徑的和等於target Sum
+<ul>
+<li>(關係式：左或右子樹是否存在一條路徑滿足target Sum) <code>recursion(root.left, targetSum) or recursion(root.right, targetSum)</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="Binary-Tree">Binary Tree</h1>
+<h2 id="情境1-空間O-1-做成list">情境1: 空間O(1)做成list</h2>
+<ul>
+<li>要非常熟悉DFS的演算法，同時如果要求O(1)的空間複雜度，可以使用<code>Morris Traversal</code>，這樣可以在O(1)的空間複雜度下完成整個遍歷，只是他會改變樹的結構。</li>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-114-flatten-binary-tree-to-linked-list">leetcode-114-flatten-binary-tree-to-linked-list</a> 要把一棵樹打平，並且只能使用in-place的方式?</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境2-DFS-走到樹的最深處">情境2: DFS 走到樹的最深處</h2>
+<ul>
+<li><strong>從底往上找到某個節點</strong>：例如要在BST(二元搜尋樹)找到第<code>k</code>小的節點，我們需要先走到最left的節點，然後開始往上爬並計數是否已經達到<code>k</code>了。這時候我們的程式邏輯應該是 <code>inorder: 走到左最底 &gt; 計數(中間) &gt; 換右邊</code>。或是我們要找最小值，這時候他們都有個共通點，為了不要遍歷所有的inorder節點，我們應該<em>先使用<code>recursion(cur.left)</code>到最底，往下的過程要做紀錄<code>stack.append(cur)</code>，但是每次從<code>cur = stack.pop()</code>的時候，也要考慮到<code>cur.right</code>有沒有滿足條件</em>。
+<ul>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-230-Kth-Smallest-Element-in-a-BST">leetcode-230-Kth-Smallest-Element-in-a-BST</a>：在BST中找到第k小的節點</li>
+<li><a href="/posts/leetcode-173-Binary-Search-Tree-Iterator">leetcode-173-Binary-Search-Tree-Iterator</a>：實作一個BST的iterator每次<code>next</code>回傳下一個最小值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>共同的祖先節點</strong>：給<code>p</code>,<code>q</code>兩個節點，找到他們最近的共同<code>parent</code>。我們從也是從底下往上，當發現<em>當前節點左右子樹同時存在<code>q</code>或<code>p</code>時，就代表當前節點就是<code>parent</code>，如果只有一邊的子樹找到，那就回傳最先碰到的節點，也就是說<code>p</code>或<code>q</code>就是祖先</em>，只是看誰比較高。
+<ul>
+<li>相關題目：<a href="/posts/leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree">leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree</a>：在二元樹中找到兩個節點的最近共同祖先</li>
+</ul>
+</li>
+<li><strong>inorder, postorder, preorder特性</strong>：有些題目會給你任意一種order，請你組出一個binary tree，這時候就要非常<em>熟悉<code>inorder</code>, <code>postorder</code>, <code>preorder</code>的特性</em>，<code>inorder</code>是左中右，<code>postorder</code>是左右中，<code>preorder</code>是中左右，這樣就可以很快的組出一個binary tree。
+<ul>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal">leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal</a>：給定preorder跟inorder</li>
+<li><a href="/posts/leetcode-106-construct-binary-tree-from-inorder-and-postorder-traversal">leetcode-106-construct-binary-tree-from-inorder-and-postorder-traversal</a>：給定postorder跟inorder</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="情境2-BFS-level-order">情境2: BFS - level order</h2>
+<ul>
+<li><strong>水平操作</strong>：如果有題目要把node指向隔壁的時候，就要想到BFS。
+<ul>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-117-populating-next-right-pointers-in-each-node-ii">leetcode-117-populating-next-right-pointers-in-each-node-ii</a> 這題就是要把每一層的node指向隔壁的node。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>取得每層的特定節點</strong>：如果需要取得每層最右邊的節點，優先走右邊，並且把最右邊的節點記錄，如果發現右邊已經觸底了，那就換左樹走，但是只有當高度比右樹高時，才要記錄。
+<ul>
+<li>相關題目：
+<ul>
+<li><a href="/posts/leetcode-199-Binary-Tree-Right-Side-View">leetcode-199-Binary-Tree-Right-Side-View</a> 這題是要取得每一層最右邊的節點</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Dynamaic-Programming">Dynamaic Programming</h1>
+<p>我覺得大部分DP問題，他的重點順序是：Recursive -&gt; Recursive + Memo -&gt; Iterative + Tabular -&gt; Iterative + Tabular + Space Optimized，因此很多時候我認為需要進展到<code>Iterative</code>的狀態，才能說是完美的解完一題DP問題。大概會有以下情境：</p>
+<h2 id="情境1-背包問題">情境1: 背包問題</h2>
+<ul>
+<li><strong>從最小到最大找到最佳解</strong>：會建議先從背包最小的開始找，然後慢慢增加背包的大小，這樣可以確保每個背包的解都是最佳解。常見題目以下都是需要考量到<code>前一個的最佳解</code>+<code>是否要取目前的值</code>，更簡單的就是說<code>Take</code>與<code>Not_Take</code>的問題：
+<ul>
+<li><a href="/posts/leetcode-322-Coin-Change">leetcode-322-Coin-Change</a>：找到最少的硬幣數量可以湊成目標值，雙層for loop，從1開始找到amount，然後每個amount都找到最佳的配置coin數量。</li>
+<li><a href="/posts/leetcode-198-House-Robber">leetcode-198-House-Robber</a>：不能連續偷兩間，找到最大的總和。<code>max(這間不偷+偷上間, 這間偷+偷上上間)</code></li>
+<li><a href="/posts/leetcode-139-Word-Break">leetcode-139-Word-Break</a>：找到是否可以拆分成字典中的字，紀錄每個長度單字的最佳數量</li>
+<li><a href="/posts/leetcode-120-Triangle">leetcode-120-Triangle</a>：找到最小的路徑和，從最底層往上找，每次都找到最佳的路徑和</li>
+</ul>
+</li>
+</ul>
+<h1 id="常用演算法">常用演算法</h1>
+<h2 id="摩爾投票法：找到最大宗">摩爾投票法：找到最大宗</h2>
+<div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>
+使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p>
+</div>
+<p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p>
+<p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">majorityElement</span>(<span class="params">nums</span>):</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    candidate = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">        <span class="keyword">if</span> count == <span class="number">0</span>:</span><br><span class="line">            candidate = num</span><br><span class="line">        count += (<span class="number">1</span> <span class="keyword">if</span> num == candidate <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> candidate</span><br></pre></td></tr></table></figure>
+<h2 id="Morris-Traversal：BST-to-遞增排序">Morris Traversal：BST to 遞增排序</h2>
+<p>這是一種在O(1)的空間複雜度下完成遍歷的演算法，他的核心概念是在遍歷的過程中，把右子樹的最左邊節點指向當前的節點，這樣就可以在O(1)的空間複雜度下完成遍歷。<br>
+很多時候題目會要求 O(1) 空間複雜度，這時候我們可以使用 Morris Traversal 來達成，但是<em>此方法直接修改原始樹，但可以保證空間複雜度為 O(1)</em>，因此使用的時候要注意是否可以改動到原始樹。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">1</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">2</span>   <span class="number">5</span></span><br><span class="line"> / \   \</span><br><span class="line"><span class="number">3</span>   <span class="number">4</span>   <span class="number">6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 將 1 的 left sub-tree 插入 right sub-tree 的地方</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>         <span class="number">5</span></span><br><span class="line">     / \         \</span><br><span class="line">    <span class="number">3</span>   <span class="number">4</span>         <span class="number">6</span>        </span><br><span class="line"></span><br><span class="line"><span class="comment">// 將原本的right sub-tree 接到 left sub-tree 的最右邊節點</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">     / \          </span><br><span class="line">    <span class="number">3</span>   <span class="number">4</span>  </span><br><span class="line">         \</span><br><span class="line">          <span class="number">5</span></span><br><span class="line">           \</span><br><span class="line">            <span class="number">6</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">// 將 2 的 left sub-tree 插入 right sub-tree 的地方</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">       \          </span><br><span class="line">        <span class="number">3</span>       <span class="number">4</span>  </span><br><span class="line">                 \</span><br><span class="line">                  <span class="number">5</span></span><br><span class="line">                   \</span><br><span class="line">                    <span class="number">6</span>   </span><br><span class="line"></span><br><span class="line"> <span class="comment">// 將原本的 right sub-tree 接到 left sub-tree 的最右邊節點</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">       \          </span><br><span class="line">        <span class="number">3</span>      </span><br><span class="line">         \</span><br><span class="line">          <span class="number">4</span>  </span><br><span class="line">           \</span><br><span class="line">            <span class="number">5</span></span><br><span class="line">             \</span><br><span class="line">              <span class="number">6</span>         </span><br><span class="line"></span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p><em>程式碼 preorder-morris-traversal</em></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">flatten2</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; TreeNode:</span><br><span class="line">    cur = root</span><br><span class="line">    <span class="keyword">while</span> cur:</span><br><span class="line">        <span class="keyword">if</span> cur.left:</span><br><span class="line">            <span class="comment"># 1. 先找到左樹最右邊的node rightmost</span></span><br><span class="line">            rightmost = cur.left</span><br><span class="line">            <span class="keyword">while</span> rightmost.right:</span><br><span class="line">                rightmost = rightmost.right</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 2. 把 cur 的右樹接到 rightmost.right, 然後再把 cur.right 接到 left</span></span><br><span class="line">            rightmost.right = cur.right</span><br><span class="line">            cur.right = cur.left</span><br><span class="line">            cur.left = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. cur 換成 cur.right</span></span><br><span class="line">        cur = cur.right</span><br></pre></td></tr></table></figure>
+<h2 id="DFS-跟-BFS">DFS 跟 BFS</h2>
+<p>DFS 跟 BFS 是最常見的兩種遍歷方式，DFS 是深度優先搜尋，BFS 是廣度優先搜尋，他們的核心概念是一樣的，只是遍歷的方式不同，DFS 是一直往下走，直到底部，然後再往上走，BFS 是一層一層的往下走，直到底部，然後再往下走。</p>
+<p>建議直接看<a href="/posts/lecture-bfs-dfs">LeetCode 課前預習 - 掌握 BFS 與 DFS 指南</a></p>
+<h2 id="Patience-Sort：最長的遞增子序列">Patience Sort：最長的遞增子序列</h2>
+<p>有些題目需要<strong>找到最長的遞增子序列</strong>，我們需要先了解一下一個超級神奇的演算法！叫做<a target="_blank" rel="noopener external nofollow noreferrer" href="https://en.wikipedia.org/wiki/Patience_sorting">Patience Sort</a>，他是一個卡牌遊戲，可以幫助我們找到最長的遞增子序列。我們先來介紹卡牌遊戲的規則：</p>
+<p>首先，我們有一組卡牌，規則是：</p>
+<ul>
+<li>如果當前的卡牌比piles的最後一張卡牌還要大，那就直接放到最後一張卡牌的後面</li>
+<li>如果當前的卡牌比piles的最後一張卡牌還要小，那就要找到一張比當前卡牌還要大的卡牌，然後放在上面，如果找不到的話，就要開一個新的pile<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/s3XxiPt.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/XOMxkAH.png" alt=""></li>
+</ul>
+<p><em>最後你會發現，每個piles最上面的卡牌由左到右是遞增的</em><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/2mmUOnD.png" alt=""></p>
+<p><em>更神奇的事情發生了，這個piles的數量就是最長的遞增子序列的長度！因為每個piles一定可以找到一張牌可以排出遞減的牌組</em><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/JQB7ylO.png" alt=""><br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/hMyA7m7.png" alt=""></p>
+<p>相關題目：</p>
+<ul>
+<li><a href="/posts/leetcode-300-Longest-Increasing-Subsequence">leetcode-300-longest-increasing-subsequence</a>：找到最長的遞增子序列</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/leetcode-sum-up/">https://shannonhung.github.io/posts/leetcode-sum-up/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！ <em>如果你覺得我的文章有幫助，希望你可以到我的 github 給我一個 star ⭐️ <a href="https://github.com/ShannonHung/ShannonHung.github.io" rel="external nofollow noreferrer" target="_blank">Shannon Blog Repo</a></em></span></div></div><div class="post_share"><div class="social-share" data-image="/img/mountain-germany.jpg" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/posts/leetcode-36-Valid-Sudoku/" title="LeetCode #36 Valid Sudoku - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/square.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">LeetCode #36 Valid Sudoku - 刷題之旅</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/lecture-bfs-dfs/" title="LeetCode 課前預習 - 掌握 BFS 與 DFS 指南"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/depth.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-01</div><div class="title">LeetCode 課前預習 - 掌握 BFS 與 DFS 指南</div></div></a></div><div><a href="/posts/lecture-binary-search-tree/" title="LeetCode 課前預習 - 掌握 Binary Search Tree 指南"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/tree.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-24</div><div class="title">LeetCode 課前預習 - 掌握 Binary Search Tree 指南</div></div></a></div><div><a href="/posts/lecture-recursion/" title="LeetCode 課前預習 - 掌握 Recursion 的思維指南"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/recursion.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-26</div><div class="title">LeetCode 課前預習 - 掌握 Recursion 的思維指南</div></div></a></div><div><a href="/posts/leetcode-100-same-tree/" title="LeetCode #100 Same Tree - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/same-tree.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-30</div><div class="title">LeetCode #100 Same Tree - 刷題之旅</div></div></a></div><div><a href="/posts/leetcode-102-Binary-Tree-Level-Order-Traversal/" title="LeetCode #102 Binary Tree Level Order Traversal - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/connect.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-25</div><div class="title">LeetCode #102 Binary Tree Level Order Traversal - 刷題之旅</div></div></a></div><div><a href="/posts/leetcode-101-Symmetric-Tree/" title="LeetCode #101 Symmetric Tree - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/symmetric.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-27</div><div class="title">LeetCode #101 Symmetric Tree - 刷題之旅</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">111</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">68</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">38</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hash-Table"><span class="toc-text">Hash Table</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%831-%E5%BF%AB%E9%80%9F%E6%89%BE%E5%85%83%E7%B4%A0"><span class="toc-text">情境1: 快速找元素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%832-%E6%AF%94%E5%B0%8D%E7%84%A1%E5%BA%8F%E7%9A%84%E6%9D%B1%E8%A5%BF"><span class="toc-text">情境2: 比對無序的東西</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%833-%E6%89%BE%E9%80%A3%E7%BA%8C%E7%9A%84%E4%B8%8D%E9%87%8D%E8%A4%87%E5%85%83%E7%B4%A0"><span class="toc-text">情境3: 找連續的不重複元素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%834-%E6%9B%BF%E6%8F%9B%E5%8E%9F%E6%9C%AC%E7%9A%84node"><span class="toc-text">情境4:替換原本的node</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Stack-Queue"><span class="toc-text">Stack &amp; Queue</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%831-%E5%BE%8C%E9%80%B2%E5%85%88%E5%87%BA%E5%95%8F%E9%A1%8C"><span class="toc-text">情境1: 後進先出問題</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%832-%E6%95%B8%E5%AD%97%E8%A8%88%E7%AE%97%EF%BC%8C%E6%8B%AC%E5%BC%A7%E7%9A%84%E5%84%AA%E5%85%88"><span class="toc-text">情境2: 數字計算，括弧的優先</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%833-%E6%99%82%E9%96%93%E8%A4%87%E9%9B%9C%E5%BA%A6O-1-%E5%8D%BB%E8%83%BD%E5%8F%96%E5%BE%97Max%E6%88%96Min"><span class="toc-text">情境3: 時間複雜度O(1)卻能取得Max或Min</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linked-List"><span class="toc-text">Linked List</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%831-%E5%88%A4%E6%96%B7%E6%98%AF%E5%90%A6%E6%9C%89%E5%BE%AA%E7%92%B0"><span class="toc-text">情境1: 判斷是否有循環</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%832-dummy-head-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">情境2: dummy head 的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%833-%E9%9B%99%E6%8C%87%E9%87%9D%E6%B3%95"><span class="toc-text">情境3: 雙指針法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Recursion"><span class="toc-text">Recursion</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Binary-Tree"><span class="toc-text">Binary Tree</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%831-%E7%A9%BA%E9%96%93O-1-%E5%81%9A%E6%88%90list"><span class="toc-text">情境1: 空間O(1)做成list</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%832-DFS-%E8%B5%B0%E5%88%B0%E6%A8%B9%E7%9A%84%E6%9C%80%E6%B7%B1%E8%99%95"><span class="toc-text">情境2: DFS 走到樹的最深處</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%832-BFS-level-order"><span class="toc-text">情境2: BFS - level order</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Dynamaic-Programming"><span class="toc-text">Dynamaic Programming</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%A2%831-%E8%83%8C%E5%8C%85%E5%95%8F%E9%A1%8C"><span class="toc-text">情境1: 背包問題</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%BC%94%E7%AE%97%E6%B3%95"><span class="toc-text">常用演算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%A9%E7%88%BE%E6%8A%95%E7%A5%A8%E6%B3%95%EF%BC%9A%E6%89%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E5%AE%97"><span class="toc-text">摩爾投票法：找到最大宗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Morris-Traversal%EF%BC%9ABST-to-%E9%81%9E%E5%A2%9E%E6%8E%92%E5%BA%8F"><span class="toc-text">Morris Traversal：BST to 遞增排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DFS-%E8%B7%9F-BFS"><span class="toc-text">DFS 跟 BFS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Patience-Sort%EF%BC%9A%E6%9C%80%E9%95%B7%E7%9A%84%E9%81%9E%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97"><span class="toc-text">Patience Sort：最長的遞增子序列</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      id: '8303d55da0bbc9939d14b5f462688194',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script data-pjax src="/self/calendar.js"></script><script data-pjax src="/self/languages.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>

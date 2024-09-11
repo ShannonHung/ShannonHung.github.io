@@ -1,0 +1,349 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NBME - 使用 DeBERTa 模型分析病人病例 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="這篇文章不會談論怎麼寫程式，而是著重在說明如何為 DeBERTa 模型設計 Input 和 Ouput 以及如何評估模型的表現。  說明  題目來源：https:&#x2F;&#x2F;www.kaggle.com&#x2F;c&#x2F;nbme-score-clinical-patient-notes  當你去看醫生時，醫生如何解讀你的症狀會決定診斷的準確性。醫生在獲得執照之前，已經有很多撰寫病人記錄的實踐經驗，這些記錄文檔包含病人">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NBME - 使用 DeBERTa 模型分析病人病例">
+<meta property="og:url" content="https://shannonhung.github.io/posts/bert-nbme-score-clinical-patient-notes/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="這篇文章不會談論怎麼寫程式，而是著重在說明如何為 DeBERTa 模型設計 Input 和 Ouput 以及如何評估模型的表現。  說明  題目來源：https:&#x2F;&#x2F;www.kaggle.com&#x2F;c&#x2F;nbme-score-clinical-patient-notes  當你去看醫生時，醫生如何解讀你的症狀會決定診斷的準確性。醫生在獲得執照之前，已經有很多撰寫病人記錄的實踐經驗，這些記錄文檔包含病人">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://shannonhung.github.io/img/cover/clinical-patient.jpeg">
+<meta property="article:published_time" content="2024-05-30T03:12:54.000Z">
+<meta property="article:modified_time" content="2024-05-30T22:30:21.025Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="Mechine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shannonhung.github.io/img/cover/clinical-patient.jpeg"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/bert-nbme-score-clinical-patient-notes/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XBNKVVH2P4');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NBME - 使用 DeBERTa 模型分析病人病例',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-31 06:30:21'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">111</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">68</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">38</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/clinical-patient.jpeg')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NBME - 使用 DeBERTa 模型分析病人病例</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2024-05-30T03:12:54.000Z" title="發表於 2024-05-30 11:12:54">2024-05-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-05-30T22:30:21.025Z" title="更新於 2024-05-31 06:30:21">2024-05-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Code/">Code</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Code/Mechine-Learning/">Mechine Learning</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>5分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NBME - 使用 DeBERTa 模型分析病人病例"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/bert-nbme-score-clinical-patient-notes/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mechine-Learning/">Mechine Learning</a></div></div><article class="post-content" id="article-container"><div class="note warning flat"><p><strong>這篇文章不會談論怎麼寫程式，而是著重在說明如何為 DeBERTa 模型設計 Input 和 Ouput 以及如何評估模型的表現。</strong></p>
+</div>
+<h1 id="說明">說明</h1>
+<ul>
+<li>題目來源：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.kaggle.com/c/nbme-score-clinical-patient-notes">https://www.kaggle.com/c/nbme-score-clinical-patient-notes</a></li>
+</ul>
+<p>當你去看醫生時，醫生如何解讀你的症狀會決定診斷的準確性。醫生在獲得執照之前，已經有很多撰寫病人記錄的實踐經驗，這些記錄文檔包含病人的病史、體檢結果、可能的診斷和後續護理。學習和評估撰寫病人記錄的技能需要其他醫生的反饋，這是一個耗時的過程，可以通過機器學習來改進。</p>
+<p>直到最近，Step 2 Clinical Skills（臨床技能）考試是美國醫學執照考試（USMLE）的一個組成部分。考試要求考生與標準化病人（被訓練來扮演特定臨床病例的人）互動，並撰寫病人記錄。訓練有素的醫師評分員會根據每個病例的重要概念（稱為特徵）用量表來評分病人記錄。病人記錄中包含的這些特徵越多，得分就越高（除了其他影響考試最終得分的因素）。簡單來說，就是<em>考生要從病例中找出可能可以作為生病的特徵</em>。</p>
+<p>然而，讓醫生評分病人記錄考試需要大量時間和人力、財力資源。針對這個問題，自然語言處理技術被開發出來，但病人記錄的計算評分仍然充滿挑戰，因為特徵可以用很多不同的方式表達。例如…</p>
+<ul>
+<li>特徵“對活動失去興趣”可以表達為“不再打網球”</li>
+<li>特徵“沒有寒冷不耐受、脫髮、心悸或顫抖”，這對應於關鍵的“缺乏其他甲狀腺症狀”。</li>
+</ul>
+<p>在這次競賽中，你需要識別病人記錄中的具體臨床概念。具體來說，你將開發一種自動方法，將考試量表中的臨床概念（例如“食欲減退”）映射到醫學生撰寫的病人記錄中表達這些概念的各種方式（例如“吃得更少”，“衣服變得更寬鬆”）。出色的解決方案將既準確又可靠。</p>
+<p>如果成功，你將幫助解決病人記錄評分中的最大實際障礙，使這種方法更加透明、可解釋，並減輕這類評估的開發和管理難度。結果，醫療從業者將能夠充分發掘病人記錄在臨床技能評估中揭示相關信息的潛力。</p>
+<h1 id="資料集">資料集</h1>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/WVmaoEz.png" alt=""></p>
+<ul>
+<li><code>train.csv</code> - 用於訓練模型的訓練數據集</li>
+<li><code>test.csv</code> - 用於測試模型的測試數據集（只有五筆）</li>
+<li><code>patient_notes.csv</code> - 病人記錄的文本數據集</li>
+<li><code>features.csv</code> - 用於訓練和測試的特徵數據集</li>
+</ul>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/I0T8ufJ.png" alt=""><br>
+從上圖可以看到，我們透過將 <code>train.csv</code> 和 <code>features.csv</code> 進行合併，得到了一個新的數據集如上圖所示。有幾點需要注意的：</p>
+<ul>
+<li>合併過後可能會同一個病人會有多個病例(<code>features_text</code>)</li>
+<li>每個病例，可能會有多個<code>annotation</code>(也就是特徵)</li>
+<li><code>location</code> 是 <code>annotation</code> 在 <code>pn_history</code> (病史)中的位置</li>
+<li>綠色是用來給模型的輸入，黃色是我們想要預測的結果</li>
+</ul>
+<h1 id="衡量">衡量</h1>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/A9Ja1YZ.png" alt=""><br>
+如上圖所示，對於每個實例，我們預測一組字元跨度。一個字元跨度是一對索引(114 129)表示為該內容的特徵，代表文字中的一個字元範圍。一個跨度i j代表索引為i到j的字符，左閉右開，在Python的符號中，一個跨度i j相當於一個切片 i:j 對於每個實例，都有一個基礎真實跨度的集合和一個預測跨度的集合。我們用分號來分割跨度。</p>
+<h1 id="方法">方法</h1>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/pIQmjZb.png" alt=""><br>
+<em>首先我們知道提供給模型的有以下：</em></p>
+<ol>
+<li><code>pn_history</code> 病人的病史</li>
+<li><code>feature_text</code> 得什麼病</li>
+</ol>
+<p><em>我們要預測的是：</em></p>
+<ol>
+<li><code>pn_history</code> 中哪個特徵對應到 <code>feature_text</code> 病例的索引</li>
+</ol>
+<hr>
+<p>因此可以知道的事，我們的 input 必須是 <code>pn_history</code> 和 <code>feature_text</code> 的結合，把他們關聯起來，然後預測 <code>pn_history</code> 中的特徵對應到 <code>feature_text</code> 的索引。步驟可以如下：</p>
+<ol>
+<li><code>pn_history</code> 和 <code>feature_text</code> 的結合</li>
+<li>把 step 1 整合的結果經過 Embedding 送入 DeBERTa 模型</li>
+<li>output 的結果必須是 <code>pn_history</code> 經過 embedding 後，把解答的部分寫成1，不是解答的部分預測為0，其他padding為-1。</li>
+</ol>
+<h2 id="準備-input-與-label">準備 input 與 label</h2>
+<p><strong>Input</strong></p>
+<ol>
+<li>先找到 <code>max_len</code> 的 input size：從這麼多的pn_history中找最大的長度當作 input 的 <code>max_len</code></li>
+<li>把 <code>pn_history</code> + <code>feature_text</code> 轉換成 Token</li>
+</ol>
+<p><strong>Label</strong><br>
+目標：把 <code>pn_history</code> 轉換成 <code>&#123;-1, 0, 1&#125;</code> 的 Label，-1 代表 padding，0 代表不是解答，1 代表是解答</p>
+<ol>
+<li>先準備一個 <code>max_len</code> 的 array list with 0。</li>
+<li>把 special token 像是 <code>[CLS]</code>, <code>[SEP]</code> 或 <code>[PAD]</code> 設定為 -1</li>
+<li>找到 tokons 中包含 annotation 的部分，把這部分的 label 設定為 1</li>
+<li>最終得到的結果可能會是：<code>[-1, 0, 0, 1, 1, 0, 0]</code></li>
+</ol>
+<h3 id="Input-準備">Input 準備</h3>
+<p>接下來你可能會好奇怎麼找到 <code>max_len</code> 可以參考下圖：<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/WyjV1XN.png" alt=""></p>
+<ol>
+<li>開始遞迴每個 <code>pn_history</code></li>
+<li>把 <code>pn_history</code> 和 <code>feature_text</code> 結合轉換成 Token</li>
+<li>計算這個 token 的長度，並存長度到一個 arr 裡面</li>
+<li>最後這個arr會集結所有資料的長度，找到最大的長度就是 <code>max_len</code></li>
+</ol>
+<p>準備Input 會如下圖所示(發現會把annotation整合進去pn_history)<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/tY7ahRM.png" alt=""></p>
+<h3 id="Label-準備">Label 準備</h3>
+<p>準備Label 會如下圖所示(只需要pn_history即可)<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/nbmIxQJ.png" alt=""></p>
+<ol>
+<li>
+<p>我們會先創造出一個由 max_len 長度的 array。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/dGnKEbg.png" alt=""></p>
+</li>
+<li>
+<p>把 special token 像是 <code>[CLS]</code>, <code>[SEP]</code> 或 <code>[PAD]</code> 設定為 -1<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/pLRtpfG.png" alt=""></p>
+</li>
+<li>
+<p>接下來就是把 annotation 的部分設定為 1<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/kYKaq2m.png" alt=""></p>
+</li>
+</ol>
+<h2 id="訓練">訓練</h2>
+<p>模型參數設定如下：<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/63ODxTm.png" alt=""></p>
+<p>到時候的輸出每個 token 位置都是一組機率，我們可以設定閥值為 0.5，如果機率大於 0.5 就是 1，否則就是 0。<br>
+<img src="/img/loading-icon.gif" data-original="https://i.imgur.com/wXWTlyD.png" alt=""></p>
+<h2 id="衡量-2">衡量</h2>
+<p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/piIbFNP.png" alt=""><br>
+如果解答是 <code>0 3; 3 5</code> 而我預測出 <code>2 5; 7 9; 2 3</code> 那麼我們可以計算出以下的結果：<br>
+0 1 2 3 是解答 我預測出 2 3 4 5</p>
+<ul>
+<li>TP: 2, 3</li>
+<li>FP: 4, 5</li>
+<li>FN: 0</li>
+</ul>
+<p>這樣我們就可以計算 F1 score = 2 * TP / (2 * TP + FP + FN)</p>
+<h1 id="參考資料">參考資料</h1>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://blog.csdn.net/Raki_J/article/details/123447643">Raki的NLP竞赛topline解读：NBME - Score Clinical Patient Notes</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/bert-nbme-score-clinical-patient-notes/">https://shannonhung.github.io/posts/bert-nbme-score-clinical-patient-notes/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！ <em>如果你覺得我的文章有幫助，希望你可以到我的 github 給我一個 star ⭐️ <a href="https://github.com/ShannonHung/ShannonHung.github.io" rel="external nofollow noreferrer" target="_blank">Shannon Blog Repo</a></em></span></div></div><div class="post_share"><div class="social-share" data-image="/img/cover/clinical-patient.jpeg" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/leetcode-169-majority-element/" title="LeetCode #169 Majority Element - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/majority-element-bear.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">LeetCode #169 Majority Element - 刷題之旅</div></div></a></div><div class="next-post pull-right"><a href="/posts/leetcode-49-group-anagrams/" title="LeetCode #49 Group Anagrams - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/classification.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LeetCode #49 Group Anagrams - 刷題之旅</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/ml-improving/" title="機器學習 - 如何提高分類器的準確度"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/flower-ml.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-19</div><div class="title">機器學習 - 如何提高分類器的準確度</div></div></a></div><div><a href="/posts/ML/" title="All basic concept of Mechine Learning - ML 的重點知識整理"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/ai-knowledge.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-30</div><div class="title">All basic concept of Mechine Learning - ML 的重點知識整理</div></div></a></div><div><a href="/posts/text-classification/" title="資料分析概念大全 - TF, IDF, TF-IDF, Text Classification 樣樣來"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/ai-knowledge.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-01</div><div class="title">資料分析概念大全 - TF, IDF, TF-IDF, Text Classification 樣樣來</div></div></a></div><div><a href="/posts/coco-object-diagnoise/" title="COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/object-detection.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-03</div><div class="title">COCO Dataset - 使用 Faster RCNN + MobileNet 進行 Object Detection</div></div></a></div><div><a href="/posts/flower102-transfer-learning/" title="Flower102 Dataset - 使用 Transfer Learning 訓練 + 使用 Batch Normalization 於 CNN"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/flower-ml.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-31</div><div class="title">Flower102 Dataset - 使用 Transfer Learning 訓練 + 使用 Batch Normalization 於 CNN</div></div></a></div><div><a href="/posts/nlp-twitter-emotion-diagnoise/" title="Twitter Dataset - 使用 LSTM 預測文章的情緒"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/lstm-emotion.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-16</div><div class="title">Twitter Dataset - 使用 LSTM 預測文章的情緒</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">111</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">68</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">38</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E9%9B%86"><span class="toc-text">資料集</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A1%A1%E9%87%8F"><span class="toc-text">衡量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-text">方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BA%96%E5%82%99-input-%E8%88%87-label"><span class="toc-text">準備 input 與 label</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Input-%E6%BA%96%E5%82%99"><span class="toc-text">Input 準備</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Label-%E6%BA%96%E5%82%99"><span class="toc-text">Label 準備</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A8%93%E7%B7%B4"><span class="toc-text">訓練</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A1%E9%87%8F-2"><span class="toc-text">衡量</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      id: 'b90a0c3935d8d29503bbef21a068359d',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script data-pjax src="/self/calendar.js"></script><script data-pjax src="/self/languages.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
