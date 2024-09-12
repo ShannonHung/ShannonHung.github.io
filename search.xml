@@ -70,7 +70,7 @@
       <link href="/posts/leetcode-30-Substring-with-Concatenation-of-All-Words/"/>
       <url>/posts/leetcode-30-Substring-with-Concatenation-of-All-Words/</url>
       
-        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/mpd2Vqt.png" alt=""><br><img src="https://i.imgur.com/RoBhdsJ.png" alt=""></p><p>會提供words跟s，要求找出s中所有words的連續子串的起始索引。</p><h1 id="2-解法">2 解法</h1><h2 id="2-1">2.1</h2><p>這題雖然是Hard，但是最</p><h1 id="3-結論">3 結論</h1><h1 id="參考資料">參考資料</h1><ul><li><a href="https://youtu.be/If4cSYO7z4U?si=9NWPsue3aj9ujlPW">Youtube</a></li><li><a href="https://leetcode.com/problems/substring-with-concatenation-of-all-words/solutions/4277667/simple-sliding-window-solution-beats-99-for-time">LeetCode Solution</a></li></ul>]]></content>
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/mpd2Vqt.png" alt=""><br><img src="https://i.imgur.com/RoBhdsJ.png" alt=""></p><p>會提供words跟s，要求找出s中所有words的連續子串的起始索引。</p><h1 id="2-解法">2 解法</h1><h2 id="2-1-一個個慢慢找">2.1 一個個慢慢找</h2><p><img src="https://i.imgur.com/UDWR03T.png" alt=""></p><ul><li>我們從i=0開始檢查，取<code>s[i:i+word_len]</code>叫做word（圖片橘色部分）</li><li>有一個<code>word_dic</code>負責紀錄要求，也就是words中的word的數量</li><li>有一個<code>seen</code>負責紀錄已經看過且是<code>word_dic</code>的word，可以用來與<code>word_dic</code>比較判斷當前的window是否滿足狀況</li></ul><p><em>擴展window的條件</em>：<br><img src="https://i.imgur.com/HmGnG6k.png" alt=""></p><ul><li>基本上擴展window的時機點是透過<code>count</code>的移動來移動window，但是何時要移動<code>count</code>呢？</li><li>當前的word是合法的條件？<ol><li>當前的<code>word</code>是<code>word_dic</code>中的word</li><li>當前的<code>seen[word]</code>小於<code>word_dic[word]</code></li></ol></li><li>word 合法之後要做哪些工作？<ol><li><code>count</code>要+1，count用來計算<code>start</code>的位置以及判斷是否滿足<code>word_dic</code>的數量要求</li></ol></li></ul><p><em>紀錄i的時機</em><br><img src="https://i.imgur.com/GpaWdlF.png" alt=""></p><ul><li>當我們發現滿足<code>count</code>等於<code>len(words)</code>時，代表我們找到了一個合法的window，這時候要紀錄<code>i</code>的位置<ul><li>因為<code>count</code>只會在word合法的時候+1，所以當<code>count</code>等於<code>len(words)</code>時，代表我們找到了一個合法的window，這時候要紀錄<code>start</code>的位置</li></ul></li></ul><p><em>停止當前window的條件是</em>：<br><img src="https://i.imgur.com/43ezuCB.png" alt=""></p><ul><li>何時檢查要停下來？<ol><li>如果<code>word</code>不在<code>word_dic</code>中，或者<code>seen[word]</code>大於<code>word_dic[word]</code>，就要停下來，換下一個<code>i</code>開始檢查<ul><li>舉例來說<code>foofoobar</code>可以組成<code>seen=&#123;foo:2, bar:1&#125;</code>，但是我們要的是<code>word_dic=&#123;foo:1, bar:1&#125;</code></li><li><code>foo</code>的數量已經超過了，所以當前的window不合法，也就是<code>i</code>是不合法的，我們要往下一個開始檢查。</li></ul></li></ol></li><li>停下來後要做哪些事情？<ol><li><code>count</code>要歸零，<code>seen</code>要清空，重新來過</li><li><code>i</code>要+1，開始下一個window的檢查</li></ol></li><li><code>i</code>要檢查到哪裡？<ul><li><code>i</code>要檢查到<code>s</code>的長度減去<code>word_len * words_count</code></li><li>因為如果<code>i</code>到<code>len(s)-word_len * words_count</code>這裡都沒有找到合法的window，那麼後面的window也不可能找到合法的window，因為後面的長度已經不夠湊出<code>words</code>的長度了</li></ul></li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Time: O(n*k)</span></span><br><span class="line"><span class="string">- n is the length of s</span></span><br><span class="line"><span class="string">- k is the counts of words, len(words)</span></span><br><span class="line"><span class="string">Space: O(n)</span></span><br><span class="line"><span class="string">- n for seen</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">findSubstring</span>(<span class="params">self, s: <span class="built_in">str</span>, words: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> s <span class="keyword">or</span> <span class="keyword">not</span> words:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        word_dic = defaultdict(<span class="built_in">int</span>)</span><br><span class="line">        word_len, words_count = <span class="built_in">len</span>(words[<span class="number">0</span>]), <span class="built_in">len</span>(words)</span><br><span class="line">        res = []</span><br><span class="line">        <span class="comment"># 紀錄words中的word數量</span></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">            word_dic[word] += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 一個個判斷當前的i是否可以湊出words</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) - word_len * wor)</span><br><span class="line">            <span class="comment"># 換下一個i開始檢查，count要歸零，seen要清空</span></span><br><span class="line">            count = <span class="number">0</span></span><br><span class="line">            seen = defaultdict(<span class="built_in">int</span>)</span><br><span class="line">            <span class="comment"># 如果 count (當前滿足的數量) 仍然小於 words_count (words的數量) 那就繼續做直到 非法跳出 或是 count數量湊足了</span></span><br><span class="line">            <span class="keyword">while</span> count &lt; words_count:</span><br><span class="line">                word = s[i+count*word_len:i+(count+<span class="number">1</span>)*word_len]</span><br><span class="line">                seen[word] += <span class="number">1</span></span><br><span class="line">                <span class="comment"># 合法：如果數量小於等於word_dict[word]，就可以繼續</span></span><br><span class="line">                <span class="keyword">if</span> word <span class="keyword">in</span> word_dict <span class="keyword">and</span> seen[word] &lt;= word_dict[word]: </span><br><span class="line">                    count += <span class="number">1</span>        </span><br><span class="line">                <span class="comment"># 不合法：如果數量超過也不合法</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="comment"># 如果count等於words_count，代表我們找到了一個合法的window</span></span><br><span class="line">            <span class="keyword">if</span> count == words_count:</span><br><span class="line">                res.append(i)</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="2-2-跳躍式尋找">2.2 跳躍式尋找</h2><p><img src="https://i.imgur.com/oVMd00s.png" alt=""><br>我們發現每次檢查的時候都是以<code>word_len</code>為單位去尋找，如果<code>word_len=3</code>我們是不是就可以歸類出以上情況。</p><p><em>以i=0為單位去檢查</em><br><img src="https://i.imgur.com/iABq5iT.png" alt=""></p><ul><li>從上圖可以發現，以三個三個為單位，如果發現滿足，就透過j移動到下一個word</li><li>如果發現當前的word不在<code>word_dic</code>裡面，表示這個<code>start</code>肯定不合格<ul><li>所以我們要移動<code>start</code>到下一個word的位置</li><li>清空<code>seen</code>, <code>count</code>重新開始</li></ul></li></ul><p><img src="https://i.imgur.com/Ls4Gf18.png" alt=""></p><ul><li>如果發現相同word的數量太多時，我們可以透過縮window移除重複的word<ul><li>因為移除window的word，所以移動<code>start</code>到下一個位置</li><li>減少<code>count</code>的數量</li><li>減少<code>seen[first_word_in_window]</code>的數量</li></ul></li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Time: O(n*k)</span></span><br><span class="line"><span class="string">- n is the length of s (儘管是跳躍式檢查，基本上每個char都會被檢查一次)</span></span><br><span class="line"><span class="string">- k is the counts of words, len(words) (因為有while迴圈，最壞的狀況是 [b,b,b,b,a,a] 假設 a 只要 1 個，就要先把前面所有的b都移除，所以這個while會執行len(words)次)</span></span><br><span class="line"><span class="string">Space: O(n)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">findSubstring</span>(<span class="params">self, s: <span class="built_in">str</span>, words: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> s <span class="keyword">or</span> <span class="keyword">not</span> words:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        word_dic = defaultdict(<span class="built_in">int</span>)</span><br><span class="line">        word_len, words_count = <span class="built_in">len</span>(words[<span class="number">0</span>]), <span class="built_in">len</span>(words)</span><br><span class="line">        res = []</span><br><span class="line">        <span class="comment"># 紀錄words中的word數量</span></span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">            word_dic[word] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 以word_len為單位去檢查</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(word_len):</span><br><span class="line">            count = <span class="number">0</span> </span><br><span class="line">            seen = defaultdict(<span class="built_in">int</span>)</span><br><span class="line">            <span class="comment"># 因為我們 i 不像之前從 0~n-word_len*words_count，所以我們需要一個start來協助我們記住起點</span></span><br><span class="line">            start = i</span><br><span class="line">            <span class="comment"># 從 i 開始每次跳 word_len 去檢查</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i, <span class="built_in">len</span>(s) - word_len + <span class="number">1</span>, word_len):</span><br><span class="line">                word = s[j:j+word_len]</span><br><span class="line">                <span class="keyword">if</span> word <span class="keyword">in</span> word_dic:</span><br><span class="line">                    count += <span class="number">1</span></span><br><span class="line">                    seen[word] += <span class="number">1</span></span><br><span class="line">                    <span class="comment"># 如果加了當前的word導致數量超過了，移動當前的window，把第一個word移除</span></span><br><span class="line">                    <span class="keyword">while</span> seen[word] &gt; word_dic[word]:</span><br><span class="line">                        first_word = s[start:start+word_len]</span><br><span class="line">                        seen[first_word] -= <span class="number">1</span></span><br><span class="line">                        left += word_len</span><br><span class="line">                        count -= <span class="number">1</span></span><br><span class="line">                    <span class="comment"># 如果count等於words_count，代表我們找到了一個合法的window</span></span><br><span class="line">                    <span class="keyword">if</span> count == words_count: </span><br><span class="line">                        res.append(start)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    seen = defaultdict(<span class="built_in">int</span>)</span><br><span class="line">                    count = <span class="number">0</span></span><br><span class="line">                    start = j + word_len</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題我真的想了很久…真的有Hard的程度，最一開始能想到的是從i開始慢慢往下移動去檢查的，但是會TLE，後來看了解答才知道可以跳躍式的去檢查，這樣就可以避免TLE了。</p><h1 id="參考資料">參考資料</h1><ul><li><a href="https://youtu.be/If4cSYO7z4U?si=9NWPsue3aj9ujlPW">Youtube</a></li><li><a href="https://leetcode.com/problems/substring-with-concatenation-of-all-words/solutions/4277667/simple-sliding-window-solution-beats-99-for-time">LeetCode Solution</a></li></ul>]]></content>
       
       
       <categories>
@@ -314,7 +314,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -358,11 +358,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> Hard </tag>
             
@@ -465,13 +465,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -502,13 +502,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -539,13 +539,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -743,13 +743,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -780,13 +780,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -817,13 +817,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> Dynamic Programming </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -843,7 +843,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -885,13 +885,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -922,15 +922,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> BST </tag>
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Recursion </tag>
             
-            <tag> practice </tag>
+            <tag> BST </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -961,13 +961,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -998,15 +998,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
             
             <tag> Recursion </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
@@ -1037,13 +1037,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1074,13 +1074,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1111,13 +1111,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1148,13 +1148,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1185,11 +1185,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> DFS </tag>
             
             <tag> binary-tree </tag>
             
@@ -1222,13 +1222,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1259,13 +1259,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1296,13 +1296,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1322,7 +1322,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -1333,11 +1333,11 @@
             
             <tag> Lecture </tag>
             
+            <tag> Tree </tag>
+            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
-            
-            <tag> Tree </tag>
             
         </tags>
       
@@ -1368,11 +1368,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1405,11 +1405,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1442,13 +1442,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
-            <tag> binary-tree </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Recursion </tag>
+            
+            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1479,11 +1479,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1516,11 +1516,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Recursion </tag>
             
             <tag> binary-tree </tag>
             
@@ -1542,7 +1542,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -1602,7 +1602,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -1613,9 +1613,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BST </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -1823,9 +1823,9 @@
             
             <tag> Medium </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1860,9 +1860,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> linked-list </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
@@ -1882,7 +1882,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -2090,7 +2090,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -2134,11 +2134,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -2182,11 +2182,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -2244,11 +2244,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -2279,11 +2279,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -2314,11 +2314,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -2349,11 +2349,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Medium </tag>
-            
-            <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
             
@@ -2388,11 +2388,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Hash </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Hash </tag>
             
         </tags>
       
@@ -2441,7 +2441,7 @@
           
           <category> LeetCode </category>
           
-          <category> 課前預期 </category>
+          <category> 課前預習 </category>
           
       </categories>
       
@@ -3190,13 +3190,13 @@
             
             <tag> Database </tag>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Cloud Storage </tag>
             
             <tag> Security </tag>
             
             <tag> NIST SP 800-209 </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -3227,13 +3227,13 @@
             
             <tag> Database </tag>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Cloud Storage </tag>
             
             <tag> Security </tag>
             
             <tag> NIST SP 800-209 </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -3262,9 +3262,9 @@
             
             <tag> Database </tag>
             
-            <tag> Connection Pool </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Connection Pool </tag>
             
         </tags>
       
@@ -3293,9 +3293,9 @@
             
             <tag> Database </tag>
             
-            <tag> Connection Pool </tag>
-            
             <tag> 碩士論文 </tag>
+            
+            <tag> Connection Pool </tag>
             
         </tags>
       
