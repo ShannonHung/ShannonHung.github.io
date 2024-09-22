@@ -8,7 +8,7 @@
       <link href="/posts/leetcode-sum-up/"/>
       <url>/posts/leetcode-sum-up/</url>
       
-        <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>這裡是我寫Leetcode總結核心概念的地方，不同的情境會使用到的武器不同，這裡我會描述在什麼樣的情境滿足下，適合的資料結構或是演算法。而這個演算法的核心概念是什麼，同時我也會紀錄一些我在刷題時的心得，以及刷題的時間，來慢慢看到成長與進步。</p><div class="note info flat"><p><a href="https://docs.google.com/spreadsheets/d/1hPIzYcGlZV36lumGjxdZLx4_HmuvYNmc_RIRpt8uN18/edit?usp=sharing">Leetcode時間紀錄</a></p></div><h1 id="Hash-Table">Hash Table</h1><h2 id="情境1-快速找元素">情境1: 快速找元素</h2><ul><li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li><li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li><li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li></ul></li></ul><h2 id="情境2-比對無序的東西">情境2: 比對無序的東西</h2><ul><li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li><li>相關題目：<ul><li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li></ul></li></ul><h2 id="情境3-找連續的不重複元素">情境3: 找連續的不重複元素</h2><ul><li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li><li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li><li>相關題目：<ul><li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h2 id="情境4-替換原本的node">情境4:替換原本的node</h2><ul><li>如果今天有需求把 <code>old_node</code> 變成 <code>new_node</code> 簡單來說就是建立一個一模一樣的 linked list，可以使用 HashTable 直接把 <code>old_node</code> 當作 key，<code>new_node</code> 當作 value。這樣不管是串 next 還是串 random 都只要拿 old_node 去找，就可以找到 new_node，然後開始串。</li><li>相關題目：<ul><li><a href="/posts/leetcode-138-copy-list-with-random-pointer">leetcode-138-copy-list-with-random-pointer</a>: 複製一個有 random node 的 linked list</li></ul></li></ul><h1 id="Stack-Queue">Stack &amp; Queue</h1><h2 id="情境1-後進先出問題">情境1: 後進先出問題</h2><ul><li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li><li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li><li>相關題目：<ul><li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li><li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li></ul></li></ul><h2 id="情境2-數字計算，括弧的優先">情境2: 數字計算，括弧的優先</h2><ul><li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li><li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li><li>相關題目：<ul><li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li><li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li></ul></li></ul><h2 id="情境3-時間複雜度O-1-卻能取得Max或Min">情境3: 時間複雜度O(1)卻能取得Max或Min</h2><ul><li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li><li>相關題目：<ul><li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="情境1-判斷是否有循環">情境1: 判斷是否有循環</h2><ul><li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li><li>相關題目：<ul><li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li></ul></li></ul><h2 id="情境2-dummy-head-的使用">情境2: dummy head 的使用</h2><ul><li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li><li>我們最怕的是在取listNode的值時發現他是None而導致錯誤，<em>因此我們可以使用 <code>digit1 = list1.val if list1 else 極值</code> 的方式</em>，儘管遇到 none 仍然可以繼續執行迴圈，直到兩個 list1 跟 list2 都觸底，以避免 None 的問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li><li><a href="/posts/leetcode-21-merge-two-sorted-lists">leetcode-21-merge-two-sorted-lists</a>：合併兩個有序的linked list</li></ul></li></ul><h2 id="情境3-雙指針法">情境3: 雙指針法</h2><ul><li><strong>反轉操作</strong>：<ul><li>如果今天要空間複雜度為O(1)的情況下，想要<em>透過反轉的方式做某些操作</em>，例如反轉linked list，或是取得倒數第n個node，這時候就可以使用雙指針法。只是怎麼跑這個指針的方式不一樣，一種是某個指針一直往前跑，然後<em>到目標位置執行操作</em>。另一個是比速度的，要<em>快的指針比慢的指針快n個位置</em>，以取得倒數第n個node。</li><li>這真的經典，今天要<em>有順序的進行反轉或是整批的改變位置移動，雙指針會是一個Linked List的重點</em>。想像有兩個指針，一個指針<code>cur</code>慢往前，另一個指針會是目標節點<code>target</code> (在這裡是<code>next</code>)，<code>target</code> 會串到想要放的目標 location(在這裡是<code>pre.next</code>)，<code>cur</code> 會一直往前移動(<code>cur.next</code> 變成 <code>pre.next</code>)，直到達到目標節點，這樣就可以完成操作。</li></ul></li><li><strong>依序比較</strong>：<ul><li>如果只是在<em>有序的linkedlist中比較<code>隔壁</code>的元素關係</em>使用1個pointer以比較鄰居就好，另一個pointer放previous的訊息，到時候滿足條件時，就要把<code>pre.next</code>串到 <code>cur</code> 或 <code>cur.next</code>也就是當前的節點上。</li></ul></li><li>相關題目：<ul><li>反轉操作<a href="/posts/leetcode-92-reverse-linked-list-II">leetcode-92-reverse-linked-list-II</a>: 反轉linked list的一部分</li><li>反轉操作<a href="/posts/leetcode-19-remove-nth-node-from-end-of-list">leetcode-19-remove-nth-node-from-end-of-list</a>: 刪除倒數第n個node</li><li>依序比較<a href="/posts/leetcode-82-remove-duplicates-from-sorted-list-ll">leetcode-82-remove-duplicates-from-sorted-list-ll</a>: 移除重複的元素</li></ul></li></ul><h1 id="Recursion">Recursion</h1><p>回到核心，我們應該要知道最小問題的狀況是什麼，以及小問題與大問題相同的關聯性，<strong>這個關聯性就是要回傳的答案</strong>，裡面不確定的東西可以先假設已經得知，<strong>通常這個假設就是呼叫Recursion的地方</strong>，舉例來說：<br><strong>樹的左右子樹關係</strong></p><ul><li><a href="/posts/leetcode-101-Symmetric-Tree/">是否對稱 leetcode-101-Symmetric-Tree</a><ul><li>(關係式：當前的左右子樹第一個值相同且左右子樹對稱) <code>left_root.val == right_root.val &amp;&amp; recursion(left) == recursion(right)</code></li><li>(假設：左右子樹對稱) <code>recursion(left) == recursion(right)</code>。</li></ul></li><li><a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal/">建立樹 leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal</a><ul><li>(關係式：回傳已經串好left跟right的root) <code>return root</code></li><li>(假設：左子樹已經建立好) <code>root.left = recursion(left)</code></li><li>(假設：右子樹已經建立好) <code>root.right = recursion(right)</code></li></ul></li><li><a href="/posts/leetcode-226-invert-binary-tree">左右子樹對調 leetcode-226-invert-binary-tree</a><ul><li>(關係式：<code>root.left, root.right = recursion(root.right), root.left = recursion(root.right)</code>)</li></ul></li><li><a href="/posts/leetcode-100-same-tree">2棵樹是否相同 leetcode-100-same-tree</a><ul><li>(關係式：<code>p.val == q.val and recursion(p.left, q.left) and recursion(p.right, q.right)</code>)</li><li>(最小的問題：都是 None 就代表 True，但是當其中一邊有值，另一邊沒有值，就不相同了)<br><strong>深度DFS關係</strong></li></ul></li><li><a href="/posts/leetcode-104-maximum-depth-of-binary-tree/">計算深度 leetcode-104-maximum-depth-of-binary-tree</a><ul><li>(關係式：左右子樹的最大深度 + 1) <code>max(recursion(left), recursion(right)) + 1</code></li></ul></li><li><a href="/posts/leetcode-129-sum-root-to-leaf-numbers">計算root到left的總和 leetcode-129-sum-root-to-leaf-numbers</a><ul><li>(關係式：當前總額 + 左右子樹的總和) <code>cur_sum + recursion(left) + recursion(right)</code></li></ul></li><li><a href="/posts/leetcode-112-path-sum">leetcode-112-path-sum</a>：在樹中找到是否有一條路徑的和等於target Sum<ul><li>(關係式：左或右子樹是否存在一條路徑滿足target Sum) <code>recursion(root.left, targetSum) or recursion(root.right, targetSum)</code></li></ul></li></ul><h1 id="Binary-Tree">Binary Tree</h1><h2 id="情境1-空間O-1-做成list">情境1: 空間O(1)做成list</h2><ul><li>要非常熟悉DFS的演算法，同時如果要求O(1)的空間複雜度，可以使用<code>Morris Traversal</code>，這樣可以在O(1)的空間複雜度下完成整個遍歷，只是他會改變樹的結構。</li><li>相關題目：<ul><li><a href="/posts/leetcode-114-flatten-binary-tree-to-linked-list">leetcode-114-flatten-binary-tree-to-linked-list</a> 要把一棵樹打平，並且只能使用in-place的方式?</li></ul></li></ul><h2 id="情境2-DFS-走到樹的最深處">情境2: DFS 走到樹的最深處</h2><ul><li><strong>從底往上找到某個節點</strong>：例如要在BST(二元搜尋樹)找到第<code>k</code>小的節點，我們需要先走到最left的節點，然後開始往上爬並計數是否已經達到<code>k</code>了。這時候我們的程式邏輯應該是 <code>inorder: 走到左最底 &gt; 計數(中間) &gt; 換右邊</code>。或是我們要找最小值，這時候他們都有個共通點，為了不要遍歷所有的inorder節點，我們應該<em>先使用<code>recursion(cur.left)</code>到最底，往下的過程要做紀錄<code>stack.append(cur)</code>，但是每次從<code>cur = stack.pop()</code>的時候，也要考慮到<code>cur.right</code>有沒有滿足條件</em>。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-230-Kth-Smallest-Element-in-a-BST">leetcode-230-Kth-Smallest-Element-in-a-BST</a>：在BST中找到第k小的節點</li><li><a href="/posts/leetcode-173-Binary-Search-Tree-Iterator">leetcode-173-Binary-Search-Tree-Iterator</a>：實作一個BST的iterator每次<code>next</code>回傳下一個最小值</li></ul></li></ul></li><li><strong>共同的祖先節點</strong>：給<code>p</code>,<code>q</code>兩個節點，找到他們最近的共同<code>parent</code>。我們從也是從底下往上，當發現<em>當前節點左右子樹同時存在<code>q</code>或<code>p</code>時，就代表當前節點就是<code>parent</code>，如果只有一邊的子樹找到，那就回傳最先碰到的節點，也就是說<code>p</code>或<code>q</code>就是祖先</em>，只是看誰比較高。<ul><li>相關題目：<a href="/posts/leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree">leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree</a>：在二元樹中找到兩個節點的最近共同祖先</li></ul></li><li><strong>inorder, postorder, preorder特性</strong>：有些題目會給你任意一種order，請你組出一個binary tree，這時候就要非常<em>熟悉<code>inorder</code>, <code>postorder</code>, <code>preorder</code>的特性</em>，<code>inorder</code>是左中右，<code>postorder</code>是左右中，<code>preorder</code>是中左右，這樣就可以很快的組出一個binary tree。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal">leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal</a>：給定preorder跟inorder</li><li><a href="/posts/leetcode-106-construct-binary-tree-from-inorder-and-postorder-traversal">leetcode-106-construct-binary-tree-from-inorder-and-postorder-traversal</a>：給定postorder跟inorder</li></ul></li></ul></li></ul><h2 id="情境2-BFS-level-order">情境2: BFS - level order</h2><ul><li><strong>水平操作</strong>：如果有題目要把node指向隔壁的時候，就要想到BFS。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-117-populating-next-right-pointers-in-each-node-ii">leetcode-117-populating-next-right-pointers-in-each-node-ii</a> 這題就是要把每一層的node指向隔壁的node。</li></ul></li></ul></li><li><strong>取得每層的特定節點</strong>：如果需要取得每層最右邊的節點，優先走右邊，並且把最右邊的節點記錄，如果發現右邊已經觸底了，那就換左樹走，但是只有當高度比右樹高時，才要記錄。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-199-Binary-Tree-Right-Side-View">leetcode-199-Binary-Tree-Right-Side-View</a> 這題是要取得每一層最右邊的節點</li></ul></li></ul></li></ul><h1 id="Dynamaic-Programming">Dynamaic Programming</h1><p>我覺得大部分DP問題，他的重點順序是：Recursive -&gt; Recursive + Memo -&gt; Iterative + Tabular -&gt; Iterative + Tabular + Space Optimized，因此很多時候我認為需要進展到<code>Iterative</code>的狀態，才能說是完美的解完一題DP問題。大概會有以下情境：</p><h2 id="情境1-背包問題">情境1: 背包問題</h2><ul><li><strong>從最小到最大找到最佳解</strong>：會建議先從背包最小的開始找，然後慢慢增加背包的大小，這樣可以確保每個背包的解都是最佳解。常見題目以下都是需要考量到<code>前一個的最佳解</code>+<code>是否要取目前的值</code>，更簡單的就是說<code>Take</code>與<code>Not_Take</code>的問題：<ul><li><a href="/posts/leetcode-322-Coin-Change">leetcode-322-Coin-Change</a>：找到最少的硬幣數量可以湊成目標值，雙層for loop，從1開始找到amount，然後每個amount都找到最佳的配置coin數量。</li><li><a href="/posts/leetcode-198-House-Robber">leetcode-198-House-Robber</a>：不能連續偷兩間，找到最大的總和。<code>max(這間不偷+偷上間, 這間偷+偷上上間)</code></li><li><a href="/posts/leetcode-139-Word-Break">leetcode-139-Word-Break</a>：找到是否可以拆分成字典中的字，紀錄每個長度單字的最佳數量</li><li><a href="/posts/leetcode-120-Triangle">leetcode-120-Triangle</a>：找到最小的路徑和，從最底層往上找，每次都找到最佳的路徑和</li></ul></li></ul><h1 id="常用演算法">常用演算法</h1><h2 id="摩爾投票法：找到最大宗">摩爾投票法：找到最大宗</h2><div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p></div><p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p><p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">majorityElement</span>(<span class="params">nums</span>):</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    candidate = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">        <span class="keyword">if</span> count == <span class="number">0</span>:</span><br><span class="line">            candidate = num</span><br><span class="line">        count += (<span class="number">1</span> <span class="keyword">if</span> num == candidate <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> candidate</span><br></pre></td></tr></table></figure><h2 id="Morris-Traversal：BST-to-遞增排序">Morris Traversal：BST to 遞增排序</h2><p>這是一種在O(1)的空間複雜度下完成遍歷的演算法，他的核心概念是在遍歷的過程中，把右子樹的最左邊節點指向當前的節點，這樣就可以在O(1)的空間複雜度下完成遍歷。<br>很多時候題目會要求 O(1) 空間複雜度，這時候我們可以使用 Morris Traversal 來達成，但是<em>此方法直接修改原始樹，但可以保證空間複雜度為 O(1)</em>，因此使用的時候要注意是否可以改動到原始樹。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">1</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">2</span>   <span class="number">5</span></span><br><span class="line"> / \   \</span><br><span class="line"><span class="number">3</span>   <span class="number">4</span>   <span class="number">6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 將 1 的 left sub-tree 插入 right sub-tree 的地方</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>         <span class="number">5</span></span><br><span class="line">     / \         \</span><br><span class="line">    <span class="number">3</span>   <span class="number">4</span>         <span class="number">6</span>        </span><br><span class="line"></span><br><span class="line"><span class="comment">// 將原本的right sub-tree 接到 left sub-tree 的最右邊節點</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">     / \          </span><br><span class="line">    <span class="number">3</span>   <span class="number">4</span>  </span><br><span class="line">         \</span><br><span class="line">          <span class="number">5</span></span><br><span class="line">           \</span><br><span class="line">            <span class="number">6</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">// 將 2 的 left sub-tree 插入 right sub-tree 的地方</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">       \          </span><br><span class="line">        <span class="number">3</span>       <span class="number">4</span>  </span><br><span class="line">                 \</span><br><span class="line">                  <span class="number">5</span></span><br><span class="line">                   \</span><br><span class="line">                    <span class="number">6</span>   </span><br><span class="line"></span><br><span class="line"> <span class="comment">// 將原本的 right sub-tree 接到 left sub-tree 的最右邊節點</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">       \          </span><br><span class="line">        <span class="number">3</span>      </span><br><span class="line">         \</span><br><span class="line">          <span class="number">4</span>  </span><br><span class="line">           \</span><br><span class="line">            <span class="number">5</span></span><br><span class="line">             \</span><br><span class="line">              <span class="number">6</span>         </span><br><span class="line"></span><br><span class="line">......</span><br></pre></td></tr></table></figure><p><em>程式碼 preorder-morris-traversal</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">flatten2</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; TreeNode:</span><br><span class="line">    cur = root</span><br><span class="line">    <span class="keyword">while</span> cur:</span><br><span class="line">        <span class="keyword">if</span> cur.left:</span><br><span class="line">            <span class="comment"># 1. 先找到左樹最右邊的node rightmost</span></span><br><span class="line">            rightmost = cur.left</span><br><span class="line">            <span class="keyword">while</span> rightmost.right:</span><br><span class="line">                rightmost = rightmost.right</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 2. 把 cur 的右樹接到 rightmost.right, 然後再把 cur.right 接到 left</span></span><br><span class="line">            rightmost.right = cur.right</span><br><span class="line">            cur.right = cur.left</span><br><span class="line">            cur.left = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. cur 換成 cur.right</span></span><br><span class="line">        cur = cur.right</span><br></pre></td></tr></table></figure><h2 id="DFS-跟-BFS">DFS 跟 BFS</h2><p>DFS 跟 BFS 是最常見的兩種遍歷方式，DFS 是深度優先搜尋，BFS 是廣度優先搜尋，他們的核心概念是一樣的，只是遍歷的方式不同，DFS 是一直往下走，直到底部，然後再往上走，BFS 是一層一層的往下走，直到底部，然後再往下走。</p><p>建議直接看<a href="/posts/lecture-bfs-dfs">LeetCode 課前預習 - 掌握 BFS 與 DFS 指南</a></p><h2 id="Patience-Sort：最長的遞增子序列">Patience Sort：最長的遞增子序列</h2><p>有些題目需要<strong>找到最長的遞增子序列</strong>，我們需要先了解一下一個超級神奇的演算法！叫做<a href="https://en.wikipedia.org/wiki/Patience_sorting">Patience Sort</a>，他是一個卡牌遊戲，可以幫助我們找到最長的遞增子序列。我們先來介紹卡牌遊戲的規則：</p><p>首先，我們有一組卡牌，規則是：</p><ul><li>如果當前的卡牌比piles的最後一張卡牌還要大，那就直接放到最後一張卡牌的後面</li><li>如果當前的卡牌比piles的最後一張卡牌還要小，那就要找到一張比當前卡牌還要大的卡牌，然後放在上面，如果找不到的話，就要開一個新的pile<br><img src="https://i.imgur.com/s3XxiPt.png" alt=""><br><img src="https://i.imgur.com/XOMxkAH.png" alt=""></li></ul><p><em>最後你會發現，每個piles最上面的卡牌由左到右是遞增的</em><br><img src="https://i.imgur.com/2mmUOnD.png" alt=""></p><p><em>更神奇的事情發生了，這個piles的數量就是最長的遞增子序列的長度！因為每個piles一定可以找到一張牌可以排出遞減的牌組</em><br><img src="https://i.imgur.com/JQB7ylO.png" alt=""><br><img src="https://i.imgur.com/hMyA7m7.png" alt=""></p><p>相關題目：</p><ul><li><a href="/posts/leetcode-300-Longest-Increasing-Subsequence">leetcode-300-longest-increasing-subsequence</a>：找到最長的遞增子序列</li></ul>]]></content>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>這裡是我寫Leetcode總結核心概念的地方，不同的情境會使用到的武器不同，這裡我會描述在什麼樣的情境滿足下，適合的資料結構或是演算法。而這個演算法的核心概念是什麼，同時我也會紀錄一些我在刷題時的心得，以及刷題的時間，來慢慢看到成長與進步。</p><div class="note info flat"><p><a href="https://docs.google.com/spreadsheets/d/1hPIzYcGlZV36lumGjxdZLx4_HmuvYNmc_RIRpt8uN18/edit?usp=sharing">Leetcode時間紀錄</a></p></div><h1 id="Hash-Table">Hash Table</h1><h2 id="情境1-快速找元素">情境1: 快速找元素</h2><ul><li>通常使用 Hash 的關鍵在於要<em>用 O(1) 的時間複雜度來查找元素</em>，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-1-two-sum">leetcode-1-two-sum</a>: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target</li><li><a href="/posts/leetcode-12-integer-to-roman">leetcode-12-integer-to-roman</a>: 整數轉羅馬數字</li><li><a href="/posts/leetcode-13-roman-to-integer">leetcode-13-roman-to-integer</a>: 羅馬數字轉整數</li></ul></li></ul><h2 id="情境2-比對無序的東西">情境2: 比對無序的東西</h2><ul><li>如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。</li><li>相關題目：<ul><li><a href="/posts/leetcode-49-group-anagrams">leetcode-49-group-anagrams</a>: 儘管字母打亂，但是只要字母相同就算一類</li></ul></li></ul><h2 id="情境3-找連續的不重複元素">情境3: 找連續的不重複元素</h2><ul><li>找連續的數字，核心關鍵就是指標的移動，如果想要確保時間複雜度為O(n)表示每個數字只會被遍歷一次，肯定要使用 Hash 的方式來找。</li><li>題目有可能會搭配 sliding window，像是有的題目會要求從字串<em>找出不重複的子字串</em>，這時候就可以使用 Hash 來記錄出現過的元素，並且在遇到重複的元素時，可以快速的移動左指針。</li><li>相關題目：<ul><li><a href="/posts/leetcode-3-longest-substring-without-repeating-characters">leetcode-3-longest-substring-without-repeating-characters</a>: 找出最長的不重複子字串</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h2 id="情境4-替換原本的node">情境4:替換原本的node</h2><ul><li>如果今天有需求把 <code>old_node</code> 變成 <code>new_node</code> 簡單來說就是建立一個一模一樣的 linked list，可以使用 HashTable 直接把 <code>old_node</code> 當作 key，<code>new_node</code> 當作 value。這樣不管是串 next 還是串 random 都只要拿 old_node 去找，就可以找到 new_node，然後開始串。</li><li>相關題目：<ul><li><a href="/posts/leetcode-138-copy-list-with-random-pointer">leetcode-138-copy-list-with-random-pointer</a>: 複製一個有 random node 的 linked list</li></ul></li></ul><h1 id="Stack-Queue">Stack &amp; Queue</h1><h2 id="情境1-後進先出問題">情境1: 後進先出問題</h2><ul><li>如果處理對稱性問題，像是括號匹配，先進後出的特性可以使用stack，<code>&#123;[()]&#125;</code> 可以觀察到 <code>(</code> 是最後進去，但是也是第一個 pop 出來（LIFO）。</li><li>在簡化路徑的題目中，會有很多 <code>..</code> 這種代表往上一層的目錄，這時候也可以使用stack，把目錄放入stack，遇到 <code>..</code> 就 pop 出來，<em>因為當前的目錄已經不會再用到了</em>。</li><li>相關題目：<ul><li><a href="/posts/leetcode-20-valid-parentheses">leetcode-20-valid-parentheses</a>: 檢查括號是否匹配</li><li><a href="/posts/leetcode-71-simplify-path">leetcode-71-simplify-path</a>: 簡化路徑</li></ul></li></ul><h2 id="情境2-數字計算，括弧的優先">情境2: 數字計算，括弧的優先</h2><ul><li>像是逆波蘭這樣的題目，關鍵就是<em>當計算完後，要把結果再 push 回去 stack 裡面</em>，這樣下次遇到運算符號時，才可以再次的把上一次的計算結果一起pop出來。</li><li>或是要處理括號優先計算的問題，如果當前的 <code>(</code> 還沒結果就碰到新的<code>(</code>，我們可以把計算到一半的數值 push 進 stack，等到出現 <code>)</code> 再把結果 pop 出來，進行計算。</li><li>相關題目：<ul><li><a href="/posts/leetcode-150-evaluate-reverse-polish-notation">leetcode-150-evaluate-reverse-polish-notation</a>：逆波蘭表示法</li><li><a href="/posts/leetcode-224-basic-calculator">leetcode-224-basic-calculator</a>: 這題是Hard很難，要處理括號前的正負符號已改變括號內的正負值</li></ul></li></ul><h2 id="情境3-時間複雜度O-1-卻能取得Max或Min">情境3: 時間複雜度O(1)卻能取得Max或Min</h2><ul><li>如果要設計一個 Stack 的資料結構，可以取得最小值的 stack <code>getMin()</code>，並且<code>getMin()</code><em>要求時間複雜度為 O(1)</em>。這樣的設計最大的困難在於，<code>pop</code> 或 <code>add</code> 時， <code>min</code> 也要有所更新。因此，我們可以另外建立一個 min_stack 凡是碰到更小的就塞進去，這樣就可以在 <code>pop</code> 的時候，一起把 <code>min_stack</code> 也 <code>pop</code>，以取得第二小的值。</li><li>相關題目：<ul><li><a href="/posts/leetcode-155-min-stack">leetcode-155-min-stack</a>：實作一個可以取得最小值的 stack</li><li><a href="/posts/leetcode-128-longest-consecutive-sequence">leetcode-128-longest-consecutive-sequence</a>: 找出最長的連續數字</li></ul></li></ul><h1 id="Linked-List">Linked List</h1><h2 id="情境1-判斷是否有循環">情境1: 判斷是否有循環</h2><ul><li>可以使用<em>兩個pointer，一個走比較快，一個走比較慢</em>，如果有循環，兩個pointer一定會相遇。</li><li>相關題目：<ul><li><a href="/posts/leetcode-141-linked-list-cycle">leetcode-141-linked-list-cycle</a>：檢查 linked list 是否有循環</li></ul></li></ul><h2 id="情境2-dummy-head-的使用">情境2: dummy head 的使用</h2><ul><li>如果題目需要碰到多個 listNode 的操作，並且<em>把兩個 ListNode 進行整合，變成一個新的 ListNode導致原本的head不是原本的head時，可以考慮使用 <code>dummy_head</code></em>，最後回傳的時後回傳 <code>dummy_node.next</code> 這樣就不用特別處理第一個node。</li><li>我們最怕的是在取listNode的值時發現他是None而導致錯誤，<em>因此我們可以使用 <code>digit1 = list1.val if list1 else 極值</code> 的方式</em>，儘管遇到 none 仍然可以繼續執行迴圈，直到兩個 list1 跟 list2 都觸底，以避免 None 的問題。</li><li>相關題目：<ul><li><a href="/posts/leetcode-2-add-two-numbers">leetcode-2-add-two-numbers</a>：兩個linked list相加</li><li><a href="/posts/leetcode-21-merge-two-sorted-lists">leetcode-21-merge-two-sorted-lists</a>：合併兩個有序的linked list</li></ul></li></ul><h2 id="情境3-雙指針法">情境3: 雙指針法</h2><ul><li><strong>反轉操作</strong>：<ul><li>如果今天要空間複雜度為O(1)的情況下，想要<em>透過反轉的方式做某些操作</em>，例如反轉linked list，或是取得倒數第n個node，這時候就可以使用雙指針法。只是怎麼跑這個指針的方式不一樣，一種是某個指針一直往前跑，然後<em>到目標位置執行操作</em>。另一個是比速度的，要<em>快的指針比慢的指針快n個位置</em>，以取得倒數第n個node。</li><li>這真的經典，今天要<em>有順序的進行反轉或是整批的改變位置移動，雙指針會是一個Linked List的重點</em>。想像有兩個指針，一個指針<code>cur</code>慢往前，另一個指針會是目標節點<code>target</code> (在這裡是<code>next</code>)，<code>target</code> 會串到想要放的目標 location(在這裡是<code>pre.next</code>)，<code>cur</code> 會一直往前移動(<code>cur.next</code> 變成 <code>pre.next</code>)，直到達到目標節點，這樣就可以完成操作。</li></ul></li><li><strong>依序比較</strong>：<ul><li>如果只是在<em>有序的linkedlist中比較<code>隔壁</code>的元素關係</em>使用1個pointer以比較鄰居就好，另一個pointer放previous的訊息，到時候滿足條件時，就要把<code>pre.next</code>串到 <code>cur</code> 或 <code>cur.next</code>也就是當前的節點上。</li></ul></li><li>相關題目：<ul><li>反轉操作<a href="/posts/leetcode-92-reverse-linked-list-II">leetcode-92-reverse-linked-list-II</a>: 反轉linked list的一部分</li><li>反轉操作<a href="/posts/leetcode-19-remove-nth-node-from-end-of-list">leetcode-19-remove-nth-node-from-end-of-list</a>: 刪除倒數第n個node</li><li>依序比較<a href="/posts/leetcode-82-remove-duplicates-from-sorted-list-ll">leetcode-82-remove-duplicates-from-sorted-list-ll</a>: 移除重複的元素</li></ul></li></ul><h2 id="情境4-排序">情境4: 排序</h2><ul><li>如果今天碰到比 x 小的節點都放在前面，比 x 大的節點都放在後面，這時候可以使用兩個linked list，一個是小於 x 的 linked list，一個是大於等於 x 的 linked list，最後再將兩個linked list合併即可。</li><li>相關題目：<ul><li><a href="/posts/leetcode-86-Partition-List">leetcode-86-partition-list</a></li></ul></li></ul><h2 id="情境2-環繞節點">情境2: 環繞節點</h2><ul><li>如果今天要回傳經歷過k次循環的linked list，這時候可以直接去思考最後的樣子長如何，當k是linked list的長度的倍數時，linked list會回到原本的樣子，因此我們可以先計算出linked list的長度，然後取餘數，這樣就可以得到我們要旋轉的步數。最後 <code>len - k - 1</code>這個節點的<code>next</code>是最後一個節點。</li><li>相關題目：<ul><li><a href="/posts/leetcode-61-Rotate-List">leetcode-61-rotate-list</a></li></ul></li></ul><h1 id="Recursion">Recursion</h1><p>回到核心，我們應該要知道最小問題的狀況是什麼，以及小問題與大問題相同的關聯性，<strong>這個關聯性就是要回傳的答案</strong>，裡面不確定的東西可以先假設已經得知，<strong>通常這個假設就是呼叫Recursion的地方</strong>，舉例來說：<br><strong>樹的左右子樹關係</strong></p><ul><li><a href="/posts/leetcode-101-Symmetric-Tree/">是否對稱 leetcode-101-Symmetric-Tree</a><ul><li>(關係式：當前的左右子樹第一個值相同且左右子樹對稱) <code>left_root.val == right_root.val &amp;&amp; recursion(left) == recursion(right)</code></li><li>(假設：左右子樹對稱) <code>recursion(left) == recursion(right)</code>。</li></ul></li><li><a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal/">建立樹 leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal</a><ul><li>(關係式：回傳已經串好left跟right的root) <code>return root</code></li><li>(假設：左子樹已經建立好) <code>root.left = recursion(left)</code></li><li>(假設：右子樹已經建立好) <code>root.right = recursion(right)</code></li></ul></li><li><a href="/posts/leetcode-226-invert-binary-tree">左右子樹對調 leetcode-226-invert-binary-tree</a><ul><li>(關係式：<code>root.left, root.right = recursion(root.right), root.left = recursion(root.right)</code>)</li></ul></li><li><a href="/posts/leetcode-100-same-tree">2棵樹是否相同 leetcode-100-same-tree</a><ul><li>(關係式：<code>p.val == q.val and recursion(p.left, q.left) and recursion(p.right, q.right)</code>)</li><li>(最小的問題：都是 None 就代表 True，但是當其中一邊有值，另一邊沒有值，就不相同了)<br><strong>深度DFS關係</strong></li></ul></li><li><a href="/posts/leetcode-104-maximum-depth-of-binary-tree/">計算深度 leetcode-104-maximum-depth-of-binary-tree</a><ul><li>(關係式：左右子樹的最大深度 + 1) <code>max(recursion(left), recursion(right)) + 1</code></li></ul></li><li><a href="/posts/leetcode-129-sum-root-to-leaf-numbers">計算root到left的總和 leetcode-129-sum-root-to-leaf-numbers</a><ul><li>(關係式：當前總額 + 左右子樹的總和) <code>cur_sum + recursion(left) + recursion(right)</code></li></ul></li><li><a href="/posts/leetcode-112-path-sum">leetcode-112-path-sum</a>：在樹中找到是否有一條路徑的和等於target Sum<ul><li>(關係式：左或右子樹是否存在一條路徑滿足target Sum) <code>recursion(root.left, targetSum) or recursion(root.right, targetSum)</code></li></ul></li></ul><h1 id="Binary-Tree">Binary Tree</h1><h2 id="情境1-空間O-1-做成list">情境1: 空間O(1)做成list</h2><ul><li>要非常熟悉DFS的演算法，同時如果要求O(1)的空間複雜度，可以使用<code>Morris Traversal</code>，這樣可以在O(1)的空間複雜度下完成整個遍歷，只是他會改變樹的結構。</li><li>相關題目：<ul><li><a href="/posts/leetcode-114-flatten-binary-tree-to-linked-list">leetcode-114-flatten-binary-tree-to-linked-list</a> 要把一棵樹打平，並且只能使用in-place的方式?</li></ul></li></ul><h2 id="情境2-DFS-走到樹的最深處">情境2: DFS 走到樹的最深處</h2><ul><li><strong>從底往上找到某個節點</strong>：例如要在BST(二元搜尋樹)找到第<code>k</code>小的節點，我們需要先走到最left的節點，然後開始往上爬並計數是否已經達到<code>k</code>了。這時候我們的程式邏輯應該是 <code>inorder: 走到左最底 &gt; 計數(中間) &gt; 換右邊</code>。或是我們要找最小值，這時候他們都有個共通點，為了不要遍歷所有的inorder節點，我們應該<em>先使用<code>recursion(cur.left)</code>到最底，往下的過程要做紀錄<code>stack.append(cur)</code>，但是每次從<code>cur = stack.pop()</code>的時候，也要考慮到<code>cur.right</code>有沒有滿足條件</em>。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-230-Kth-Smallest-Element-in-a-BST">leetcode-230-Kth-Smallest-Element-in-a-BST</a>：在BST中找到第k小的節點</li><li><a href="/posts/leetcode-173-Binary-Search-Tree-Iterator">leetcode-173-Binary-Search-Tree-Iterator</a>：實作一個BST的iterator每次<code>next</code>回傳下一個最小值</li></ul></li></ul></li><li><strong>共同的祖先節點</strong>：給<code>p</code>,<code>q</code>兩個節點，找到他們最近的共同<code>parent</code>。我們從也是從底下往上，當發現<em>當前節點左右子樹同時存在<code>q</code>或<code>p</code>時，就代表當前節點就是<code>parent</code>，如果只有一邊的子樹找到，那就回傳最先碰到的節點，也就是說<code>p</code>或<code>q</code>就是祖先</em>，只是看誰比較高。<ul><li>相關題目：<a href="/posts/leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree">leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree</a>：在二元樹中找到兩個節點的最近共同祖先</li></ul></li><li><strong>inorder, postorder, preorder特性</strong>：有些題目會給你任意一種order，請你組出一個binary tree，這時候就要非常<em>熟悉<code>inorder</code>, <code>postorder</code>, <code>preorder</code>的特性</em>，<code>inorder</code>是左中右，<code>postorder</code>是左右中，<code>preorder</code>是中左右，這樣就可以很快的組出一個binary tree。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal">leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal</a>：給定preorder跟inorder</li><li><a href="/posts/leetcode-106-construct-binary-tree-from-inorder-and-postorder-traversal">leetcode-106-construct-binary-tree-from-inorder-and-postorder-traversal</a>：給定postorder跟inorder</li></ul></li></ul></li></ul><h2 id="情境2-BFS-level-order">情境2: BFS - level order</h2><ul><li><strong>水平操作</strong>：如果有題目要把node指向隔壁的時候，就要想到BFS。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-117-populating-next-right-pointers-in-each-node-ii">leetcode-117-populating-next-right-pointers-in-each-node-ii</a> 這題就是要把每一層的node指向隔壁的node。</li></ul></li></ul></li><li><strong>取得每層的特定節點</strong>：如果需要取得每層最右邊的節點，優先走右邊，並且把最右邊的節點記錄，如果發現右邊已經觸底了，那就換左樹走，但是只有當高度比右樹高時，才要記錄。<ul><li>相關題目：<ul><li><a href="/posts/leetcode-199-Binary-Tree-Right-Side-View">leetcode-199-Binary-Tree-Right-Side-View</a> 這題是要取得每一層最右邊的節點</li></ul></li></ul></li></ul><h1 id="Dynamaic-Programming">Dynamaic Programming</h1><p>我覺得大部分DP問題，他的重點順序是：Recursive -&gt; Recursive + Memo -&gt; Iterative + Tabular -&gt; Iterative + Tabular + Space Optimized，因此很多時候我認為需要進展到<code>Iterative</code>的狀態，才能說是完美的解完一題DP問題。大概會有以下情境：</p><h2 id="情境1-背包問題">情境1: 背包問題</h2><ul><li><strong>從最小到最大找到最佳解</strong>：會建議先從背包最小的開始找，然後慢慢增加背包的大小，這樣可以確保每個背包的解都是最佳解。常見題目以下都是需要考量到<code>前一個的最佳解</code>+<code>是否要取目前的值</code>，更簡單的就是說<code>Take</code>與<code>Not_Take</code>的問題：<ul><li><a href="/posts/leetcode-322-Coin-Change">leetcode-322-Coin-Change</a>：找到最少的硬幣數量可以湊成目標值，雙層for loop，從1開始找到amount，然後每個amount都找到最佳的配置coin數量。</li><li><a href="/posts/leetcode-198-House-Robber">leetcode-198-House-Robber</a>：不能連續偷兩間，找到最大的總和。<code>max(這間不偷+偷上間, 這間偷+偷上上間)</code></li><li><a href="/posts/leetcode-139-Word-Break">leetcode-139-Word-Break</a>：找到是否可以拆分成字典中的字，紀錄每個長度單字的最佳數量</li><li><a href="/posts/leetcode-120-Triangle">leetcode-120-Triangle</a>：找到最小的路徑和，從最底層往上找，每次都找到最佳的路徑和</li></ul></li></ul><h1 id="Two-Pointer">Two Pointer</h1><h2 id="情境1-Sliding-Window">情境1: Sliding Window</h2><ul><li>我們要先知道 Sliding Window 的三個關鍵步驟：<ul><li>Expand out Window 擴展窗口的時機</li><li>Meet the condition and process the window 滿足條件並處理當前窗口的方式</li><li>Shrink the window 收縮窗口的時機</li></ul></li></ul><h2 id="情境2-已經排序的陣列">情境2: 已經排序的陣列</h2><ul><li>如果一個陣列已經排序，我們要從陣列中找出滿足條件的兩個數字，這時候可以使用兩個指標，一個指向頭，一個指向尾，然後根據條件來移動指標。<em>當兩個指標向中間移動時，我們可以確保指標外的數字絕對不會是答案，因為他是已經排序的陣列！</em></li><li>相關題目：<ul><li><a href="/posts/leetcode-167-Two-Sum-II-Input-Array-Is-Sorted">leetcode-167-two-sum-ii-input-array-is-sorted</a></li><li><a href="/posts//leetcode-11-Container-With-Most-Water">leetcode-11-container-with-most-water</a> 儘管高度無序，但是距離是有序的，決定是否要移動 pointer 時，只要考慮高度即可，<code>height[left] &lt; height[right]</code>，那麼我們就移動 left pointer，因為 <code>height[left]</code> 是最小的，所以我們要找更大的 height。移動的過程中透過<code>max_area</code>來紀錄最大的面積。</li><li><a href="/posts/leetcode-15-3sum">leetcode-15-3sum</a> 這題是要找到三個數字相加等於0，這時候可以先固定一個數字，然後使用兩個指標來找另外兩個數字，這樣就可以把三個數字的問題轉換成兩個數字的問題。</li></ul></li></ul><h2 id="情境3-子字串問題">情境3: 子字串問題</h2><ul><li>如果今天題目是要從字串中找到一個子字串，這時候可以使用兩個指標，一個指向子字串，一個指向母字串，然後根據條件來移動指標。</li><li>相關題目：<ul><li><a href="/posts/leetcode-392-Is-Subsequence">leetcode-392-is-subsequence</a>：<code>i</code>是子字串<code>j</code>是母字串，起點相同，如果發現<code>i</code>的字元等於<code>j</code>的字元，就把<code>i</code>往前移動，最後如果<code>i</code>走到底，就代表是子字串。</li><li><a href="/posts/leetcode-209-Minimum-Size-Subarray-Sum">leetcode-209-minimum-size-subarray-sum</a>：找到最短的子字串，使得子字串的和大於等於目標值，他是 two pointer 從左到右來擴展跟收縮 window，要檢查到 right pointer 觸底為止，所以不需要 while。<ul><li>停止擴展？  <code>window sum &gt;= target</code> 時</li><li>處理當前window? 計算當前 window 的總和數，以及當前 window 的長度是否有小於最小長度</li><li>收縮window? 當前 <code>window sum &gt;= target</code>，就開始透過移動 left 收縮 window</li><li>隨時記錄最佳解？<code>min_len</code> 來記錄最佳解</li></ul></li><li><a href="/posts/leetcode-30-Substring-with-Concatenation-of-All-Words">leetcode-30-substring-with-concatenation-of-all-words</a>：這題很難，提供<code>words</code>與<code>s</code>找出<code>s</code>中所有<code>words</code>的連續子串的起始索引。透過移動<code>i</code>來擴展window。<ul><li>停止擴展？ 當前的 <code>window</code> 不合法，也就是 <code>i</code> 是不合法的，我們要往下一個開始檢查</li><li>處理當前window? 當前 <code>window</code> 是合法的，我們要檢查是否已經找到所有的 <code>words</code> 且數量沒超過</li><li>收縮window? 當前的<code>window</code>還在合法範圍，只是數量不夠繼續擴張</li></ul></li></ul></li></ul><h1 id="常用演算法">常用演算法</h1><h2 id="摩爾投票法：找到最大宗">摩爾投票法：找到最大宗</h2><div class="note info flat"><p>題目：<a href="/posts/leetcode-169-majority-element">leetcode-169-majority-element</a><br>使用情境：如果想要知道最大宗是哪一類的，這樣可以在<strong>空間複雜度為O(1)的情境下，找到最大宗的族群</strong>。</p></div><p>這是1980 由 Boyer 和 Moore 兩人所提出的算法：英文是 Boyer-Moore Majority Vote Algorithm。這個函數實現了 Boyer-Moore 多數投票算法，這是一種在線性時間和常數空間內找到多數元素的方法。</p><p>他的思想很簡單，假設存在一個數字超過半數，而每個數字代表一個生物組群好了。(e.g. 1 = 恐龍, 2 = 獅子, 3 = 老虎, …) 現在有一組串列，<code>[1, 1, 2, 3, 1]</code> 透過指標的方式，循序比較，遇到自己人就+1，遇到其他物種就開打，因為戰鬥力一樣所以雙方人馬都一起滅絕，經過物競天擇後，數量仍然 &gt; 1的就是倖存者也就是數量最多的族群。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">majorityElement</span>(<span class="params">nums</span>):</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    candidate = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">        <span class="keyword">if</span> count == <span class="number">0</span>:</span><br><span class="line">            candidate = num</span><br><span class="line">        count += (<span class="number">1</span> <span class="keyword">if</span> num == candidate <span class="keyword">else</span> -<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> candidate</span><br></pre></td></tr></table></figure><h2 id="Morris-Traversal：BST-to-遞增排序">Morris Traversal：BST to 遞增排序</h2><p>這是一種在O(1)的空間複雜度下完成遍歷的演算法，他的核心概念是在遍歷的過程中，把右子樹的最左邊節點指向當前的節點，這樣就可以在O(1)的空間複雜度下完成遍歷。<br>很多時候題目會要求 O(1) 空間複雜度，這時候我們可以使用 Morris Traversal 來達成，但是<em>此方法直接修改原始樹，但可以保證空間複雜度為 O(1)</em>，因此使用的時候要注意是否可以改動到原始樹。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">1</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">2</span>   <span class="number">5</span></span><br><span class="line"> / \   \</span><br><span class="line"><span class="number">3</span>   <span class="number">4</span>   <span class="number">6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 將 1 的 left sub-tree 插入 right sub-tree 的地方</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>         <span class="number">5</span></span><br><span class="line">     / \         \</span><br><span class="line">    <span class="number">3</span>   <span class="number">4</span>         <span class="number">6</span>        </span><br><span class="line"></span><br><span class="line"><span class="comment">// 將原本的right sub-tree 接到 left sub-tree 的最右邊節點</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">     / \          </span><br><span class="line">    <span class="number">3</span>   <span class="number">4</span>  </span><br><span class="line">         \</span><br><span class="line">          <span class="number">5</span></span><br><span class="line">           \</span><br><span class="line">            <span class="number">6</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">// 將 2 的 left sub-tree 插入 right sub-tree 的地方</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">       \          </span><br><span class="line">        <span class="number">3</span>       <span class="number">4</span>  </span><br><span class="line">                 \</span><br><span class="line">                  <span class="number">5</span></span><br><span class="line">                   \</span><br><span class="line">                    <span class="number">6</span>   </span><br><span class="line"></span><br><span class="line"> <span class="comment">// 將原本的 right sub-tree 接到 left sub-tree 的最右邊節點</span></span><br><span class="line">    <span class="number">1</span></span><br><span class="line">     \</span><br><span class="line">      <span class="number">2</span>          </span><br><span class="line">       \          </span><br><span class="line">        <span class="number">3</span>      </span><br><span class="line">         \</span><br><span class="line">          <span class="number">4</span>  </span><br><span class="line">           \</span><br><span class="line">            <span class="number">5</span></span><br><span class="line">             \</span><br><span class="line">              <span class="number">6</span>         </span><br><span class="line"></span><br><span class="line">......</span><br></pre></td></tr></table></figure><p><em>程式碼 preorder-morris-traversal</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">flatten2</span>(<span class="params">self, root: <span class="type">Optional</span>[TreeNode]</span>) -&gt; TreeNode:</span><br><span class="line">    cur = root</span><br><span class="line">    <span class="keyword">while</span> cur:</span><br><span class="line">        <span class="keyword">if</span> cur.left:</span><br><span class="line">            <span class="comment"># 1. 先找到左樹最右邊的node rightmost</span></span><br><span class="line">            rightmost = cur.left</span><br><span class="line">            <span class="keyword">while</span> rightmost.right:</span><br><span class="line">                rightmost = rightmost.right</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 2. 把 cur 的右樹接到 rightmost.right, 然後再把 cur.right 接到 left</span></span><br><span class="line">            rightmost.right = cur.right</span><br><span class="line">            cur.right = cur.left</span><br><span class="line">            cur.left = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. cur 換成 cur.right</span></span><br><span class="line">        cur = cur.right</span><br></pre></td></tr></table></figure><h2 id="DFS-跟-BFS">DFS 跟 BFS</h2><p>DFS 跟 BFS 是最常見的兩種遍歷方式，DFS 是深度優先搜尋，BFS 是廣度優先搜尋，他們的核心概念是一樣的，只是遍歷的方式不同，DFS 是一直往下走，直到底部，然後再往上走，BFS 是一層一層的往下走，直到底部，然後再往下走。</p><p>建議直接看<a href="/posts/lecture-bfs-dfs">LeetCode 課前預習 - 掌握 BFS 與 DFS 指南</a></p><h2 id="Patience-Sort：最長的遞增子序列">Patience Sort：最長的遞增子序列</h2><p>有些題目需要<strong>找到最長的遞增子序列</strong>，我們需要先了解一下一個超級神奇的演算法！叫做<a href="https://en.wikipedia.org/wiki/Patience_sorting">Patience Sort</a>，他是一個卡牌遊戲，可以幫助我們找到最長的遞增子序列。我們先來介紹卡牌遊戲的規則：</p><p>首先，我們有一組卡牌，規則是：</p><ul><li>如果當前的卡牌比piles的最後一張卡牌還要大，那就直接放到最後一張卡牌的後面</li><li>如果當前的卡牌比piles的最後一張卡牌還要小，那就要找到一張比當前卡牌還要大的卡牌，然後放在上面，如果找不到的話，就要開一個新的pile<br><img src="https://i.imgur.com/s3XxiPt.png" alt=""><br><img src="https://i.imgur.com/XOMxkAH.png" alt=""></li></ul><p><em>最後你會發現，每個piles最上面的卡牌由左到右是遞增的</em><br><img src="https://i.imgur.com/2mmUOnD.png" alt=""></p><p><em>更神奇的事情發生了，這個piles的數量就是最長的遞增子序列的長度！因為每個piles一定可以找到一張牌可以排出遞減的牌組</em><br><img src="https://i.imgur.com/JQB7ylO.png" alt=""><br><img src="https://i.imgur.com/hMyA7m7.png" alt=""></p><p>相關題目：</p><ul><li><a href="/posts/leetcode-300-Longest-Increasing-Subsequence">leetcode-300-longest-increasing-subsequence</a>：找到最長的遞增子序列</li></ul>]]></content>
       
       
       <categories>
@@ -23,6 +23,76 @@
         <tags>
             
             <tag> leetcode </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #86 Partition List - 刷題之旅</title>
+      <link href="/posts/leetcode-86-Partition-List/"/>
+      <url>/posts/leetcode-86-Partition-List/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/5w4CjnL.png" alt=""></p><p>有一個linked list，要求將linked list中小於x的node放在前面，大於等於x的node放在後面。</p><h1 id="2-解法">2 解法</h1><p>這題不難，可以直接使用兩個linked list，一個是小於x的linked list，一個是大於等於x的linked list，最後再將兩個linked list合併即可。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">partition</span>(<span class="params">self, head: <span class="type">Optional</span>[ListNode], x: <span class="built_in">int</span></span>) -&gt; <span class="type">Optional</span>[ListNode]:</span><br><span class="line">        <span class="comment"># 建立兩個虛擬頭節點，分別用於小於x的節點和大於等於x的節點</span></span><br><span class="line">        small_head = ListNode(<span class="number">0</span>)</span><br><span class="line">        large_head = ListNode(<span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 當前指針指向小鏈表和大鏈表的頭節點</span></span><br><span class="line">        small = small_head</span><br><span class="line">        large = large_head</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 遍歷原鏈表</span></span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> cur:</span><br><span class="line">            <span class="keyword">if</span> cur.val &lt; x:</span><br><span class="line">                <span class="comment"># 添加節點到小於x的鏈表</span></span><br><span class="line">                small.<span class="built_in">next</span> = cur</span><br><span class="line">                small = small.<span class="built_in">next</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 添加節點到大於等於x的鏈表</span></span><br><span class="line">                large.<span class="built_in">next</span> = cur</span><br><span class="line">                large = large.<span class="built_in">next</span></span><br><span class="line">            cur = cur.<span class="built_in">next</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 將大鏈表的最後一個節點的 next 設置為 None，避免循環鏈表</span></span><br><span class="line">        large.<span class="built_in">next</span> = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 將小於x的鏈表的尾部連接到大於等於x的鏈表的頭部</span></span><br><span class="line">        small.<span class="built_in">next</span> = large_head.<span class="built_in">next</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> small_head.<span class="built_in">next</span></span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>一開始我傻傻的，沒有think out of the box，我是遍歷一個個節點，發現要換位置的時候進行處理，沒想到讓整個串接過程變得非常複雜，結果沒想到使用兩個linked-list就可以處理了，但是相對的這個空間複雜度是O(n)，如果題目限制空間複雜度是O(1)的話，那麼這個解法就不適用了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+          <category> Linked List </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> linked-list </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LeetCode #61 Rotate List - 刷題之旅</title>
+      <link href="/posts/leetcode-61-Rotate-List/"/>
+      <url>/posts/leetcode-61-Rotate-List/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/iWIcvBe.png" alt=""><br><img src="https://i.imgur.com/c8EPzv2.png" alt=""></p><p>給定一個鍊錶，將鍊錶向右旋轉 k 步，其中 k 是非負數。</p><h1 id="2-解法">2 解法</h1><p>看到這個題目的時候，有想到如果今天k很大，這個linked list多少步驟會回到原本的樣子？基本上是當 k 是 鍊錶長度的倍數時，鍊錶會回到原本的樣子，因此我們可以先計算出鍊錶的長度，然後取餘數，這樣就可以得到我們要旋轉的步數。</p><p><em>當<code>last.next</code>是空的時候，表示觸底</em></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先計算長度</span></span><br><span class="line">last, count = head, <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> (last.<span class="built_in">next</span>): </span><br><span class="line">    count += <span class="number">1</span> </span><br><span class="line">    last = last.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新計算k取餘數</span></span><br><span class="line">k = k % count</span><br></pre></td></tr></table></figure><p><img src="https://i.imgur.com/xOdnlt7.png" alt=""><br>接下來如果k是2，代表最後面的兩個node會被擠到最前面，因此我們主要有兩個步驟：</p><ol><li>找到last，把last跟head連接起來</li><li>找到新的head，把新head的前一個node的next設為None</li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到last，把last跟head連接起來</span></span><br><span class="line">last.<span class="built_in">next</span> = head</span><br><span class="line"><span class="comment"># 找到新head的前一個node （從上圖例子為4)</span></span><br><span class="line">tmp = head</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(count - k - <span class="number">1</span>):</span><br><span class="line">    tmp = tmp.<span class="built_in">next</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 把新head的前一個node的next設為None</span></span><br><span class="line">new_head = tmp.<span class="built_in">next</span></span><br><span class="line">tmp.<span class="built_in">next</span> = <span class="literal">None</span></span><br></pre></td></tr></table></figure><p>完整程式碼為</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Time: O(n)</span></span><br><span class="line"><span class="string">    Space: O(1)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">rotateRight</span>(<span class="params">self, head: <span class="type">Optional</span>[ListNode], k: <span class="built_in">int</span></span>) -&gt; <span class="type">Optional</span>[ListNode]:</span><br><span class="line">        <span class="keyword">if</span> head <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> k == <span class="number">0</span> <span class="keyword">or</span> head.<span class="built_in">next</span> <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> head</span><br><span class="line">        <span class="comment"># 先計算長度</span></span><br><span class="line">        last, count = head, <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> (last.<span class="built_in">next</span>): </span><br><span class="line">            count += <span class="number">1</span> </span><br><span class="line">            last = last.<span class="built_in">next</span></span><br><span class="line">        <span class="comment"># 重新計算 k</span></span><br><span class="line">        k = k % count </span><br><span class="line">        <span class="comment"># 因為 tmp 會更動到 head 所以先處理 last.next </span></span><br><span class="line">        last.<span class="built_in">next</span> = head </span><br><span class="line">        tmp = head</span><br><span class="line">        <span class="comment"># tmp 是要切斷當 head 的節點</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(count - k - <span class="number">1</span>):</span><br><span class="line">            tmp = tmp.<span class="built_in">next</span> </span><br><span class="line"></span><br><span class="line">        <span class="comment"># 重新串起來</span></span><br><span class="line">        ans = tmp.<span class="built_in">next</span></span><br><span class="line">        tmp.<span class="built_in">next</span> = <span class="literal">None</span> </span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><h1 id="3-總結">3 總結</h1><p>這題我想了一個小時，我沒有發現 len - k - 1 的方便邏輯，原始方法是透過兩個指標slow, fast去找倒數第k個。這題的重點是要先計算長度，然後取餘數，最後再重新串起來。這題的時間複雜度是 O(n)，空間複雜度是 O(1)。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+          <category> Linked List </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> Medium </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -360,9 +430,9 @@
             
             <tag> practice </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Dynamic Programming </tag>
             
             <tag> Hard </tag>
             
@@ -467,11 +537,11 @@
             
             <tag> practice </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -504,11 +574,11 @@
             
             <tag> practice </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -541,11 +611,11 @@
             
             <tag> practice </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -745,11 +815,11 @@
             
             <tag> practice </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -782,11 +852,11 @@
             
             <tag> practice </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> Medium </tag>
             
             <tag> Dynamic Programming </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -821,9 +891,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -887,11 +957,11 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -922,15 +992,15 @@
             
             <tag> leetcode </tag>
             
+            <tag> BST </tag>
+            
             <tag> practice </tag>
             
-            <tag> Medium </tag>
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> BST </tag>
-            
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -961,13 +1031,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -998,15 +1068,15 @@
             
             <tag> leetcode </tag>
             
+            <tag> BFS </tag>
+            
             <tag> practice </tag>
             
-            <tag> Medium </tag>
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> BFS </tag>
-            
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1039,11 +1109,11 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1074,13 +1144,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1111,13 +1181,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1150,11 +1220,11 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1185,11 +1255,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> DFS </tag>
             
             <tag> binary-tree </tag>
             
@@ -1222,13 +1292,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1259,13 +1329,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1296,13 +1366,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1372,9 +1442,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1409,9 +1479,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1444,11 +1514,11 @@
             
             <tag> practice </tag>
             
-            <tag> Medium </tag>
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
-            <tag> binary-tree </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1483,9 +1553,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1520,9 +1590,9 @@
             
             <tag> Easy </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1926,9 +1996,9 @@
             
             <tag> practice </tag>
             
-            <tag> Hard </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> Hard </tag>
             
             <tag> Stack </tag>
             
@@ -2134,11 +2204,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -2182,11 +2252,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -2244,11 +2314,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -2279,11 +2349,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -2314,11 +2384,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -2349,15 +2419,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
             
-            <tag> Sliding-Window </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> Hash </tag>
+            
+            <tag> Sliding-Window </tag>
             
         </tags>
       
@@ -2388,11 +2458,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Hash </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
+            
+            <tag> Hash </tag>
             
         </tags>
       
@@ -3190,13 +3260,13 @@
             
             <tag> Database </tag>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Cloud Storage </tag>
             
             <tag> Security </tag>
             
             <tag> NIST SP 800-209 </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -3227,13 +3297,13 @@
             
             <tag> Database </tag>
             
+            <tag> 碩士論文 </tag>
+            
             <tag> Cloud Storage </tag>
             
             <tag> Security </tag>
             
             <tag> NIST SP 800-209 </tag>
-            
-            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -3262,9 +3332,9 @@
             
             <tag> Database </tag>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Connection Pool </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
@@ -3293,9 +3363,9 @@
             
             <tag> Database </tag>
             
-            <tag> 碩士論文 </tag>
-            
             <tag> Connection Pool </tag>
+            
+            <tag> 碩士論文 </tag>
             
         </tags>
       
