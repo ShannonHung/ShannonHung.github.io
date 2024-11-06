@@ -31,6 +31,43 @@
     
     
     <entry>
+      <title>LeetCode #200 Number of Islands - 刷題之旅</title>
+      <link href="/posts/leetcode-200-number-of-islands/"/>
+      <url>/posts/leetcode-200-number-of-islands/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-題目描述">1 題目描述</h1><p><img src="https://i.imgur.com/kEFtT3c.png" alt=""></p><p>一個二維數組，把 1 看做陸地，把 0 看做大海，陸地相連組成一個島嶼。把陣列以外的區域也看做是大海，問總共有多少個島嶼。</p><p>Constraints:</p><ul><li><code>m == grid.length</code></li><li><code>n == grid[i].length</code></li><li><code>1 &lt;= m, n &lt;= 300</code></li><li><code>grid[i][j] is '0' or '1'</code></li></ul><h1 id="2-解法">2 解法</h1><p>這個解法主要有兩個：</p><ol><li>DFS：就是深入檢查每個node是否有相連，如果有就把相連的部分都變成0，直到沒有相連的部分為止。</li><li><a href="https://zh.wikipedia.org/wiki/%E5%B9%B6%E6%9F%A5%E9%9B%86">併查集 Disjoint-set data structure</a>: 利用尋找root的方式，如果發現有共同的祖先，那就表示這兩個land是相連的，如果是不同的root就代表不同祖先，可能要建立bridge或是union合併。</li></ol><p>DFS的方法比較簡單明瞭，併查集的方法比較複雜，但是很有趣，所以我兩個都會來說明如何實現。</p><h2 id="2-1-DFS">2.1 DFS</h2><p>基本上在上下左右探索的時候，要確保三個原則：</p><ol><li>不要超出rows邊界</li><li>不要超出cols邊界</li><li>不要走到海洋</li></ol><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">i, j</span>):</span><br><span class="line">    <span class="comment"># (不要超過 rows) or (不要超過cols) or (走到海洋) 否則什麼都不做</span></span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">0</span> <span class="keyword">or</span> i &gt;= <span class="built_in">len</span>(grid)) <span class="keyword">or</span> (j &lt; <span class="number">0</span> <span class="keyword">or</span> j &gt;= <span class="built_in">len</span>(grid[<span class="number">0</span>])) <span class="keyword">or</span> grid[i][j] == <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="comment"># 發現陸地！把它變成海洋！</span></span><br><span class="line">    grid[i][j] = <span class="string">&#x27;0&#x27;</span></span><br><span class="line">    <span class="comment"># 探索上下左右</span></span><br><span class="line">    dfs(i - <span class="number">1</span>, j)</span><br><span class="line">    dfs(i + <span class="number">1</span>, j)</span><br><span class="line">    dfs(i, j - <span class="number">1</span>)</span><br><span class="line">    dfs(i, j + <span class="number">1</span>)</span><br></pre></td></tr></table></figure><p>開始檢查陸地，如果發現陸地，先<code>num_islands += 1</code>，然後開始DFS探索。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">numIslands</span>(<span class="params">self, grid: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> grid:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    num_islands = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid)):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid[<span class="number">0</span>])):</span><br><span class="line">            <span class="keyword">if</span> grid[i][j] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                num_islands += <span class="number">1</span></span><br><span class="line">                dfs(i, j)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> num_islands</span><br></pre></td></tr></table></figure><p>完整的程式碼如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Time: O(M * N)</span></span><br><span class="line"><span class="string">- M 與 N 分別是 rows 與 cols</span></span><br><span class="line"><span class="string">- 因為每個元素都會被訪問一次，所以時間複雜度是 O(M * N)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Space: O(M * N)</span></span><br><span class="line"><span class="string">- 空間複雜度來自遞歸的深度，最壞情況下是整個地圖都是陸地，所以是 O(M * N)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">numIslands</span>(<span class="params">self, grid: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">i, j</span>):</span><br><span class="line">            <span class="keyword">if</span> (i &lt; <span class="number">0</span> <span class="keyword">or</span> i &gt;= <span class="built_in">len</span>(grid)) <span class="keyword">or</span> (j &lt; <span class="number">0</span> <span class="keyword">or</span> j &gt;= <span class="built_in">len</span>(grid[<span class="number">0</span>])) <span class="keyword">or</span> grid[i][j] == <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            grid[i][j] = <span class="string">&#x27;0&#x27;</span></span><br><span class="line">            dfs(i - <span class="number">1</span>, j)</span><br><span class="line">            dfs(i + <span class="number">1</span>, j)</span><br><span class="line">            dfs(i, j - <span class="number">1</span>)</span><br><span class="line">            dfs(i, j + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> grid:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        num_islands = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid[<span class="number">0</span>])):</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                    num_islands += <span class="number">1</span></span><br><span class="line">                    dfs(i, j)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> num_islands</span><br></pre></td></tr></table></figure><h2 id="2-2-併查集">2.2 併查集</h2><p>在開始之前我先來說個故事，目前這個城市有三個幫派，分別是BossA, BossB, BossC，老大底下有一些小弟用P來表示。<br><img src="https://i.imgur.com/A9kg3bF.png" alt=""></p><p>當兩個小弟遇見的時候，如果發現他們的共同老大都是相同的，例如BossA，那就不會打架，畢竟是同一個幫派的。<br><img src="https://i.imgur.com/lXuVTve.png" alt=""></p><p>但是當兩個小弟遇見的時候，發現他們的老大不一樣，例如BossA和BossB，那就會打架，因為他們是不同幫派的。<br><img src="https://i.imgur.com/fjGYCnA.png" alt=""></p><p>你會發現，我們在找Boss的時候，每次一層層往上找太麻煩了，如果我們在找的過程中，就慢慢把組織扁平化，變成兩層不就很好找嗎？<br><img src="https://i.imgur.com/fRgtXHa.png" alt=""></p><p>然後打架打完，總會有輸贏，輸的一方要合併進去另一個幫派。<br><img src="https://i.imgur.com/3CYk6QC.png" alt=""></p><div class="note info flat"><p>在上面的故事中，主要牽涉兩個動作，我們可以利用這個特性去找到有多少個land。</p><ol><li><code>Find</code> 尋找老大是誰</li><li><code>Union</code> 老大不同的時候，要合併兩個幫派</li></ol></div><p><em>Step1. 先假設每個小弟node都獨自一個幫派，他們的parent（老大）都是自己。</em></p><ul><li>島嶼的數量就是所有boss的數量。<br><img src="https://i.imgur.com/HdAjkMu.png" alt=""></li></ul><p><em>Step2. 我們發現小弟0號是島嶼，因此開始檢查周邊是不是有島嶼相連，如果有就合併。</em></p><ul><li>我們發現小弟5號是島嶼，因此小弟5號的parent指定為小弟0號。</li><li>lands 這時候 -1 代表有一個島嶼被合併了。<br><img src="https://i.imgur.com/lmT3TNd.png" alt=""></li></ul><p><em>Step3. 繼續檢查周邊是不是有島嶼相連，如果有就合併。</em></p><ul><li>小弟0號的左邊也是島嶼，因此小弟1號的parent指定為小弟0號。</li><li>lands 這時候 -1 代表有一個島嶼被合併了。<br><img src="https://i.imgur.com/KOpLNJx.png" alt=""></li></ul><p><em>Step4. 這時候小弟0號都檢查完畢，換下一個小弟1號，繼續檢查周邊是不是有島嶼相連，如果有就合併。</em></p><ul><li>發現小弟6號也是島嶼，而小弟0號的老大是1號，因此小弟6號的parent指定為小弟0號。這就是我們說的階級兩層化。</li><li>lands 這時候 -1 代表有一個島嶼被合併了。<br><img src="https://i.imgur.com/Xq3vI8j.png" alt=""></li></ul><p><em>Step5. 繼續尋找下一個島嶼，找到小弟5號，但是因為小弟5號下面是海洋，所以不用合併。</em><br><img src="https://i.imgur.com/jjXERFB.png" alt=""></p><p><em>Step6. 但是小弟5號的左邊是島嶼，所以進行合併</em></p><ul><li>但是發現小弟5號的老大是小弟0號，而小弟6號的老大也是小弟0號，所以不用做任何事情。<br><img src="https://i.imgur.com/N8Apvcx.png" alt=""></li></ul><p><em>Step7. 繼續尋找下一個島嶼，找到小弟12號，但是下面跟右邊都是海洋，所以不用處理，他獨自當老大。</em><br><img src="https://i.imgur.com/TPJCu2b.png" alt=""></p><p><em>Step8. 繼續尋找下一個島嶼，找到小弟18號，因為下面是海洋，所以我們只要檢查左邊即可。</em></p><ul><li>左邊的小弟19號是島嶼，並且他與小弟18的parent不同，因此進行合併。</li><li>lands 這時候 -1 代表有一個島嶼被合併了。<br><img src="https://i.imgur.com/VY3Tlh0.png" alt=""></li></ul><p>寫成程式碼的邏輯就是如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UnionFind</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, grid, rows, cols</span>):</span><br><span class="line">        self.nums = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 記錄 &#x27;1&#x27; 的個數作為初始的島嶼數量</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(rows):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(cols):</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                    self.nums += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 每個節點初始化為它本身，每個人都是自己的老大 parent</span></span><br><span class="line">        total_nodes = rows * cols</span><br><span class="line">        self.parents = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(total_nodes)]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 當發現兩個小弟的parent不同時，進行合併</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">union</span>(<span class="params">self, node1, node2</span>):</span><br><span class="line">        root1 = self.find(node1)</span><br><span class="line">        root2 = self.find(node2)</span><br><span class="line">        <span class="comment"># 發生合併時，nums 減 1（島嶼-1）</span></span><br><span class="line">        <span class="keyword">if</span> root1 != root2:</span><br><span class="line">            self.parents[root2] = root1</span><br><span class="line">            self.nums -= <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 尋找老大 parent 是誰</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find</span>(<span class="params">self, node</span>):</span><br><span class="line">        <span class="keyword">while</span> self.parents[node] != node:</span><br><span class="line">            self.parents[node] = self.parents[self.parents[node]]  <span class="comment"># 路徑壓縮</span></span><br><span class="line">            node = self.parents[node]</span><br><span class="line">        <span class="keyword">return</span> node</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 取得當前島嶼的數量</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_nums</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.nums</span><br></pre></td></tr></table></figure><p>以下是呼叫的程式碼：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Time: O(M * N * a(M * N))</span></span><br><span class="line"><span class="string">- M 與 N 分別是 rows 與 cols</span></span><br><span class="line"><span class="string">- a(M * N) 是 Ackermann 函數的反函數，是一個很慢的函數，隨著unionFind的路徑壓縮優化，他的值增長極慢，因此可以近似為 O(1) 常數</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Space: O(M * N)</span></span><br><span class="line"><span class="string">- parents 陣列，大小與grid的數量呈正比</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">numIslands</span>(<span class="params">self, grid: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> grid:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        rows = <span class="built_in">len</span>(grid)</span><br><span class="line">        cols = <span class="built_in">len</span>(grid[<span class="number">0</span>])</span><br><span class="line">        uf = UnionFind(grid, rows, cols)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(rows):</span><br><span class="line">            <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(cols):</span><br><span class="line">                <span class="comment"># 找到陸地，就開始檢查下面跟左邊是否為島嶼，如果是就合併</span></span><br><span class="line">                <span class="keyword">if</span> grid[row][col] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                    <span class="comment"># 下面是陸地</span></span><br><span class="line">                    <span class="keyword">if</span> row &lt; rows - <span class="number">1</span> <span class="keyword">and</span> grid[row + <span class="number">1</span>][col] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                        uf.union(self.node(row, col, cols), self.node(row + <span class="number">1</span>, col, cols))</span><br><span class="line">                    <span class="comment"># 左邊是陸地</span></span><br><span class="line">                    <span class="keyword">if</span> col &lt; cols - <span class="number">1</span> <span class="keyword">and</span> grid[row][col + <span class="number">1</span>] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                        uf.union(self.node(row, col, cols), self.node(row, col + <span class="number">1</span>, cols))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> uf.get_nums()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 取得小弟的代號</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">node</span>(<span class="params">self, i, j, cols</span>):</span><br><span class="line">        <span class="keyword">return</span> i * cols + j</span><br></pre></td></tr></table></figure><h1 id="Ref">Ref</h1><ul><li><a href="https://blog.csdn.net/liujian20150808/article/details/50848646">CSDN | 併查集 Disjoint-set data structure</a>: 這篇用神鵰俠侶的背景故事說明如何使用併查集來解決問題，很有趣。</li><li><a href="https://zh.wikipedia.org/wiki/%E5%B9%B6%E6%9F%A5%E9%9B%86">Wiki | 併查集 Disjoint-set data structure</a>: 這是維基百科的解釋，有興趣的話可以看看。</li><li><a href="https://leetcode.wang/leetcode-200-Number-of-Islands.html">LeetCode Wang | 200. Number of Islands</a>: 我是參考這篇解題，發現併查集。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> LeetCode </category>
+          
+          <category> 刷題之旅 </category>
+          
+          <category> Tree </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> leetcode </tag>
+            
+            <tag> DFS </tag>
+            
+            <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Kubernetes - Replica 的幾種 Controller 比較 [Replication Controller vs ReplicaSet vs Deployment vs DaemonSet]</title>
       <link href="/posts/k8s-replication-controller/"/>
       <url>/posts/k8s-replication-controller/</url>
@@ -371,9 +408,9 @@
             
             <tag> practice </tag>
             
-            <tag> Two Pointer </tag>
-            
             <tag> Easy </tag>
+            
+            <tag> Two Pointer </tag>
             
         </tags>
       
@@ -542,11 +579,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
+            
+            <tag> Dynamic Programming </tag>
             
             <tag> Hard </tag>
             
@@ -579,11 +616,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -614,11 +651,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -649,13 +686,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -686,13 +723,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -723,13 +760,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -760,11 +797,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -857,11 +894,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -892,11 +929,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -927,13 +964,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -964,13 +1001,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1001,13 +1038,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
+            
+            <tag> Easy </tag>
             
             <tag> Recursion </tag>
             
-            <tag> Easy </tag>
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1071,11 +1108,11 @@
             
             <tag> practice </tag>
             
+            <tag> binary-tree </tag>
+            
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
-            
-            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1108,13 +1145,13 @@
             
             <tag> practice </tag>
             
+            <tag> binary-tree </tag>
+            
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
             <tag> BST </tag>
-            
-            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1145,13 +1182,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1182,15 +1219,15 @@
             
             <tag> leetcode </tag>
             
+            <tag> BFS </tag>
+            
             <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
-            
-            <tag> binary-tree </tag>
-            
-            <tag> BFS </tag>
             
         </tags>
       
@@ -1223,11 +1260,11 @@
             
             <tag> practice </tag>
             
+            <tag> binary-tree </tag>
+            
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
-            
-            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1258,13 +1295,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1295,13 +1332,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> DFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> DFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1334,11 +1371,11 @@
             
             <tag> practice </tag>
             
+            <tag> binary-tree </tag>
+            
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
-            
-            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1369,13 +1406,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> DFS </tag>
             
         </tags>
       
@@ -1406,13 +1443,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1443,13 +1480,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> DFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> DFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1480,13 +1517,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
-            <tag> BFS </tag>
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1517,11 +1554,11 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -1554,11 +1591,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1591,11 +1628,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1628,11 +1665,11 @@
             
             <tag> practice </tag>
             
+            <tag> binary-tree </tag>
+            
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
-            
-            <tag> binary-tree </tag>
             
         </tags>
       
@@ -1665,11 +1702,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1702,11 +1739,11 @@
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Recursion </tag>
             
         </tags>
       
@@ -1797,9 +1834,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> BST </tag>
-            
             <tag> Tree </tag>
+            
+            <tag> BST </tag>
             
         </tags>
       
@@ -2007,9 +2044,9 @@
             
             <tag> Medium </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -2044,9 +2081,9 @@
             
             <tag> Easy </tag>
             
-            <tag> linked-list </tag>
-            
             <tag> Review-Needed </tag>
+            
+            <tag> linked-list </tag>
             
         </tags>
       
@@ -2441,11 +2478,11 @@
     
     
     <entry>
-      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
-      <link href="/posts/leetcode-12-integer-to-roman/"/>
-      <url>/posts/leetcode-12-integer-to-roman/</url>
+      <title>LeetCode #13 Roman to Integer - 刷題之旅</title>
+      <link href="/posts/leetcode-13-roman-to-integer/"/>
+      <url>/posts/leetcode-13-roman-to-integer/</url>
       
-        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
+        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>和<a href="/posts/leetcode-12-integer-to-roman">上一題</a>相反，將羅馬數字轉換成阿拉伯數字。<br><img src="https://i.imgur.com/6Dty492.png" alt=""><br><img src="https://i.imgur.com/UZQAQb9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法">2.1 我的作法</h2><p>我一開始想的比較複雜，是想要使用while迴圈，從第一個字串與第二個字串開始比較，一般來說羅馬字是由大排到小，因此一但發現“前面” &lt; &quot;後面“ （由小到大），前面要當減數，否則就是加法。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/YgsucYk.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        right = left + <span class="number">1</span></span><br><span class="line">        <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 如果只有一個字元，直接加上</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(s) &lt; <span class="number">2</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[left]]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(s):</span><br><span class="line">                left_val = num_dic[s[left]]</span><br><span class="line">                right_val = num_dic[s[right]]</span><br><span class="line">                <span class="comment"># 一但發現 left &lt; right，就是減法</span></span><br><span class="line">                <span class="keyword">if</span> left_val &lt; right_val:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val * (-<span class="number">1</span>)</span><br><span class="line">                <span class="comment"># 否則加法</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val</span><br><span class="line"></span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                right = left + <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 如果 right 已經到底了，那麼就加上最後一個</span></span><br><span class="line">                <span class="keyword">if</span> right == <span class="built_in">len</span>(s):</span><br><span class="line">                    <span class="built_in">sum</span> += right_val</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;final=<span class="subst">&#123;<span class="built_in">sum</span>&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(n)</strong></p><ul><li>n 是輸入字浮串的長度，這個解法只需要一次迭代。</li></ul><p><strong>空間複雜度：O(1)</strong></p><ul><li>固定空間：儲存字典 num_dic，這是固定的大小，包含 7 個元素。</li><li>變量：變量 left、right 和 sum 使用固定的額外空間。</li><li>函數沒有使用額外的空間來儲存與輸入大小相關的數據結構，因此空間複雜度為 O(1)</li></ul></div><h2 id="2-2-更簡潔">2.2 更簡潔</h2><p>但是有更簡潔的寫法，概念一樣，但是不用while迴圈，直接用for迴圈就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :type s: str</span></span><br><span class="line"><span class="string">    :rtype: int</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">        <span class="comment"># 關鍵是如果 i 已經到底的前一個，那麼就不用比較了，直接加上</span></span><br><span class="line">        <span class="comment"># -1 是為了讓 i+1 不會超過範圍</span></span><br><span class="line">        <span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s) - <span class="number">1</span> <span class="keyword">and</span> num_dic[s[i]] &lt; num_dic[s[i+<span class="number">1</span>]]:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]] * (-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題感覺難度也不會很難，是可以自己想出來的。</p>]]></content>
       
       
       <categories>
@@ -2476,11 +2513,11 @@
     
     
     <entry>
-      <title>LeetCode #13 Roman to Integer - 刷題之旅</title>
-      <link href="/posts/leetcode-13-roman-to-integer/"/>
-      <url>/posts/leetcode-13-roman-to-integer/</url>
+      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
+      <link href="/posts/leetcode-12-integer-to-roman/"/>
+      <url>/posts/leetcode-12-integer-to-roman/</url>
       
-        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>和<a href="/posts/leetcode-12-integer-to-roman">上一題</a>相反，將羅馬數字轉換成阿拉伯數字。<br><img src="https://i.imgur.com/6Dty492.png" alt=""><br><img src="https://i.imgur.com/UZQAQb9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法">2.1 我的作法</h2><p>我一開始想的比較複雜，是想要使用while迴圈，從第一個字串與第二個字串開始比較，一般來說羅馬字是由大排到小，因此一但發現“前面” &lt; &quot;後面“ （由小到大），前面要當減數，否則就是加法。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/YgsucYk.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        right = left + <span class="number">1</span></span><br><span class="line">        <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 如果只有一個字元，直接加上</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(s) &lt; <span class="number">2</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[left]]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(s):</span><br><span class="line">                left_val = num_dic[s[left]]</span><br><span class="line">                right_val = num_dic[s[right]]</span><br><span class="line">                <span class="comment"># 一但發現 left &lt; right，就是減法</span></span><br><span class="line">                <span class="keyword">if</span> left_val &lt; right_val:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val * (-<span class="number">1</span>)</span><br><span class="line">                <span class="comment"># 否則加法</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val</span><br><span class="line"></span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                right = left + <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 如果 right 已經到底了，那麼就加上最後一個</span></span><br><span class="line">                <span class="keyword">if</span> right == <span class="built_in">len</span>(s):</span><br><span class="line">                    <span class="built_in">sum</span> += right_val</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;final=<span class="subst">&#123;<span class="built_in">sum</span>&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(n)</strong></p><ul><li>n 是輸入字浮串的長度，這個解法只需要一次迭代。</li></ul><p><strong>空間複雜度：O(1)</strong></p><ul><li>固定空間：儲存字典 num_dic，這是固定的大小，包含 7 個元素。</li><li>變量：變量 left、right 和 sum 使用固定的額外空間。</li><li>函數沒有使用額外的空間來儲存與輸入大小相關的數據結構，因此空間複雜度為 O(1)</li></ul></div><h2 id="2-2-更簡潔">2.2 更簡潔</h2><p>但是有更簡潔的寫法，概念一樣，但是不用while迴圈，直接用for迴圈就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :type s: str</span></span><br><span class="line"><span class="string">    :rtype: int</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">        <span class="comment"># 關鍵是如果 i 已經到底的前一個，那麼就不用比較了，直接加上</span></span><br><span class="line">        <span class="comment"># -1 是為了讓 i+1 不會超過範圍</span></span><br><span class="line">        <span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s) - <span class="number">1</span> <span class="keyword">and</span> num_dic[s[i]] &lt; num_dic[s[i+<span class="number">1</span>]]:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]] * (-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題感覺難度也不會很難，是可以自己想出來的。</p>]]></content>
+        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
       
       
       <categories>
@@ -2537,11 +2574,11 @@
             
             <tag> Medium </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> Hash </tag>
             
             <tag> Sliding-Window </tag>
+            
+            <tag> Review-Needed </tag>
             
         </tags>
       
