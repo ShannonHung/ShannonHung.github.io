@@ -31,7 +31,7 @@
     
     
     <entry>
-      <title>Terraform 新手介紹 - 核心與元件介紹、安裝與基本操作</title>
+      <title>Terraform 新手介紹 - 一篇立刻搞懂 Terrafrom 的核心與基礎元件</title>
       <link href="/posts/terraform-guide/"/>
       <url>/posts/terraform-guide/</url>
       
@@ -80,11 +80,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
             <tag> Medium </tag>
             
@@ -1170,13 +1170,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BST </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
+            
+            <tag> BST </tag>
             
             <tag> Medium </tag>
             
@@ -1209,11 +1209,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1246,13 +1246,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Recursion </tag>
+            
+            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1322,11 +1322,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1359,11 +1359,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
             <tag> Medium </tag>
             
@@ -1433,13 +1433,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -1470,11 +1470,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1507,11 +1507,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
             <tag> Medium </tag>
             
@@ -1544,11 +1544,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1799,9 +1799,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> Lecture </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> Lecture </tag>
             
         </tags>
       
@@ -2505,11 +2505,11 @@
     
     
     <entry>
-      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
-      <link href="/posts/leetcode-12-integer-to-roman/"/>
-      <url>/posts/leetcode-12-integer-to-roman/</url>
+      <title>LeetCode #13 Roman to Integer - 刷題之旅</title>
+      <link href="/posts/leetcode-13-roman-to-integer/"/>
+      <url>/posts/leetcode-13-roman-to-integer/</url>
       
-        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
+        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>和<a href="/posts/leetcode-12-integer-to-roman">上一題</a>相反，將羅馬數字轉換成阿拉伯數字。<br><img src="https://i.imgur.com/6Dty492.png" alt=""><br><img src="https://i.imgur.com/UZQAQb9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法">2.1 我的作法</h2><p>我一開始想的比較複雜，是想要使用while迴圈，從第一個字串與第二個字串開始比較，一般來說羅馬字是由大排到小，因此一但發現“前面” &lt; &quot;後面“ （由小到大），前面要當減數，否則就是加法。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/YgsucYk.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        right = left + <span class="number">1</span></span><br><span class="line">        <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 如果只有一個字元，直接加上</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(s) &lt; <span class="number">2</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[left]]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(s):</span><br><span class="line">                left_val = num_dic[s[left]]</span><br><span class="line">                right_val = num_dic[s[right]]</span><br><span class="line">                <span class="comment"># 一但發現 left &lt; right，就是減法</span></span><br><span class="line">                <span class="keyword">if</span> left_val &lt; right_val:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val * (-<span class="number">1</span>)</span><br><span class="line">                <span class="comment"># 否則加法</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val</span><br><span class="line"></span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                right = left + <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 如果 right 已經到底了，那麼就加上最後一個</span></span><br><span class="line">                <span class="keyword">if</span> right == <span class="built_in">len</span>(s):</span><br><span class="line">                    <span class="built_in">sum</span> += right_val</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;final=<span class="subst">&#123;<span class="built_in">sum</span>&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(n)</strong></p><ul><li>n 是輸入字浮串的長度，這個解法只需要一次迭代。</li></ul><p><strong>空間複雜度：O(1)</strong></p><ul><li>固定空間：儲存字典 num_dic，這是固定的大小，包含 7 個元素。</li><li>變量：變量 left、right 和 sum 使用固定的額外空間。</li><li>函數沒有使用額外的空間來儲存與輸入大小相關的數據結構，因此空間複雜度為 O(1)</li></ul></div><h2 id="2-2-更簡潔">2.2 更簡潔</h2><p>但是有更簡潔的寫法，概念一樣，但是不用while迴圈，直接用for迴圈就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :type s: str</span></span><br><span class="line"><span class="string">    :rtype: int</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">        <span class="comment"># 關鍵是如果 i 已經到底的前一個，那麼就不用比較了，直接加上</span></span><br><span class="line">        <span class="comment"># -1 是為了讓 i+1 不會超過範圍</span></span><br><span class="line">        <span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s) - <span class="number">1</span> <span class="keyword">and</span> num_dic[s[i]] &lt; num_dic[s[i+<span class="number">1</span>]]:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]] * (-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題感覺難度也不會很難，是可以自己想出來的。</p>]]></content>
       
       
       <categories>
@@ -2540,11 +2540,11 @@
     
     
     <entry>
-      <title>LeetCode #13 Roman to Integer - 刷題之旅</title>
-      <link href="/posts/leetcode-13-roman-to-integer/"/>
-      <url>/posts/leetcode-13-roman-to-integer/</url>
+      <title>LeetCode #12 Integer to Roman - 刷題之旅</title>
+      <link href="/posts/leetcode-12-integer-to-roman/"/>
+      <url>/posts/leetcode-12-integer-to-roman/</url>
       
-        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>和<a href="/posts/leetcode-12-integer-to-roman">上一題</a>相反，將羅馬數字轉換成阿拉伯數字。<br><img src="https://i.imgur.com/6Dty492.png" alt=""><br><img src="https://i.imgur.com/UZQAQb9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法">2.1 我的作法</h2><p>我一開始想的比較複雜，是想要使用while迴圈，從第一個字串與第二個字串開始比較，一般來說羅馬字是由大排到小，因此一但發現“前面” &lt; &quot;後面“ （由小到大），前面要當減數，否則就是加法。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/YgsucYk.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        right = left + <span class="number">1</span></span><br><span class="line">        <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 如果只有一個字元，直接加上</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(s) &lt; <span class="number">2</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[left]]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">while</span> right &lt; <span class="built_in">len</span>(s):</span><br><span class="line">                left_val = num_dic[s[left]]</span><br><span class="line">                right_val = num_dic[s[right]]</span><br><span class="line">                <span class="comment"># 一但發現 left &lt; right，就是減法</span></span><br><span class="line">                <span class="keyword">if</span> left_val &lt; right_val:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val * (-<span class="number">1</span>)</span><br><span class="line">                <span class="comment"># 否則加法</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">sum</span> += left_val</span><br><span class="line"></span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                right = left + <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 如果 right 已經到底了，那麼就加上最後一個</span></span><br><span class="line">                <span class="keyword">if</span> right == <span class="built_in">len</span>(s):</span><br><span class="line">                    <span class="built_in">sum</span> += right_val</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;final=<span class="subst">&#123;<span class="built_in">sum</span>&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(n)</strong></p><ul><li>n 是輸入字浮串的長度，這個解法只需要一次迭代。</li></ul><p><strong>空間複雜度：O(1)</strong></p><ul><li>固定空間：儲存字典 num_dic，這是固定的大小，包含 7 個元素。</li><li>變量：變量 left、right 和 sum 使用固定的額外空間。</li><li>函數沒有使用額外的空間來儲存與輸入大小相關的數據結構，因此空間複雜度為 O(1)</li></ul></div><h2 id="2-2-更簡潔">2.2 更簡潔</h2><p>但是有更簡潔的寫法，概念一樣，但是不用while迴圈，直接用for迴圈就可以了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">romanToInt</span>(<span class="params">self, s</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :type s: str</span></span><br><span class="line"><span class="string">    :rtype: int</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num_dic = &#123;<span class="string">&#x27;M&#x27;</span>: <span class="number">1000</span>, <span class="string">&#x27;D&#x27;</span>: <span class="number">500</span>, <span class="string">&#x27;C&#x27;</span>: <span class="number">100</span>, <span class="string">&#x27;L&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;X&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;V&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;I&#x27;</span>: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">        <span class="comment"># 關鍵是如果 i 已經到底的前一個，那麼就不用比較了，直接加上</span></span><br><span class="line">        <span class="comment"># -1 是為了讓 i+1 不會超過範圍</span></span><br><span class="line">        <span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s) - <span class="number">1</span> <span class="keyword">and</span> num_dic[s[i]] &lt; num_dic[s[i+<span class="number">1</span>]]:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]] * (-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">sum</span> += num_dic[s[i]]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure><h1 id="3-結論">3 結論</h1><p>這題感覺難度也不會很難，是可以自己想出來的。</p>]]></content>
+        <content type="html"><![CDATA[<ul><li>題目來源：<a href="https://leetcode.com/problems/roman-to-integer/description/">https://leetcode.com/problems/roman-to-integer/description/</a></li></ul><h1 id="1-題目描述">1 題目描述</h1><p>把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。<br><img src="https://i.imgur.com/OUE0FWT.png" alt=""><br><img src="https://i.imgur.com/15hfun9.png" alt=""></p><h1 id="2-解法">2 解法</h1><h2 id="2-1-我的作法-無HashTable">2.1 我的作法(無HashTable)</h2><p>簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。</p><p>大概是這種感覺：<br><img src="https://i.imgur.com/VkYdXPa.png" alt=""></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">intToRoman</span>(<span class="params">self, num</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type num: int</span></span><br><span class="line"><span class="string">        :rtype: str</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        arr = [(<span class="number">1000</span>, <span class="string">&#x27;M&#x27;</span>),</span><br><span class="line">               (<span class="number">900</span>, <span class="string">&#x27;CM&#x27;</span>),</span><br><span class="line">               (<span class="number">500</span>, <span class="string">&#x27;D&#x27;</span>),</span><br><span class="line">               (<span class="number">400</span>, <span class="string">&#x27;CD&#x27;</span>),</span><br><span class="line">               (<span class="number">100</span>, <span class="string">&#x27;C&#x27;</span>),</span><br><span class="line">               (<span class="number">90</span>, <span class="string">&#x27;XC&#x27;</span>),</span><br><span class="line">               (<span class="number">50</span>, <span class="string">&#x27;L&#x27;</span>),</span><br><span class="line">               (<span class="number">40</span>, <span class="string">&#x27;XL&#x27;</span>),</span><br><span class="line">               (<span class="number">10</span>, <span class="string">&#x27;X&#x27;</span>),</span><br><span class="line">               (<span class="number">9</span>, <span class="string">&#x27;IX&#x27;</span>),</span><br><span class="line">               (<span class="number">5</span>, <span class="string">&#x27;V&#x27;</span>),</span><br><span class="line">               (<span class="number">4</span>, <span class="string">&#x27;IV&#x27;</span>),</span><br><span class="line">               (<span class="number">1</span>, <span class="string">&#x27;I&#x27;</span>)]</span><br><span class="line">        ans = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> arr:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;num=<span class="subst">&#123;key&#125;</span>, val=<span class="subst">&#123;val&#125;</span>&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num &gt;= key:</span><br><span class="line">                count = <span class="built_in">int</span>(num / key)</span><br><span class="line">                mud = num % key</span><br><span class="line">                ans += count * val</span><br><span class="line">                num = mud</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;count=<span class="subst">&#123;count&#125;</span>, mud=<span class="subst">&#123;mud&#125;</span>, ans=<span class="subst">&#123;ans&#125;</span>, num=<span class="subst">&#123;num&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure><div class="note info flat"><p><strong>時間複雜度：O(1)</strong></p><ul><li>循環次數：函數中有一個 for 循環，遍歷 arr 列表中的所有元素。arr 列表的長度是常數（13），所以這個循環的次數是固定的，為 13。<br><strong>空間複雜度：O(1)</strong></li><li>固定空間：儲存 arr 列表，這是固定的大小，包含 13 個元素。</li></ul></div><h1 id="3-結論">3 結論</h1><p>這題感覺難度應該是 easy ，沒有那麼難，就是理清楚題意，然後就可以往出列舉就行了。</p>]]></content>
       
       
       <categories>
