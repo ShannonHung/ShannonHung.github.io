@@ -31,6 +31,33 @@
     
     
     <entry>
+      <title>一次搞懂 Git Merge 方法 - Merge, Fast Forward, Squash （補充 Gitlab Merge Request 策略）</title>
+      <link href="/posts/all-about-git-merge/"/>
+      <url>/posts/all-about-git-merge/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>在軟體開發過程中，版本控制工具是每個開發者都不可或缺的利器，而 Git 以其強大的功能和靈活的操作方式，成為目前最流行的版本控制系統之一。在 Git 中，合併（merge） 是一項極為重要的操作，有時候我們開發完一個新功能（例如一個新功能分支）後，需要將這個新功能合併到主分支像是 master, develop，我們不會直接在主分支上面進行 commit 和 push （往往 repository 的 maintainer 也會禁止這些操作）也因此我們需要發起一個合併請求（Merge Request）來進行合併操作。而這個合併請求有一些不同的策略，理解這些合併策略，不僅能幫助開發者選擇合適的合併方式，還能在團隊協作中保持清晰的版本歷史，避免衝突與混亂。</p><p>本篇部落格將深入探討 GitLab 中三種常見的合併方法：Merge Commit、Semi-Linear Merge、Fast Forward Merge。<br><img src="/img/figure/git-merge-2.png" alt=""></p><p>我會詳細解釋每種方法的操作流程、適用場景及其優缺點，讓你能夠在面對不同的開發需求時選擇最合適的合併策略。希望讀者能夠了解這些常見的合併策略，並能將它們靈活運用於日常開發過程中。</p><h1 id="Git-Merge">Git Merge</h1><p>在開始介紹 GitLab 不同的合併策略之前，我們應該要先收集 git merge 的常見用法，如果你使用 VSCode 作為你的 IDE，在使用 merge 的時候可能會跳出以下幾種建議：</p><ul><li>Merge 基本會看當前的狀況是否有分叉歷史，如果沒有就會自動使用 fast forward merge 進行合併，否則會建立一個 merge commit 進行合併。</li><li>Fast-forward Merge 如果沒有分叉歷史，才可以使用 fast forward merge 進行合併，否則會拒絕合併。他並不會產生 merge commit。</li><li>Squash Merge 會將所有的 commit 合併成一個 commit 進行合併，這樣可以保持 commit log 的整潔，但是會失去 commit 的歷史紀錄。</li><li>No Fast-forward Merge 會強制產生 merge commit，不會使用 fast forward merge 進行合併。</li></ul><p><img src="/img/figure/git-merge-3.png" alt=""></p><h2 id="Merge">Merge</h2><p>先來介紹最常見的合併方法：Merge Commit。當我們發起一個合併請求時，GitLab 會將目標分支（通常是 master 或 develop）和源分支（新功能分支）進行合併，並生成一個新的合併提交（Merge Commit）。他是<em>允許目標分支與源分支有不同的歷史</em>。</p><p>簡單來說使用情境是：</p><ul><li>目標分支（如 main）和來源分支（如 feature）有 commit 的分叉歷史</li><li>直接 Merge 會產生 Merge Commit，保持完整的開發歷史</li><li>想要完整保留開發歷史記錄，但可能產生較雜亂的 commit log</li></ul><p>看到這裡，你可能會好奇<em>所謂的分叉歷史是什麼意思</em>？假設 feature 分支從 main 建立後，兩邊各自有不同的 commit，<em>feature 在開發的過程中 main 有了一個 commit 是 不存在於 feature 分支的內容</em>，這時候 feature 和 main 就會有分叉的歷史，這時候就會產生 Merge Commit。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">*  c5 (main)  &lt;-- main 上有新的 commit</span><br><span class="line">| *  f3 (feature)</span><br><span class="line">| *  f2 (feature)</span><br><span class="line">| *  f1 (feature)</span><br><span class="line">|/  </span><br><span class="line">*  c1 (main)</span><br></pre></td></tr></table></figure><p>執行：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout main</span><br><span class="line">git merge feature</span><br></pre></td></tr></table></figure><p>結果：</p><ul><li>m6 是 Merge Commit，它將 main 和 feature 分叉的歷史合併在一起。</li><li>main 分支 沒有改變 feature 的 commit 順序，保留了它的獨立歷史。</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">*   m6 (main)  &lt;-- Merge Commit</span><br><span class="line">|\  </span><br><span class="line">| *  f3 (feature)</span><br><span class="line">| *  f2 (feature)</span><br><span class="line">| *  f1 (feature)</span><br><span class="line">|/  </span><br><span class="line">*  c5 (main)</span><br><span class="line">*  c1 (main)</span><br></pre></td></tr></table></figure><h2 id="Fast-Forward-Merge">Fast Forward Merge</h2><p>Fast-Forward 白話的意思就是快速向前，當我們進行合併時，如果<em>目標分支（如 main）和來源分支（如 feature）的 commit 歷史是線性的</em>，也就是沒有發生像上面例子 feature 在開發的過程中， master 有了一個 m5 的 commit 是 不存在於 feature 分支的內容，那麼 Git 就可以直接將目標分支指向來源分支的最新 commit，而不需要產生新的 Merge Commit。這樣的合併方式稱為 Fast Forward Merge。</p><p>簡單來說：</p><ul><li>目標分支和來源分支的 commit 歷史是線性時，可以使用 Fast Forward Merge</li><li>他會讓目標分支直接指向來源分支的最新 commit，不會產生 Merge Commit</li><li>目標分支和來源分支的 commit 歷史是線性的．想要保持整潔的 commit log</li></ul><p>舉例來說</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">*  f3 (feature) &lt;-- feature 沒有遺漏 main 的 commit</span><br><span class="line">*  f2 (feature)</span><br><span class="line">*  f1 (feature)</span><br><span class="line">| *  c5 (main)  &lt;-- main 的 HEAD 指向 c5</span><br><span class="line">| *  c1 (main)</span><br></pre></td></tr></table></figure><p>在這個案例執行 <code>git merge feature --ff-only</code> 或是 <code>git merge feature</code> 會產生相同的結果，<em>main 分支會直接指向 feature 的最新 commit</em>，形成 fast forward merge，不會有任何枝節點產生，會是完整的一條線，因為這兩個分支是沒有分叉的歷史。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">*  f3 (main, feature)  &lt;-- main 直接移動到 feature 的 HEAD</span><br><span class="line">*  f2</span><br><span class="line">*  f1</span><br><span class="line">*  c5</span><br><span class="line">*  c1</span><br></pre></td></tr></table></figure><h2 id="No-Fast-Forward-Merge">No Fast Forward Merge</h2><p>在上面的例子中，如果你希望強制產生 Merge Commit，讓人知道在這個時間點有一個人 merge 了一個分支到 main，可以使用 <code>--no-ff</code> 選項，這樣就會強制產生 Merge Commit，不會使用 Fast Forward Merge 進行合併。</p><p>簡單來說：</p><ul><li>強制產生 Merge Commit</li><li>保持完整的開發歷史記錄，使用 git log 可以看到分支的分叉歷史</li><li>可能產生較雜亂的 commit log</li></ul><p>舉例來說</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">*  f3 (feature) &lt;-- feature 沒有遺漏 main 的 commit</span><br><span class="line">*  f2 (feature)</span><br><span class="line">*  f1 (feature)</span><br><span class="line">| *  c5 (main)  &lt;-- main 的 HEAD 指向 c5</span><br><span class="line">| *  c1 (main)</span><br></pre></td></tr></table></figure><p>在這個案例執行 <code>git merge feature --no-ff</code> 會產生 Merge Commit，如下所示：</p><ul><li>main 沒有直接 “快進” 到 feature 的最新 commit</li><li>因為我們沒有使用 squash 所以他可以保留 feature 分支的 commit 歷史，但是會產生一個 Merge Commit。</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">*   M  (main)  &lt;-- Merge Commit，main HEAD 指向這裡</span><br><span class="line">|\  </span><br><span class="line">| *  f3 (feature)</span><br><span class="line">| *  f2</span><br><span class="line">| *  f1</span><br><span class="line">|/  </span><br><span class="line">*  c5</span><br><span class="line">*  c1</span><br></pre></td></tr></table></figure><h2 id="Squash-Merge">Squash Merge</h2><p>如果今天你希望將所有的 commit 合併成一個 commit 進行合併，這樣可以保持 commit log 的整潔，像是有多位 developer 開發多個功能，例如當前有三個功能正在開發，分別是 feature1, feature2, feature3 分支，每個分支裡面都很雜，包含很多細節的 commit，甚至裡面有一些測試的 commit 或是錯誤的內容，如果你是這個 feature 的 owner 沒有其他開發者跟你共同開發，這個 feature 的 commit 可能會很雜亂，如果把這些 feature 合併進去 master 會讓整個 commit log 變得很不堪。</p><p>如果我們不希望這種事發生，希望每次 feature merge 進去 main 只會有一個 commit 就是<em>把整個最終成品都寫在一個 commit 裡面</em>，這時候就可以使用 squash merge 進行合併。</p><p>簡單來說：</p><ul><li>將所有的 commit 合併成一個 commit 進行合併</li><li>保持 commit log 的整潔</li><li>但會失去 feature 分支開發過程中 commit 的歷史紀錄</li></ul><p>舉例來說，如果我們目前有三個 feature 正在開發：</p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">main: </span><br><span class="line"><span class="bullet">*</span> c1 (main)</span><br><span class="line"></span><br><span class="line">feature1:</span><br><span class="line"><span class="bullet">*</span>  f1-3 (修復 bug)</span><br><span class="line"><span class="bullet">*</span>  f1-2 (調整 API)</span><br><span class="line"><span class="bullet">*</span>  f1-1 (新增功能)</span><br><span class="line"></span><br><span class="line">feature2:</span><br><span class="line"><span class="bullet">*</span>  f2-2 (優化效能)</span><br><span class="line"><span class="bullet">*</span>  f2-1 (新增 UI)</span><br><span class="line"></span><br><span class="line">feature3:</span><br><span class="line"><span class="bullet">*</span>  f3-3 (修正錯字)</span><br><span class="line"><span class="bullet">*</span>  f3-2 (重構代碼)</span><br><span class="line"><span class="bullet">*</span>  f3-1 (新增功能)</span><br></pre></td></tr></table></figure><p>當合併 feature1、feature2、feature3 後，main 會變得很亂，這樣會讓 git log 變得混亂，難以追蹤主要的 feature 更新。</p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">*</span>  f3-3 (修正錯字)</span><br><span class="line"><span class="bullet">*</span>  f3-2 (重構代碼)</span><br><span class="line"><span class="bullet">*</span>  f3-1 (新增功能)</span><br><span class="line"><span class="bullet">*</span>  f2-2 (優化效能)</span><br><span class="line"><span class="bullet">*</span>  f2-1 (新增 UI)</span><br><span class="line"><span class="bullet">*</span>  f1-3 (修復 bug)</span><br><span class="line"><span class="bullet">*</span>  f1-2 (調整 API)</span><br><span class="line"><span class="bullet">*</span>  f1-1 (新增功能)</span><br><span class="line"><span class="bullet">*</span>  c1 (main)</span><br></pre></td></tr></table></figure><p>但是我們如果使用 squash:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git merge --squash feature1</span><br><span class="line">git commit -m &quot;Add feature1&quot;</span><br><span class="line">git merge --squash feature2</span><br><span class="line">git commit -m &quot;Add feature2&quot;</span><br><span class="line">git merge --squash feature3</span><br><span class="line">git commit -m &quot;Add feature3&quot;</span><br></pre></td></tr></table></figure><p>結果：這樣我們的 commit log 變得非常乾淨，每個 feature 只佔一個 commit，避免了混亂的 commit 記錄。</p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">*</span>  Add feature3</span><br><span class="line"><span class="bullet">*</span>  Add feature2</span><br><span class="line"><span class="bullet">*</span>  Add feature1</span><br><span class="line"><span class="bullet">*</span>  c1 (main)</span><br></pre></td></tr></table></figure><h1 id="GitLab-Merge-Request">GitLab Merge Request</h1><p>現在我們知道了 Git 中常見的合併方法，接下來我們來看看 GitLab 中的三種合併策略：Merge Commit、Semi-Linear Merge、Fast Forward Merge。可以看到下圖的內容，他其實有簡單地做一些介紹<br><img src="/img/figure/git-merge-2.png" alt=""></p><ol><li><p><strong>Merge Commit（–no-ff）</strong></p><ul><li>產生一個 Merge Commit，保留完整的開發歷史（即使 feature 分支可以 fast-forward 也不會省略 merge commit）。</li><li><em>不強制線性歷史</em>，允許分叉的 commit 存在（可能會有多條 commit 歷史並存）。</li><li>適合 <em>保留開發歷史、清楚標示 feature 分支的合併點</em>。</li></ul></li><li><p><strong>Semi-Linear Merge（Rebase + --no-ff）</strong></p><ul><li>先 <em>要求 feature 分支 rebase</em> 到最新的 main 分支，確保 feature 分支是線性的。</li><li>然後 <em>使用 --no-ff 進行合併</em>，產生一個 Merge Commit。</li><li>這樣做的好處是，<em>歷史紀錄保持線性，但仍然有 Merge Commit 作為開發階段的標記</em>。</li><li>適合 <em>希望有線性歷史，但又想保留 Merge Commit</em> 的專案。</li></ul></li><li><p><strong>Fast Forward Merge（–ff-only）</strong></p><ul><li>如果 feature 分支可以 fast-forward，則直接移動 main 分支的 HEAD 到最新的 feature commit，然後<em>產生 Merge Commit</em>。</li><li>如果是使用 squash 則是將所有的 commit 合併成一個 commit 進行合併後，再產生 Merge Commit。</li><li>需要 <em>確保 feature 分支與 main 沒有分叉歷史</em>，否則需要開發者手動 rebase 來確保可以 fast-forward。</li><li>適合 <em>追求最簡潔的 commit 歷史，不希望有額外的 Merge Commit</em> 的情境，例如小型專案或 <em>頻繁 CI/CD 的環境</em>。</li></ul></li></ol><hr><p><strong>GitLab 三種 Merge 策略比較</strong></p><table><thead><tr><th></th><th>Merge Commit</th><th>Semi-Linear Merge</th><th>Fast Forward Merge</th></tr></thead><tbody><tr><td>Merge 指令</td><td><code>git merge --no-ff</code></td><td><code>git rebase main</code> + <code>git merge --no-ff</code></td><td><code>git merge --ff-only</code></td></tr><tr><td>是否產生 Merge Commit</td><td>✅ 會產生</td><td>✅ 會產生</td><td>❌ 不會產生</td></tr><tr><td>是否要求 rebase</td><td>❌ 不要求</td><td>✅ 需要先 rebase</td><td>✅ 需要先 rebase</td></tr><tr><td>歷史是否線性</td><td>❌ 允許分叉</td><td>✅ 強制線性</td><td>✅ 強制線性</td></tr><tr><td>適用情境</td><td>保留完整開發歷史</td><td>兼顧線性歷史與 Merge Commit</td><td>讓 commit 歷史最乾淨</td></tr><tr><td>優點</td><td>清楚標示合併點，保留詳細的開發歷史</td><td>歷史清晰，可保留 Merge Commit 來標示合併點</td><td>Commit 歷史最乾淨，無額外 Merge Commit</td></tr><tr><td>缺點</td><td>Merge Commit 可能過多，歷史較雜亂</td><td>需要開發者主動 rebase</td><td>可能導致歷史紀錄與原來 feature 分支不同，影響開發者追蹤歷史</td></tr></tbody></table><h2 id="補充：Merge-Train">補充：Merge Train</h2><p>看到這裡你應該基本上就搞懂了 GitLab Merge 的三種方法，但是你在 Fast Forward Merge 還有一段訊息:</p><div class="note info flat"><p>If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts. What are merge trains?</p></div><p>所謂的 merge trains 就是在應對一種狀況是，當有多個開發者在不同的 feature 分支上進行開發，這時候可能會發生多個 Merge Request 同時進行合併，這時候就會有一個 merge trains 把每個 Merge Request 放入一個 queue 中，依序進行合併，這樣可以避免多個 Merge Request 同時進行合併，造成衝突。</p><p><strong>🚆 Merge Train 的運作方式</strong></p><ol><li>第一個 MR 進入 Merge Train</li></ol><ul><li>GitLab 會執行一個測試 Pipeline，來確認這個 MR 和目標分支合併後是否能順利運行。</li></ul><ol start="2"><li>加入更多 MR 到 Merge Train</li></ol><ul><li>如果第二個 MR 被加入 Merge Train，GitLab 會啟動新的 Pipeline，這個 Pipeline 會測試第一個 MR + 第二個 MR + 目標分支是否能一起運作。</li><li>如果加入第三個 MR，則 Pipeline 會測試 第一個 + 第二個 + 第三個 + 目標分支，以此類推。</li><li>這些 Pipeline 會同時進行（並行運行），但只有當前面的 MR 合併成功後，後面的 MR 才能繼續合併。</li></ul><p><strong>🚨 如果某個 MR 的 Pipeline 失敗怎麼辦？</strong><br>假設有三個 MR（A、B、C） 加入 Merge Train，分別啟動這三個測試 Pipeline：</p><ol><li>A + 目標分支</li><li>A + B + 目標分支</li><li>A + B + C + 目標分支</li></ol><p>如果 B 的 Pipeline 失敗了：</p><ul><li>A 繼續測試，不受影響。</li><li>B 被移除，不會合併。</li><li>C 的 Pipeline 取消，然後重新啟動新的 Pipeline，這次測試的是 A + C + 目標分支（不包含 B）。</li></ul><p>當 A 測試成功並合併後：</p><ul><li>C 會繼續測試，但這次它的測試基礎會是最新的主分支（已經包含 A 的變更）。</li><li>之後新加入的 MR 也會基於這個最新的主分支來測試。</li></ul><p><strong>✅ Merge Train 的好處</strong></p><ul><li>確保每個 MR 在合併前都經過測試，減少合併後的問題。</li><li>自動排序 Merge 順序，避免手動處理合併衝突。</li><li>所有 MR 都是基於最新的主分支進行測試，減少出錯機率。</li></ul><p><strong>如何啟用 Merge Train？</strong></p><ul><li>必須擁有 Maintainer 權限</li><li>不能是 External REpository</li><li>必須針對 merge request 設定 pipeline，<code>.gitlab-ci.yml</code> 會有一條 stage 的 rules 設定 <code>if: $CI_PIPELINE_SOURCE == 'merge_request_event'</code> 來針對 merge request 產生一個 pipeline 來驗證是否可以接受 Merge Request</li><li>必須啟用 Enable merged results pipelines 也就是只有 pipeline 通過才能進行合併</li></ul><h1 id="Reference">Reference</h1><ul><li><a href="https://docs.gitlab.com/ee/ci/pipelines/merge_trains.html#merge-train-workflow">Gitlab | Merge Train workflow</a></li><li><a href="https://docs.gitlab.com/ee/ci/pipelines/merge_request_pipelines.html#prerequisites">Gitlab | Add jobs to merge request pipelines</a></li><li><a href="https://docs.gitlab.com/ee/ci/pipelines/merged_results_pipelines.html#enable-merged-results-pipelines">Gitlab | Enable merged results pipelines</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工具 </category>
+          
+          <category> Git </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>使用 Terraform 建立 GKE 叢集 - 從無到有建立 Google Kubernetes Engine 叢集 + Nginx Load Balancer + 測試</title>
       <link href="/posts/terraform-gke-guide/"/>
       <url>/posts/terraform-gke-guide/</url>
@@ -111,11 +138,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> DFS </tag>
             
             <tag> Medium </tag>
             
@@ -637,9 +664,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Dynamic Programming </tag>
             
@@ -744,9 +771,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -781,9 +808,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -818,9 +845,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -1022,9 +1049,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -1059,9 +1086,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Medium </tag>
             
@@ -1096,11 +1123,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Dynamic Programming </tag>
             
@@ -1164,11 +1191,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -1203,11 +1230,11 @@
             
             <tag> BST </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -1240,11 +1267,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> BFS </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1277,13 +1304,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> binary-tree </tag>
+            <tag> BFS </tag>
             
             <tag> Recursion </tag>
             
-            <tag> BFS </tag>
+            <tag> practice </tag>
+            
+            <tag> binary-tree </tag>
             
             <tag> Medium </tag>
             
@@ -1316,11 +1343,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -1353,11 +1380,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> BFS </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1390,11 +1417,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> DFS </tag>
             
             <tag> Medium </tag>
             
@@ -1427,11 +1454,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -1464,13 +1491,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> DFS </tag>
             
         </tags>
       
@@ -1501,11 +1528,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> BFS </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1538,11 +1565,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> DFS </tag>
             
             <tag> Medium </tag>
             
@@ -1575,11 +1602,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> BFS </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> BFS </tag>
             
             <tag> Medium </tag>
             
@@ -1612,11 +1639,11 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -1647,13 +1674,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -1684,13 +1711,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -1721,11 +1748,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
             <tag> Medium </tag>
             
@@ -1758,13 +1785,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -1795,13 +1822,13 @@
             
             <tag> leetcode </tag>
             
+            <tag> Recursion </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
-            
-            <tag> Recursion </tag>
             
         </tags>
       
@@ -1892,9 +1919,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> BST </tag>
-            
             <tag> Tree </tag>
+            
+            <tag> BST </tag>
             
         </tags>
       
@@ -2205,9 +2232,9 @@
             
             <tag> practice </tag>
             
-            <tag> Review-Needed </tag>
-            
             <tag> Hard </tag>
+            
+            <tag> Review-Needed </tag>
             
             <tag> Stack </tag>
             
@@ -3395,7 +3422,7 @@
       <link href="/posts/linux-usual-command/"/>
       <url>/posts/linux-usual-command/</url>
       
-        <content type="html"><![CDATA[<h1 id="SSH">SSH</h1><p>參考：<a href="https://askie.today/lets-set-ssh-config/">https://askie.today/lets-set-ssh-config/</a></p><div class="note warning flat"><p>SSH登入主機時，<strong>不用再輸入密碼，然後也不用輸入ip</strong>的方法:</p></div><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本地產生金鑰</span></span><br><span class="line">ssh-keygen</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把金鑰送入想要免輸入密碼的host</span></span><br><span class="line"><span class="comment"># 把公開金鑰送入遠端主機</span></span><br><span class="line">ssh-copy-id 帳號@主機IP</span><br><span class="line"></span><br><span class="line"><span class="comment"># 先進入ssh目錄準備設定host別名</span></span><br><span class="line"><span class="built_in">cd</span> ~/.ssh</span><br><span class="line">vi config </span><br><span class="line"></span><br><span class="line"><span class="comment"># 設定如下</span></span><br><span class="line"><span class="comment"># vmware</span></span><br><span class="line">Host <span class="built_in">test</span> <span class="comment"># 以下機器的簡稱</span></span><br><span class="line">  HostName 192.168.4.18 <span class="comment"># ip </span></span><br><span class="line">  User prlab <span class="comment"># 帳號</span></span><br><span class="line">  identityfile ~/.ssh/id_rsa <span class="comment"># 金鑰位置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 之後就可以直接輸入</span></span><br><span class="line">ssh <span class="built_in">test</span></span><br></pre></td></tr></table></figure><h1 id="zip">zip</h1><div class="note warning flat"><p>我最常用的就是壓所檔案，並且需要<strong>加密或分割檔案</strong>用。</p></div><ol><li>一般加密檔案用的指令。</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ”加密“要使用-e，&quot;資料夾“要使用-r，如果只是一般檔案-e即可，不需要r</span></span><br><span class="line"><span class="comment"># 把本地 ./test 資料夾 加密成 ./test.zip，並且輸入密碼</span></span><br><span class="line">zip -er ./test.zip ./test</span><br></pre></td></tr></table></figure><ol start="2"><li>把zip檔案進行分割和合併的做法。</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 以下指令 - 表示標準輸入。這個命令的意思是將 zip 命令的輸出作為 split 命令的輸入。</span></span><br><span class="line"><span class="comment"># 如果不添加 -，則 split 命令將不會接收到 zip 命令的輸出，而是會試圖從文件中讀取數據。</span></span><br><span class="line"><span class="comment"># 下面的指令就是透過 zip 把 zip 檔案輸出給 split 這個指令以10MB為單位進行切割</span></span><br><span class="line"><span class="comment"># 以下指令就是回到上一層，找到zip檔案開始分割</span></span><br><span class="line">zip - ../test.zip | <span class="built_in">split</span> -b 10MB</span><br><span class="line"></span><br><span class="line"><span class="comment"># $ &gt; 會產出 xaa, xab, xac, ... # 這樣的檔案，所以我們可以透過 cat 來進行合併</span></span><br><span class="line"><span class="comment"># 把當前目錄底下x開頭的檔案都合併成 test.zip</span></span><br><span class="line"><span class="built_in">cat</span> x* &gt; ../test.zip</span><br></pre></td></tr></table></figure><h1 id="Mac">Mac</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># 轉換成中文</span><br><span class="line">option + shift + B : 可以打入顏文字 </span><br><span class="line"># emoji </span><br><span class="line">ctrl + command + space : 可以打入表情符號</span><br><span class="line"></span><br><span class="line"># mac </span><br><span class="line">ctrl + command + F : 全螢幕</span><br><span class="line">ctrl + 左右鍵 : 往右邊的 desktop 切換</span><br><span class="line">command + M : 收起來最小化</span><br><span class="line"></span><br><span class="line"># 瀏覽器</span><br><span class="line">command + T : 新增分頁</span><br><span class="line">command + W : 關閉分頁</span><br><span class="line">command + shift + T : 還原關閉分頁</span><br><span class="line">command + L : 跳到網址列</span><br><span class="line">command + R : 重新整理</span><br><span class="line">command + [ : 上一頁</span><br><span class="line">command + ] : 下一頁</span><br><span class="line"></span><br><span class="line"># Aflred </span><br><span class="line">command + , : 開啟 Preference 設定</span><br></pre></td></tr></table></figure><h1 id="SHELL-配置文件">SHELL 配置文件</h1><ul><li>參考：<a href="https://www.cnblogs.com/MaelDNM/p/16196273.html">https://www.cnblogs.com/MaelDNM/p/16196273.html</a></li></ul><div class="note info flat"><p><code>.bashrc</code> vs <code>.zshrc</code> vs <code>.profile</code> vs <code>.bash_profile</code> 差異在哪裡？</p></div><table><thead><tr><th>比較</th><th>bashrc</th><th>bash_profile</th><th>zshrc</th></tr></thead><tbody><tr><td>啟動時間</td><td><code>系統啟動後</code>自動運行，只在bash shell下執行</td><td><code>用戶登入後</code>才會運行</td><td><code>系統啟動後</code>自動運行，只在 zsh shell下執行</td></tr><tr><td>實行時機</td><td><code>每次打開終端</code>都會運行</td><td><code>每次登入</code>都會運行一次</td><td><code>每次打開終端</code>都會運行</td></tr><tr><td>更新方法</td><td><code>source bashrc</code></td><td><code>source profile</code></td><td><code>source zshrc</code></td></tr><tr><td>局面變量</td><td><code>局部</code>，只能繼承 <code>/etc/profile</code> 中的變量</td><td><code>/etc/profile</code> 中設定的變量是<code>全局</code>。</td><td><code>全局</code>，可以用於任何用戶</td></tr></tbody></table><p>總結：</p><ul><li>如果使用 bash 請更改 <code>~/.bashrc</code> 或是 <code>~/.bash_profile</code><ul><li>bashrc 是每次打開終端都會運行</li><li>bash_profile 是每次登入都會運行一次</li></ul></li><li>如果使用 zsh 請更改<code> ~/.zshrc</code> 或是 <code>~/.zshenv</code></li><li>如果使用 bash 並且想要讓所有用戶都生效，請更改 <code>/etc/profile</code></li></ul><h1 id="關於-usr">關於 /usr/</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local <span class="comment"># 通常是用戶自己手動下載的非系統預設軟體，這個folder由用戶自己管理</span></span><br><span class="line">/usr/bin <span class="comment"># 是用來存放系統預設的可執行檔，這是MacOS預設就幫你裝好的，不要亂動</span></span><br></pre></td></tr></table></figure><h1 id="關於-python-conda">關於 python &amp; conda</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">which</span> python <span class="comment"># 查看 python 的路徑</span></span><br><span class="line"><span class="built_in">which</span> -a python <span class="comment"># 查看所有 python 的路徑</span></span><br><span class="line"><span class="built_in">which</span> -a python3 <span class="comment"># 查看所有 python3 的路徑</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># conda </span></span><br><span class="line">conda <span class="built_in">env</span> list <span class="comment"># 查看所有環境</span></span><br><span class="line">conda search python <span class="comment"># 查看所有 python 版本 </span></span><br><span class="line">conda list -n your_environment_name python</span><br><span class="line">conda list <span class="comment"># 查看當前環境的所有套件</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 建立環境 </span></span><br><span class="line">conda create -n &lt;env_name&gt; python=3.7 <span class="comment"># 建立環境 python=3.7 的名稱是 &lt;env_name&gt; </span></span><br><span class="line">conda activate &lt;env_name&gt; <span class="comment"># 進入環境 到時候輸入 python --version 就是新的環境版本</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 刪除環境</span></span><br><span class="line">conda remove -n &lt;env_name&gt; --all <span class="comment"># 刪除環境</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 環境改名 需要先 copy 到其他新環境 再刪除舊環境 </span></span><br><span class="line">conda create --name new_name --<span class="built_in">clone</span> old_name</span><br><span class="line">conda remove --name old_name --all</span><br></pre></td></tr></table></figure><h2 id="python-項目自動產生requirements-txt">python 項目自動產生requirements.txt</h2><p>ref: <a href="https://blog.csdn.net/pearl8899/article/details/113877334">https://blog.csdn.net/pearl8899/article/details/113877334</a><br>ref: <a href="https://stackoverflow.com/questions/62885911/pip-freeze-creates-some-weird-path-instead-of-the-package-version">pip freeze creates some weird path instead of the package version</a></p><p>有時候我們在和別人合作的時候會希望保持環境的一致。</p><p><em>方法1: 整個環境下的安裝包都保存到 requirements.txt</em><br>使用這個方法的建議是你使用 virtualenv 環境下安裝的包都保存到 requirements.txt 中。<br>如果開啟一個新專案，建議建立一個新的virtualenv環境，並使用以下指令來建立所有的package清單。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不建議使用這個：這是open issue in version 20.1 這有時候會輸出奇怪的路徑而不是版本號 </span></span><br><span class="line">pip freeze &gt; requirements.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建議使用這個</span></span><br><span class="line">pip list --format=freeze &gt; requirements.txt</span><br></pre></td></tr></table></figure><p><em>方法2: 只生成單個項目中有使用到的安裝包</em><br>以下的作用範圍只會將當前項目使用的內容導出成為requirements.txt<br>先定點到項目目錄下，然後執行 <code>pipreqs ./ --encoding=utf-8</code>，可以避免編碼錯誤，並自動在根目錄生成requirements.txt文件。<br>速度會比方法1還要慢。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install pipreqs</span><br><span class="line">pipreqs . </span><br></pre></td></tr></table></figure><p>如何安裝 requirements.txt 的套件</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure><p>一鍵安裝各種包<br>最好先使用conda建立新環境，以做好環境隔離，然後再使用以下指令安裝所有的包。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install -r requirements.txt </span><br><span class="line">conda install --<span class="built_in">yes</span> --file requirements.txt</span><br></pre></td></tr></table></figure><h2 id="conda-install-vs-pip-install">conda install vs pip install</h2><ul><li><p>ref: <a href="https://www.zhihu.com/question/395145313">pip install 和conda install有什么区别吗？</a></p></li><li><p><code>conda install xxx</code> 這種安裝方式都會放在 <code>anaconda3/pkgs</code>，通常在這個目錄下的套件，在不同環境下需要使用到這個套件時，就會直接從這個目錄下將該套件複製到新環境不用重新下載。</p></li><li><p><code>pip install xxx</code> 分兩種情況：</p><ul><li>第一種：當前conda的環境python是conda安裝的，那麼xxx就會被安裝到<code>anaconda3/envs/your_env/lib/python3.x/site-packages</code>下。</li><li>第二種：當前conda的環境python是系統自帶的，那麼xxx就會被安裝到<code>/usr/local/lib/python3.x/site-packages</code>下。</li></ul></li></ul><p>如果使用conda安裝的python會建議使用conda install，因為他是嚴格檢查依賴，表示如果下載某個套件，該套件相關的依賴也會一併下載，conda比較能保證工作，如果conda沒有的再使用pip install即可。</p><h2 id="Kaggle-Input-Data-下載">Kaggle Input Data 下載</h2><ul><li>參考: <a href="https://medium.com/@ankushchoubey/how-to-download-dataset-from-kaggle-7f700d7f9198">https://medium.com/@ankushchoubey/how-to-download-dataset-from-kaggle-7f700d7f9198</a></li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先透過anoconda prompt下載kaggle套件</span></span><br><span class="line">pip install kaggle</span><br></pre></td></tr></table></figure><p>接下來我們要去自己的網站下載api json檔案，然後放到 <code>~/.kaggle/kaggle.json</code> 這個目錄下面</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 然後透過以下指令下載</span></span><br><span class="line">kaggle datasets download -d &lt;owner-name&gt;/&lt;dataset-name&gt; -p &lt;path-to-download&gt;</span><br></pre></td></tr></table></figure><p>也可以透過opendatasets套件來下載</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install opendatasets</span><br></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> opendatasets <span class="keyword">as</span> od</span><br><span class="line">od.download(<span class="string">&#x27;https://www.kaggle.com/c/3136/download-all&#x27;</span>)</span><br></pre></td></tr></table></figure><h1 id="關於-Java">關於 Java</h1><ul><li>ref: <a href="https://blog.csdn.net/xijieyuan2qi/article/details/120949011">切換不同java bash設定</a></li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 搜尋一下有哪些版本</span></span><br><span class="line">brew search openjdk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 然後挑選自己喜歡的版本 以8為例 </span></span><br><span class="line">brew install openjdk@8</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安裝好後就可以查看版本</span></span><br><span class="line">java -version </span><br></pre></td></tr></table></figure><p>快速切換版本的做法，以我的微粒我目前本機上有17跟8<br>你會發現版本都裝在 <code>/Library/Java/JavaVirtualMachines/</code> 這個目錄下面</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确认一下有没有存在下面的目录</span></span><br><span class="line"><span class="built_in">cd</span> /Library/Java/JavaVirtualMachines/  <span class="comment">#进入这个目录</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">#查看目录下的文件</span></span><br><span class="line"><span class="built_in">ls</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面是我的openjdk8的目录，也就是java8的安装目录</span></span><br><span class="line">/Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home</span><br><span class="line"></span><br><span class="line"><span class="comment"># openjdk11的目录，也就是java11的安装目录</span></span><br><span class="line">/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home</span><br></pre></td></tr></table></figure><p>但是如果你是使用arm架構，例如Macos m1, m2晶片，那可能不適用<br>會看到以下錯誤</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">❯ brew install openjdk@8</span><br><span class="line">==&gt; Downloading https://formulae.brew.sh/api/formula.jws.json</span><br><span class="line"><span class="comment">############################################################################################################################ 100.0%</span></span><br><span class="line">==&gt; Downloading https://formulae.brew.sh/api/cask.jws.json</span><br><span class="line"><span class="comment">############################################################################################################################ 100.0%</span></span><br><span class="line">openjdk@8: The x86_64 architecture is required <span class="keyword">for</span> this software.</span><br><span class="line">Error: openjdk@8: An unsatisfied requirement failed this build.</span><br></pre></td></tr></table></figure><ol><li>要去oracle下載是用自己架構的版本：<a href="https://www.oracle.com/java/technologies/javase/jdk8-arm-downloads.html">https://www.oracle.com/java/technologies/javase/jdk8-arm-downloads.html</a></li><li>進行解壓縮後，我自己放到 <code>/Library/Java/</code> 這個目錄下面</li><li><code>vi ~/.bash_profile</code> 進去添加以下內容</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># java version</span></span><br><span class="line">java8=/Library/Java/jdk1.8.0_401.jdk/Contents/Home</span><br><span class="line">java17=/usr/bin/java</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=<span class="variable">$java17</span></span><br><span class="line"><span class="built_in">alias</span> java8=<span class="string">&quot;export JAVA_HOME=<span class="variable">$java8</span>&quot;</span></span><br><span class="line"><span class="built_in">alias</span> java17=<span class="string">&quot;export JAVA_HOME=<span class="variable">$java17</span>&quot;</span></span><br></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bash_profile <span class="comment"># 讓他生效</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以透過輸入 java8 或是 java17 來切換版本</span></span><br><span class="line">java8 </span><br><span class="line">java -version</span><br><span class="line">&gt; output </span><br><span class="line">java version <span class="string">&quot;1.8.0_401&quot;</span></span><br><span class="line">Java(TM) SE Runtime Environment (build 1.8.0_401-b10)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.401-b10, mixed mode)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">java17 </span><br><span class="line">java -version</span><br><span class="line">&gt; output </span><br><span class="line">openjdk version <span class="string">&quot;17.0.6&quot;</span> 2023-01-17</span><br><span class="line">OpenJDK Runtime Environment Temurin-17.0.6+10 (build 17.0.6+10)</span><br><span class="line">OpenJDK 64-Bit Server VM Temurin-17.0.6+10 (build 17.0.6+10, mixed mode)</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+        <content type="html"><![CDATA[<h1 id="SSH">SSH</h1><p>參考：<a href="https://askie.today/lets-set-ssh-config/">https://askie.today/lets-set-ssh-config/</a></p><div class="note warning flat"><p>SSH登入主機時，<strong>不用再輸入密碼，然後也不用輸入ip</strong>的方法:</p></div><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本地產生金鑰</span></span><br><span class="line">ssh-keygen</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把金鑰送入想要免輸入密碼的host</span></span><br><span class="line"><span class="comment"># 把公開金鑰送入遠端主機</span></span><br><span class="line">ssh-copy-id 帳號@主機IP</span><br><span class="line"></span><br><span class="line"><span class="comment"># 先進入ssh目錄準備設定host別名</span></span><br><span class="line"><span class="built_in">cd</span> ~/.ssh</span><br><span class="line">vi config </span><br><span class="line"></span><br><span class="line"><span class="comment"># 設定如下</span></span><br><span class="line"><span class="comment"># vmware</span></span><br><span class="line">Host <span class="built_in">test</span> <span class="comment"># 以下機器的簡稱</span></span><br><span class="line">  HostName 192.168.4.18 <span class="comment"># ip </span></span><br><span class="line">  User prlab <span class="comment"># 帳號</span></span><br><span class="line">  identityfile ~/.ssh/id_rsa <span class="comment"># 金鑰位置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 之後就可以直接輸入</span></span><br><span class="line">ssh <span class="built_in">test</span></span><br></pre></td></tr></table></figure><h2 id="known-hosts">known_hosts</h2><p>每個用戶都有自己專屬的 <code>known_hosts</code> 文件 (存放在<code>~/.ssh/known_hosts</code>) <code>known_hosts</code> 文件是 SSH (Secure Shell) 的一個重要組成部分，用於存儲已知主機的公鑰指紋。它是 SSH 信任模型的一部分，主要用來防止 中間人攻擊 (Man-in-the-Middle Attack)。當您使用 SSH 連接到一台新主機時（例如 ssh user@hostname），SSH 會執行以下步驟：</p><ol><li>檢查主機鍵：</li></ol><ul><li>SSH 客戶端會從伺服器獲取該主機的公鑰（Host Key）。</li></ul><ol start="2"><li>比對已知主機：</li></ol><ul><li>SSH 會檢查本地的 ~/.ssh/known_hosts 文件，看是否已經有該主機的公鑰記錄。</li></ul><ol start="3"><li>行為決定：</li></ol><ul><li>如果主機鍵匹配：<ul><li>SSH 直接建立安全連線。</li></ul></li><li>如果主機鍵不存在（首次連接）：<ul><li>SSH 會提示用戶是否信任該主機（例如顯示鍵指紋並要求輸入 yes 確認）。</li><li>一旦確認，該主機的公鑰會被添加到 <code>~/.ssh/known_hosts</code> 文件中。</li></ul></li><li>如果主機鍵不匹配：<ul><li>這表明該主機的鍵可能被更改，或者有人冒充該主機。SSH 會拋出警告，並阻止連接。</li></ul></li></ul><p><code>known_hosts</code> 文件中的每一行代表一台主機，包括：</p><ul><li>主機名/IP 地址（可能經過哈希處理）。</li><li>主機鍵類型（例如 ssh-rsa 或 ecdsa-sha2-nistp256）。</li><li>主機公鑰指紋。</li></ul><h2 id="ssh-keygen">ssh-keygen</h2><p>如果想要把 <code>known_hosts</code> 進行哈希化，可以透過以下指令進行</p><ul><li><code>-H</code> 選項告訴 <code>ssh-keygen</code> 要哈希化 <code>known_hosts</code> 文件。</li><li><code>-f</code> 選項指定要處理的文件。在這種情況下，我們將 <code>~/.ssh/known_hosts</code> 文件哈希化，這是 SSH 客戶端用於存儲已知主機的公鑰指紋的文件。</li><li><code>-F</code> 它會從 <code>~/.ssh/known_hosts</code> 文件中搜尋並顯示與該主機（或 IP 地址）相關的條目。</li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 哈希指定檔案 </span></span><br><span class="line">ssh-keygen -H -f ~/.ssh/known_hosts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到特定主機資訊</span></span><br><span class="line">ssh-keygen -F 192.168.0.8</span><br></pre></td></tr></table></figure><p>以下是有哈希跟沒哈希的差異：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 範例（未哈希化的條目）：</span></span><br><span class="line">192.168.0.8 ssh-ed25519 AAAA...xsc1OGNEg9BHgbi</span><br><span class="line"></span><br><span class="line"><span class="comment"># 範例（哈希化的條目）：第一部分是哈希化的主機名。後面仍包含主機鍵類型和指紋。</span></span><br><span class="line">|1|PB7kC7z....=|T8MlhtE...= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAt9BQ8J...</span><br></pre></td></tr></table></figure><p>其他 <code>ssh-keygen</code> 的用法：</p><h1 id="zip">zip</h1><div class="note warning flat"><p>我最常用的就是壓所檔案，並且需要<strong>加密或分割檔案</strong>用。</p></div><ol><li>一般加密檔案用的指令。</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ”加密“要使用-e，&quot;資料夾“要使用-r，如果只是一般檔案-e即可，不需要r</span></span><br><span class="line"><span class="comment"># 把本地 ./test 資料夾 加密成 ./test.zip，並且輸入密碼</span></span><br><span class="line">zip -er ./test.zip ./test</span><br></pre></td></tr></table></figure><ol start="2"><li>把zip檔案進行分割和合併的做法。</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 以下指令 - 表示標準輸入。這個命令的意思是將 zip 命令的輸出作為 split 命令的輸入。</span></span><br><span class="line"><span class="comment"># 如果不添加 -，則 split 命令將不會接收到 zip 命令的輸出，而是會試圖從文件中讀取數據。</span></span><br><span class="line"><span class="comment"># 下面的指令就是透過 zip 把 zip 檔案輸出給 split 這個指令以10MB為單位進行切割</span></span><br><span class="line"><span class="comment"># 以下指令就是回到上一層，找到zip檔案開始分割</span></span><br><span class="line">zip - ../test.zip | <span class="built_in">split</span> -b 10MB</span><br><span class="line"></span><br><span class="line"><span class="comment"># $ &gt; 會產出 xaa, xab, xac, ... # 這樣的檔案，所以我們可以透過 cat 來進行合併</span></span><br><span class="line"><span class="comment"># 把當前目錄底下x開頭的檔案都合併成 test.zip</span></span><br><span class="line"><span class="built_in">cat</span> x* &gt; ../test.zip</span><br></pre></td></tr></table></figure><h1 id="Mac">Mac</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># 轉換成中文</span><br><span class="line">option + shift + B : 可以打入顏文字 </span><br><span class="line"># emoji </span><br><span class="line">ctrl + command + space : 可以打入表情符號</span><br><span class="line"></span><br><span class="line"># mac </span><br><span class="line">ctrl + command + F : 全螢幕</span><br><span class="line">ctrl + 左右鍵 : 往右邊的 desktop 切換</span><br><span class="line">command + M : 收起來最小化</span><br><span class="line"></span><br><span class="line"># 瀏覽器</span><br><span class="line">command + T : 新增分頁</span><br><span class="line">command + W : 關閉分頁</span><br><span class="line">command + shift + T : 還原關閉分頁</span><br><span class="line">command + L : 跳到網址列</span><br><span class="line">command + R : 重新整理</span><br><span class="line">command + [ : 上一頁</span><br><span class="line">command + ] : 下一頁</span><br><span class="line"></span><br><span class="line"># Aflred </span><br><span class="line">command + , : 開啟 Preference 設定</span><br></pre></td></tr></table></figure><h1 id="SHELL-配置文件">SHELL 配置文件</h1><ul><li>參考：<a href="https://www.cnblogs.com/MaelDNM/p/16196273.html">https://www.cnblogs.com/MaelDNM/p/16196273.html</a></li></ul><div class="note info flat"><p><code>.bashrc</code> vs <code>.zshrc</code> vs <code>.profile</code> vs <code>.bash_profile</code> 差異在哪裡？</p></div><table><thead><tr><th>比較</th><th>bashrc</th><th>bash_profile</th><th>zshrc</th></tr></thead><tbody><tr><td>啟動時間</td><td><code>系統啟動後</code>自動運行，只在bash shell下執行</td><td><code>用戶登入後</code>才會運行</td><td><code>系統啟動後</code>自動運行，只在 zsh shell下執行</td></tr><tr><td>實行時機</td><td><code>每次打開終端</code>都會運行</td><td><code>每次登入</code>都會運行一次</td><td><code>每次打開終端</code>都會運行</td></tr><tr><td>更新方法</td><td><code>source bashrc</code></td><td><code>source profile</code></td><td><code>source zshrc</code></td></tr><tr><td>局面變量</td><td><code>局部</code>，只能繼承 <code>/etc/profile</code> 中的變量</td><td><code>/etc/profile</code> 中設定的變量是<code>全局</code>。</td><td><code>全局</code>，可以用於任何用戶</td></tr></tbody></table><p>總結：</p><ul><li>如果使用 bash 請更改 <code>~/.bashrc</code> 或是 <code>~/.bash_profile</code><ul><li>bashrc 是每次打開終端都會運行</li><li>bash_profile 是每次登入都會運行一次</li></ul></li><li>如果使用 zsh 請更改<code> ~/.zshrc</code> 或是 <code>~/.zshenv</code></li><li>如果使用 bash 並且想要讓所有用戶都生效，請更改 <code>/etc/profile</code></li></ul><h1 id="關於-usr">關於 /usr/</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local <span class="comment"># 通常是用戶自己手動下載的非系統預設軟體，這個folder由用戶自己管理</span></span><br><span class="line">/usr/bin <span class="comment"># 是用來存放系統預設的可執行檔，這是MacOS預設就幫你裝好的，不要亂動</span></span><br></pre></td></tr></table></figure><h1 id="關於-python-conda">關於 python &amp; conda</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">which</span> python <span class="comment"># 查看 python 的路徑</span></span><br><span class="line"><span class="built_in">which</span> -a python <span class="comment"># 查看所有 python 的路徑</span></span><br><span class="line"><span class="built_in">which</span> -a python3 <span class="comment"># 查看所有 python3 的路徑</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># conda </span></span><br><span class="line">conda <span class="built_in">env</span> list <span class="comment"># 查看所有環境</span></span><br><span class="line">conda search python <span class="comment"># 查看所有 python 版本 </span></span><br><span class="line">conda list -n your_environment_name python</span><br><span class="line">conda list <span class="comment"># 查看當前環境的所有套件</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 建立環境 </span></span><br><span class="line">conda create -n &lt;env_name&gt; python=3.7 <span class="comment"># 建立環境 python=3.7 的名稱是 &lt;env_name&gt; </span></span><br><span class="line">conda activate &lt;env_name&gt; <span class="comment"># 進入環境 到時候輸入 python --version 就是新的環境版本</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 刪除環境</span></span><br><span class="line">conda remove -n &lt;env_name&gt; --all <span class="comment"># 刪除環境</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 環境改名 需要先 copy 到其他新環境 再刪除舊環境 </span></span><br><span class="line">conda create --name new_name --<span class="built_in">clone</span> old_name</span><br><span class="line">conda remove --name old_name --all</span><br></pre></td></tr></table></figure><h2 id="python-項目自動產生requirements-txt">python 項目自動產生requirements.txt</h2><p>ref: <a href="https://blog.csdn.net/pearl8899/article/details/113877334">https://blog.csdn.net/pearl8899/article/details/113877334</a><br>ref: <a href="https://stackoverflow.com/questions/62885911/pip-freeze-creates-some-weird-path-instead-of-the-package-version">pip freeze creates some weird path instead of the package version</a></p><p>有時候我們在和別人合作的時候會希望保持環境的一致。</p><p><em>方法1: 整個環境下的安裝包都保存到 requirements.txt</em><br>使用這個方法的建議是你使用 virtualenv 環境下安裝的包都保存到 requirements.txt 中。<br>如果開啟一個新專案，建議建立一個新的virtualenv環境，並使用以下指令來建立所有的package清單。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不建議使用這個：這是open issue in version 20.1 這有時候會輸出奇怪的路徑而不是版本號 </span></span><br><span class="line">pip freeze &gt; requirements.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建議使用這個</span></span><br><span class="line">pip list --format=freeze &gt; requirements.txt</span><br></pre></td></tr></table></figure><p><em>方法2: 只生成單個項目中有使用到的安裝包</em><br>以下的作用範圍只會將當前項目使用的內容導出成為requirements.txt<br>先定點到項目目錄下，然後執行 <code>pipreqs ./ --encoding=utf-8</code>，可以避免編碼錯誤，並自動在根目錄生成requirements.txt文件。<br>速度會比方法1還要慢。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install pipreqs</span><br><span class="line">pipreqs . </span><br></pre></td></tr></table></figure><p>如何安裝 requirements.txt 的套件</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure><p>一鍵安裝各種包<br>最好先使用conda建立新環境，以做好環境隔離，然後再使用以下指令安裝所有的包。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install -r requirements.txt </span><br><span class="line">conda install --<span class="built_in">yes</span> --file requirements.txt</span><br></pre></td></tr></table></figure><h2 id="conda-install-vs-pip-install">conda install vs pip install</h2><ul><li><p>ref: <a href="https://www.zhihu.com/question/395145313">pip install 和conda install有什么区别吗？</a></p></li><li><p><code>conda install xxx</code> 這種安裝方式都會放在 <code>anaconda3/pkgs</code>，通常在這個目錄下的套件，在不同環境下需要使用到這個套件時，就會直接從這個目錄下將該套件複製到新環境不用重新下載。</p></li><li><p><code>pip install xxx</code> 分兩種情況：</p><ul><li>第一種：當前conda的環境python是conda安裝的，那麼xxx就會被安裝到<code>anaconda3/envs/your_env/lib/python3.x/site-packages</code>下。</li><li>第二種：當前conda的環境python是系統自帶的，那麼xxx就會被安裝到<code>/usr/local/lib/python3.x/site-packages</code>下。</li></ul></li></ul><p>如果使用conda安裝的python會建議使用conda install，因為他是嚴格檢查依賴，表示如果下載某個套件，該套件相關的依賴也會一併下載，conda比較能保證工作，如果conda沒有的再使用pip install即可。</p><h2 id="Kaggle-Input-Data-下載">Kaggle Input Data 下載</h2><ul><li>參考: <a href="https://medium.com/@ankushchoubey/how-to-download-dataset-from-kaggle-7f700d7f9198">https://medium.com/@ankushchoubey/how-to-download-dataset-from-kaggle-7f700d7f9198</a></li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先透過anoconda prompt下載kaggle套件</span></span><br><span class="line">pip install kaggle</span><br></pre></td></tr></table></figure><p>接下來我們要去自己的網站下載api json檔案，然後放到 <code>~/.kaggle/kaggle.json</code> 這個目錄下面</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 然後透過以下指令下載</span></span><br><span class="line">kaggle datasets download -d &lt;owner-name&gt;/&lt;dataset-name&gt; -p &lt;path-to-download&gt;</span><br></pre></td></tr></table></figure><p>也可以透過opendatasets套件來下載</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install opendatasets</span><br></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> opendatasets <span class="keyword">as</span> od</span><br><span class="line">od.download(<span class="string">&#x27;https://www.kaggle.com/c/3136/download-all&#x27;</span>)</span><br></pre></td></tr></table></figure><h1 id="關於-Java">關於 Java</h1><ul><li>ref: <a href="https://blog.csdn.net/xijieyuan2qi/article/details/120949011">切換不同java bash設定</a></li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 搜尋一下有哪些版本</span></span><br><span class="line">brew search openjdk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 然後挑選自己喜歡的版本 以8為例 </span></span><br><span class="line">brew install openjdk@8</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安裝好後就可以查看版本</span></span><br><span class="line">java -version </span><br></pre></td></tr></table></figure><p>快速切換版本的做法，以我的微粒我目前本機上有17跟8<br>你會發現版本都裝在 <code>/Library/Java/JavaVirtualMachines/</code> 這個目錄下面</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确认一下有没有存在下面的目录</span></span><br><span class="line"><span class="built_in">cd</span> /Library/Java/JavaVirtualMachines/  <span class="comment">#进入这个目录</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">#查看目录下的文件</span></span><br><span class="line"><span class="built_in">ls</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面是我的openjdk8的目录，也就是java8的安装目录</span></span><br><span class="line">/Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home</span><br><span class="line"></span><br><span class="line"><span class="comment"># openjdk11的目录，也就是java11的安装目录</span></span><br><span class="line">/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home</span><br></pre></td></tr></table></figure><p>但是如果你是使用arm架構，例如Macos m1, m2晶片，那可能不適用<br>會看到以下錯誤</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">❯ brew install openjdk@8</span><br><span class="line">==&gt; Downloading https://formulae.brew.sh/api/formula.jws.json</span><br><span class="line"><span class="comment">############################################################################################################################ 100.0%</span></span><br><span class="line">==&gt; Downloading https://formulae.brew.sh/api/cask.jws.json</span><br><span class="line"><span class="comment">############################################################################################################################ 100.0%</span></span><br><span class="line">openjdk@8: The x86_64 architecture is required <span class="keyword">for</span> this software.</span><br><span class="line">Error: openjdk@8: An unsatisfied requirement failed this build.</span><br></pre></td></tr></table></figure><ol><li>要去oracle下載是用自己架構的版本：<a href="https://www.oracle.com/java/technologies/javase/jdk8-arm-downloads.html">https://www.oracle.com/java/technologies/javase/jdk8-arm-downloads.html</a></li><li>進行解壓縮後，我自己放到 <code>/Library/Java/</code> 這個目錄下面</li><li><code>vi ~/.bash_profile</code> 進去添加以下內容</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># java version</span></span><br><span class="line">java8=/Library/Java/jdk1.8.0_401.jdk/Contents/Home</span><br><span class="line">java17=/usr/bin/java</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=<span class="variable">$java17</span></span><br><span class="line"><span class="built_in">alias</span> java8=<span class="string">&quot;export JAVA_HOME=<span class="variable">$java8</span>&quot;</span></span><br><span class="line"><span class="built_in">alias</span> java17=<span class="string">&quot;export JAVA_HOME=<span class="variable">$java17</span>&quot;</span></span><br></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bash_profile <span class="comment"># 讓他生效</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以透過輸入 java8 或是 java17 來切換版本</span></span><br><span class="line">java8 </span><br><span class="line">java -version</span><br><span class="line">&gt; output </span><br><span class="line">java version <span class="string">&quot;1.8.0_401&quot;</span></span><br><span class="line">Java(TM) SE Runtime Environment (build 1.8.0_401-b10)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.401-b10, mixed mode)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">java17 </span><br><span class="line">java -version</span><br><span class="line">&gt; output </span><br><span class="line">openjdk version <span class="string">&quot;17.0.6&quot;</span> 2023-01-17</span><br><span class="line">OpenJDK Runtime Environment Temurin-17.0.6+10 (build 17.0.6+10)</span><br><span class="line">OpenJDK 64-Bit Server VM Temurin-17.0.6+10 (build 17.0.6+10, mixed mode)</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
@@ -3827,9 +3854,9 @@
       
         <tags>
             
-            <tag> 簽證 </tag>
-            
             <tag> 德國 </tag>
+            
+            <tag> 簽證 </tag>
             
         </tags>
       
