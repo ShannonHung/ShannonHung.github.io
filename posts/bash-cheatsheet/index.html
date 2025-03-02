@@ -1,0 +1,377 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Bash Cheatsheet - 腳本的小抄大全 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="前言 最近寫了很多腳本，但是有太多參數會忘記了，這篇文章主要是整理了一些常用的 bash 腳本技巧，包括變數、邏輯判斷、迴圈、重導向、子殼層、Here Documents 等等。 1. Built-in Variables 1234567$0, $1, $2 # 第 n 個參數，即 argv[n]$# # 參數數量，即 argc$@ # 所有的參數$* # 所有的參數，但是會把所有參數當成一個字串">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bash Cheatsheet - 腳本的小抄大全">
+<meta property="og:url" content="https://shannonhung.github.io/posts/bash-cheatsheet/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="前言 最近寫了很多腳本，但是有太多參數會忘記了，這篇文章主要是整理了一些常用的 bash 腳本技巧，包括變數、邏輯判斷、迴圈、重導向、子殼層、Here Documents 等等。 1. Built-in Variables 1234567$0, $1, $2 # 第 n 個參數，即 argv[n]$# # 參數數量，即 argc$@ # 所有的參數$* # 所有的參數，但是會把所有參數當成一個字串">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080">
+<meta property="article:published_time" content="2025-02-09T10:53:35.000Z">
+<meta property="article:modified_time" content="2025-02-13T15:22:04.658Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="bash">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/bash-cheatsheet/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XBNKVVH2P4');
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Bash Cheatsheet - 腳本的小抄大全',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-13 23:22:04'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">80</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">41</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Bash Cheatsheet - 腳本的小抄大全</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2025-02-09T10:53:35.000Z" title="發表於 2025-02-09 18:53:35">2025-02-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2025-02-13T15:22:04.658Z" title="更新於 2025-02-13 23:22:04">2025-02-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/">技術</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/Linux/">Linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">2.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>8分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Bash Cheatsheet - 腳本的小抄大全"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/bash-cheatsheet/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/linux/">linux</a><a class="post-meta__tags" href="/tags/bash/">bash</a></div></div><article class="post-content" id="article-container"><h1 id="前言">前言</h1>
+<p>最近寫了很多腳本，但是有太多參數會忘記了，這篇文章主要是整理了一些常用的 bash 腳本技巧，包括變數、邏輯判斷、迴圈、重導向、子殼層、Here Documents 等等。</p>
+<h2 id="1-Built-in-Variables">1. Built-in Variables</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$0</span>, <span class="variable">$1</span>, <span class="variable">$2</span> <span class="comment"># 第 n 個參數，即 argv[n]</span></span><br><span class="line"><span class="variable">$#</span> <span class="comment"># 參數數量，即 argc</span></span><br><span class="line"><span class="variable">$@</span> <span class="comment"># 所有的參數</span></span><br><span class="line">$* <span class="comment"># 所有的參數，但是會把所有參數當成一個字串 可以搭配 IFS (Internal Field Separator) 使用來分割</span></span><br><span class="line">$? <span class="comment"># 上一個指令的回傳值</span></span><br><span class="line">$$ <span class="comment"># 目前程式的 pid</span></span><br><span class="line">$! <span class="comment"># 上一個在背景執行的程式的 pid</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-Bash-Builins">2. Bash Builins</h2>
+<p>數學運算，這兩個寫法等價。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> $((<span class="number">1</span>+<span class="number">1</span>))</span><br><span class="line"><span class="built_in">echo</span> $[1+1]</span><br></pre></td></tr></table></figure>
+<p>變數，{} 可省略</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">name=<span class="string">&quot;Shannon&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$name</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;name&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 字串長度</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;#name&#125;</span> <span class="comment"># 7</span></span><br></pre></td></tr></table></figure>
+<p>指令替換，兩個寫法等價</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> $(<span class="built_in">whoami</span>)</span><br><span class="line"><span class="built_in">echo</span> `<span class="built_in">whoami</span>`</span><br></pre></td></tr></table></figure>
+<p>展開</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> &#123;1..5&#125; // 1 2 3 4 5</span><br><span class="line"><span class="built_in">echo</span> &#123;1..10..2&#125; // 1 3 5 7 9</span><br></pre></td></tr></table></figure>
+<h2 id="3-Logic-Statement">3. Logic Statement</h2>
+<p>binary comparison operator 常見可以參考 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://tldp.org/LDP/abs/html/comparison-ops.html">Advanced Bash-Scripting Guide</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前面成功執行的話，後面才會執行</span></span><br><span class="line"><span class="built_in">echo</span> hi &amp;&amp; <span class="built_in">echo</span> john </span><br><span class="line"><span class="comment"># 前面指令失敗的話，後面才會執行</span></span><br><span class="line">grep <span class="string">&#x27;notfound&#x27;</span> /dev/null || <span class="built_in">echo</span> <span class="string">&#x27;Not found&#x27;</span> </span><br></pre></td></tr></table></figure>
+<p>字串用 &gt;&lt;= 一類的符號，數字則是用英文縮寫．詳細可以參考 3.1, 3.2 章節</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$age</span> -ge 65 ] &amp;&amp; [ <span class="variable">$name</span> == <span class="string">&quot;John&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;...&#x27;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-1-Boolean-Operation">3.1 Boolean Operation</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">!     <span class="comment">#not</span></span><br><span class="line">-a    <span class="comment">#and</span></span><br><span class="line">-o    <span class="comment">#or</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 變數 num 比 10 小 『或是』 比 100 大</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$num</span> -lt 10 -o <span class="variable">$num</span> -gt 100 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Number <span class="variable">$num</span> is out of range&quot;</span></span><br><span class="line"><span class="keyword">elif</span> [ ! -w <span class="variable">$filename</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Cannot write to <span class="variable">$filename</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-2-Integer-Opteraion">3.2 Integer Opteraion</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -eq: is equal to</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> -eq <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># -ne: is not equal to</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> -ne <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># -gt: is greater than</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> -gt <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># -ge: is greater than or equal to</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> -ge <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># -lt: is less than</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> -lt <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># -le: is less than or equal to</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> -le <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># &lt; is less than (within double parentheses) 要使用雙括弧</span></span><br><span class="line">((&quot;<span class="variable">$a</span>&quot; &lt; &quot;<span class="variable">$b</span>&quot;))</span><br><span class="line"></span><br><span class="line"><span class="comment"># &lt;= is less than or equal to (within double parentheses)</span></span><br><span class="line">((&quot;<span class="variable">$a</span>&quot; &lt;= &quot;<span class="variable">$b</span>&quot;))</span><br><span class="line"></span><br><span class="line"><span class="comment"># &gt; is greater than (within double parentheses)</span></span><br><span class="line">((&quot;<span class="variable">$a</span>&quot; &gt; &quot;<span class="variable">$b</span>&quot;))</span><br><span class="line"></span><br><span class="line"><span class="comment"># &gt;= is greater than or equal to (within double parentheses)</span></span><br><span class="line">((&quot;<span class="variable">$a</span>&quot; &gt;= &quot;<span class="variable">$b</span>&quot;))</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-String-Comparision">3.3 String Comparision</h3>
+<p>在 Bash 中，<code>=</code> 和 <code>==</code> 都用來進行字串比較，但它們之間有一些微妙的差異，特別是在單中括號（<code>[ ]</code>）和雙中括號（<code>[[ ]]</code>）中的行為有所不同。</p>
+<p><strong><code>=</code> 比較符號</strong></p>
+<p>單中括號 <code>[ &quot;$a&quot; = &quot;$b&quot; ]</code></p>
+<ul>
+<li>語法：<code>[ &quot;$a&quot; = &quot;$b&quot; ]</code></li>
+<li>功能：這是最基本的字串比較，用於檢查兩個字串是否相等。</li>
+<li>注意事項：一定要注意空格。在 <code>[ &quot;$a&quot; = &quot;$b&quot; ]</code> 中，<code>=</code> 兩側必須有空格。如果缺少空格，如 <code>[ &quot;$a&quot;=&quot;$b&quot; ]</code>，這樣的比較會導致錯誤，因為 <code>=</code> 會被誤認為是命令的一部分。</li>
+</ul>
+<p>範例：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a=<span class="string">&quot;apple&quot;</span></span><br><span class="line">b=<span class="string">&quot;apple&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> = <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;a 和 b 相等&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p><strong><code>==</code> 比較符號</strong></p>
+<p>單中括號 <code>[ &quot;$a&quot; == &quot;$b&quot; ]</code> 和雙中括號 <code>[[ &quot;$a&quot; == &quot;$b&quot; ]]</code></p>
+<ul>
+<li>語法：<code>[ &quot;$a&quot; == &quot;$b&quot; ]</code> 或 <code>[[ &quot;$a&quot; == &quot;$b&quot; ]]</code></li>
+<li>功能：<code>==</code> 在某些情況下可以用來比較字串，但在單中括號（<code>[ ]</code>）中，<code>==</code> 和 <code>=</code> 基本上是等效的。唯一的區別在於，<code>==</code> 可以在雙中括號（<code>[[ ]]</code>）中使用更多的功能，並且會支援模式匹配（pattern matching）。</li>
+<li>注意事項：
+<ul>
+<li>在單中括號中，<code>==</code> 和 <code>=</code> 是相同的，兩者都用來比較字串。</li>
+<li>在雙中括號中，<code>==</code> 支援字串的模式匹配（例如通配符匹配），這是 <code>=</code> 所不支援的。</li>
+<li>單中括號中的 <code>==</code> 行為類似於 <code>=</code>，但在雙中括號中，<code>==</code> 可以進行模式匹配。</li>
+</ul>
+</li>
+</ul>
+<p>範例（單中括號）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a=<span class="string">&quot;apple&quot;</span></span><br><span class="line">b=<span class="string">&quot;apple&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> == <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;a 和 b 相等&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>範例（雙中括號，模式匹配）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a=<span class="string">&quot;apple&quot;</span></span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> == a* ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;a 以 &#x27;a&#x27; 開頭&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p><strong><code>==</code> 與 <code>=</code> 的差異</strong></p>
+<ul>
+<li>單中括號 <code>[ ]</code>：
+<ul>
+<li>在 <code>[ &quot;$a&quot; == &quot;$b&quot; ]</code> 和 <code>[ &quot;$a&quot; = &quot;$b&quot; ]</code> 中，<code>==</code> 和 <code>=</code> 基本上是等效的。</li>
+<li>它們都比較字串是否相等。</li>
+</ul>
+</li>
+<li>雙中括號 <code>[[ ]]</code>：
+<ul>
+<li>在 <code>[[ &quot;$a&quot; == &quot;$b&quot; ]]</code> 中，<code>==</code> 會進行模式匹配，因此支持通配符（如 <code>*</code> 或 <code>?</code>）。</li>
+<li>而 <code>=</code> 只是做簡單的字串比較，不支持模式匹配。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-Loop">4. Loop</h2>
+<p>for each，這兩種 array 存取值的寫法是等價的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">arr=(Alice Bob Oscar)</span><br><span class="line"></span><br><span class="line"><span class="comment"># method 1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> &#123;0..2&#125;; <span class="keyword">do</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$&#123;arr[i]&#125;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># method 2</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$&#123;arr[@]&#125;</span>&quot;</span>; <span class="keyword">do</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>也可以使用 C-style for loop</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (( i=<span class="number">1</span>; i&lt;=<span class="number">5</span>; i++ )); <span class="keyword">do</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>while Loop</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i=0</span><br><span class="line"><span class="keyword">while</span> [ <span class="variable">$i</span> -lt 5 ]; <span class="keyword">do</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">  ((i++)) <span class="comment"># 雙括號裡面可以寫 C-style 的運算式</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<h2 id="5-Redirection">5. Redirection</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> john | grep <span class="string">&#x27;john&#x27;</span> <span class="comment"># pipe，第一個指令的 stdout 作為第二個指令的 stdin</span></span><br><span class="line"><span class="built_in">echo</span> hi &gt; /tmp/text <span class="comment"># stdout 輸出導向檔案並『覆寫』</span></span><br><span class="line"><span class="built_in">echo</span> hi &gt;&gt; /tmp/text <span class="comment"># stdout 輸出導向檔案，『附加』在該檔案內容後</span></span><br><span class="line"><span class="built_in">echo</span> hi 2&gt;&amp;1 <span class="comment"># stderr 導向 stdout</span></span><br><span class="line"><span class="built_in">echo</span> hi 1&gt;&amp;2 <span class="comment"># stdout 導向 stderr</span></span><br><span class="line"><span class="built_in">echo</span> hi &amp;&gt; /tmp/text <span class="comment"># stdout 與 stderr 都導向檔案</span></span><br><span class="line"><span class="built_in">cat</span> &lt; /tmp/text <span class="comment"># stdin 改從檔案讀入：這個命令使用了輸入重定向（input redirection），將 /tmp/text 檔案的內容作為標準輸入（stdin）傳遞給 cat 命令。輸出結果與cat /tmp/text 無異</span></span><br><span class="line"><span class="built_in">cat</span> &lt;(<span class="built_in">echo</span> hi) <span class="comment"># 把括號中的輸出丟到 cat 指令當 stdin </span></span><br></pre></td></tr></table></figure>
+<h2 id="6-Subshell-bash-parallel-script">6. Subshell (bash parallel script)</h2>
+<p>這段內容主要解釋了 <strong>子殼層 (subshell)</strong> 和 <strong>父殼層 (parent shell)</strong> 之間的執行行為，並說明了如何使用 <code>&amp;</code> 來達到並行執行的效果。</p>
+<p><strong>基本的子殼層 (<code>()</code> 的用法)</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">sleep</span> 5)</span><br><span class="line"><span class="built_in">echo</span> <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>(sleep 5)</code> 這段程式碼會在一個 <em>子殼層</em> 中執行。子殼層是一個新的 shell 進程，它<em>會從父殼層繼承環境變數等設定</em>，但執行的指令會在這個子殼層中處理。</li>
+<li><code>sleep 5</code> 會讓這個子殼層暫停 5 秒。</li>
+<li>然後，<code>echo done</code> 在父殼層中執行。</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li>如果你只是寫 <code>(sleep 5)</code>，父殼層會等待這個子殼層完成後再繼續執行下面的指令（即 <code>echo done</code>）。這是因為沒有使用 <code>&amp;</code>，父殼層會「等待」子殼層執行完成。</li>
+<li>所以，這段程式碼的結果是：子殼層執行 <code>sleep 5</code>，父殼層會等待 5 秒，然後才顯示 <code>done</code>。</li>
+</ul>
+<p><strong>使用 <code>&amp;</code> 讓父殼層不等待子殼層</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">sleep</span> 2; <span class="built_in">echo</span> child) &amp;</span><br><span class="line"><span class="built_in">echo</span> parent</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>(sleep 2; echo child)</code> 這段程式碼放在子殼層中執行，並且加上了 <code>&amp;</code>，表示 <em>將子殼層的執行放到背景進行</em>。</li>
+<li><code>&amp;</code> 讓父殼層不會等子殼層執行完成，而是會繼續執行後續的指令。</li>
+<li><code>echo parent</code> 在父殼層中立即執行。</li>
+</ul>
+<p><strong>結果：</strong></p>
+<ul>
+<li>子殼層會執行 <code>sleep 2</code> 然後顯示 <code>child</code>，這需要 2 秒鐘。</li>
+<li>父殼層會立即執行 <code>echo parent</code>，所以會先顯示 <code>parent</code>。</li>
+<li>兩個 <code>echo</code> 命令是並行執行的，這就達到了平行處理的效果。</li>
+</ul>
+<h2 id="7-Here-Documents">7. Here Documents</h2>
+<p><strong>什麼是 “Here Document”？</strong><br>
+這個名稱的概念來自：「這裡 (here) 就有一份文件 (document)」 → 你不需要從外部讀取，而是直接在腳本內提供多行內容。對應傳統 Shell Script 的標準輸入 (stdin) → 通常程式需要用 &lt; file.txt 讀取外部檔案，但 Here Document 讓你直接內嵌資料。</p>
+<p><strong>📌 具體比較</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>輸入來源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt; file.txt</code></td>
+<td>外部檔案</td>
+<td>讀取 <code>file.txt</code> 內容當作標準輸入</td>
+</tr>
+<tr>
+<td><code>&lt;&lt;EOF ... EOF</code></td>
+<td>內嵌內容</td>
+<td>直接在腳本內提供多行內容</td>
+</tr>
+</tbody>
+</table>
+<p><strong>傳統方式</strong>（讀取外部檔案）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt; myfile.txt</span><br></pre></td></tr></table></figure>
+<p><strong>Here Document</strong>（直接提供內容）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">這是一段內嵌的內容</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+<p>總結來說：<br>
+Here Document 讓 Shell Script 不需要額外的檔案，而可以直接在 “這裡 (here)” 定義輸入，這就是它名稱的由來！</p>
+<div class="note info flat"><p><strong>什麼是EOF?</strong><br>
+EOF 的全名是 “End of File”，意思是「檔案結束」。在 Here Document 的語境中，EOF 只是個常見的 標記 (delimiter)，它本身沒有特別的語法意義。你可以用任何字串作為結束標記，但 EOF 是最常見的約定俗成的標記，因為它表示「這段輸入的結束」。</p>
+<p>例如：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">MYMARKER</span></span><br><span class="line"><span class="string">這是 Here Document 的內容</span></span><br><span class="line"><span class="string">可以寫多行</span></span><br><span class="line"><span class="string">MYMARKER</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 或是使用 &lt;&lt;- 可以使用縮排來提高可讀性</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;-<span class="string">MYMARKER</span></span><br><span class="line"><span class="string">    這是 Here Document 的內容</span></span><br><span class="line"><span class="string">    可以寫多行</span></span><br><span class="line"><span class="string">MYMARKER</span></span><br></pre></td></tr></table></figure>
+</div>
+<h1 id="Refernece">Refernece</h1>
+<ul>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://betterdev.blog/minimal-safe-bash-script-template/">Minimal safe Bash script template</a></li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://tldp.org/LDP/abs/html/">Advanced Bash-Scripting Guide</a>: 如果真的要精通 bash ，可以讀一下，小心不要走火入魔</li>
+<li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://google.github.io/styleguide/shellguide.html">Google | Style Guide - Shell Guide</a> 本篇文章的主要來源</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/bash-cheatsheet/">https://shannonhung.github.io/posts/bash-cheatsheet/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！ <em>如果你覺得我的文章有幫助，希望你可以到我的 github 給我一個 star ⭐️ <a href="https://github.com/ShannonHung/ShannonHung.github.io" rel="external nofollow noreferrer" target="_blank">Shannon Blog Repo</a></em></span></div></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/all-about-git-merge/" title="一次搞懂 Git Merge 方法 - Merge, Fast Forward, Squash （補充 Gitlab Merge Request 策略）"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/merge.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">一次搞懂 Git Merge 方法 - Merge, Fast Forward, Squash （補充 Gitlab Merge Request 策略）</div></div></a></div><div class="next-post pull-right"><a href="/posts/bash-best-practice/" title="養成撰寫 Bash 腳本的好習慣 - Bash Best Practice Guide"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">養成撰寫 Bash 腳本的好習慣 - Bash Best Practice Guide</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/bash-best-practice/" title="養成撰寫 Bash 腳本的好習慣 - Bash Best Practice Guide"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-09</div><div class="title">養成撰寫 Bash 腳本的好習慣 - Bash Best Practice Guide</div></div></a></div><div><a href="/posts/web-terminal/" title="Web Terminal 工具比較"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-13</div><div class="title">Web Terminal 工具比較</div></div></a></div><div><a href="/posts/linux-usual-command/" title="Linux 方便的常用指令（SSH,加密分割壓縮檔）"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1629654291663-b91ad427698f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY5MzU1MjE5MQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-14</div><div class="title">Linux 方便的常用指令（SSH,加密分割壓縮檔）</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">80</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">41</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Built-in-Variables"><span class="toc-text">1. Built-in Variables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Bash-Builins"><span class="toc-text">2. Bash Builins</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Logic-Statement"><span class="toc-text">3. Logic Statement</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Boolean-Operation"><span class="toc-text">3.1 Boolean Operation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Integer-Opteraion"><span class="toc-text">3.2 Integer Opteraion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-String-Comparision"><span class="toc-text">3.3 String Comparision</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Loop"><span class="toc-text">4. Loop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Redirection"><span class="toc-text">5. Redirection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Subshell-bash-parallel-script"><span class="toc-text">6. Subshell (bash parallel script)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Here-Documents"><span class="toc-text">7. Here Documents</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Refernece"><span class="toc-text">Refernece</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2025 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      id: '82bf578a620fd2c2a54f67a77c6dda73',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script data-pjax src="/self/calendar.js"></script><script data-pjax src="/self/languages.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
