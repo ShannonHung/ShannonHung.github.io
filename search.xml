@@ -31,6 +31,35 @@
     
     
     <entry>
+      <title>Ansible - 如果對 Ansible Module 在 Pycharm 中進行 Debug</title>
+      <link href="/posts/ansible-module-debug-pycharm/"/>
+      <url>/posts/ansible-module-debug-pycharm/</url>
+      
+        <content type="html"><![CDATA[<h1 id="介紹">介紹</h1><p>最近在開發 Ansible Module 時，想要在 Pycharm 中進行 Debug，不然每次去猜測每個變數裡面現在的值真的是太痛苦了…於是就嘗試使用 Pycharm 的 Debug 功能來進行除錯。<br>因為最近在開發 collection 的 module 所以本篇主要會以 collection 的 module debug 為主。</p><p>這篇文章會介紹如何在 Pycharm 中進行 Ansible Module 的 Debug，並且提供一些小技巧來讓你更有效率地進行除錯。</p><h1 id="前置作業">前置作業</h1><ol><li>先確保你已經安裝了 Pycharm 和 Ansible。 (這邊建議您使用 venv 或是 conda 來建立虛擬環境，這樣可以避免跟系統的 Python 衝突)</li><li>在 Pycharm 中建立一個新的專案，並且將 Ansible Module 的程式碼放到專案中。</li></ol><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以使用 ansible-galaxy init 來建立 collection 的基本架構</span></span><br><span class="line"><span class="comment"># 然後放在 collections 底下 </span></span><br><span class="line"><span class="string">.</span></span><br><span class="line"><span class="string">├──</span> <span class="string">collections</span></span><br><span class="line"><span class="string">│</span>   <span class="string">└──</span> <span class="string">ansible_collections</span></span><br><span class="line"><span class="string">│</span>       <span class="string">└──</span> <span class="string">shannonhung</span></span><br><span class="line"><span class="string">│</span>           <span class="string">└──</span> <span class="string">my_collection</span></span><br><span class="line"><span class="string">│</span>               <span class="string">├──</span> <span class="string">docs</span></span><br><span class="line"><span class="string">│</span>               <span class="string">├──</span> <span class="string">meta</span></span><br><span class="line"><span class="string">│</span>               <span class="string">│</span>   <span class="string">└──</span> <span class="string">runtime.yml</span></span><br><span class="line"><span class="string">│</span>               <span class="string">├──</span> <span class="string">plugins</span></span><br><span class="line"><span class="string">│</span>               <span class="string">│</span>   <span class="string">├──</span> <span class="string">inventory</span></span><br><span class="line"><span class="string">│</span>               <span class="string">│</span>   <span class="string">├──</span> <span class="string">modules</span></span><br><span class="line"><span class="string">│</span>               <span class="string">│</span>   <span class="string">│</span>   <span class="string">└──</span> <span class="string">my_test.py</span>  <span class="comment"># 這是我們要 debug 的 module</span></span><br><span class="line"><span class="string">│</span>               <span class="string">│</span>   <span class="string">└──</span> <span class="string">README.md</span></span><br><span class="line"><span class="string">│</span>               <span class="string">├──</span> <span class="string">roles</span></span><br><span class="line"><span class="string">│</span>               <span class="string">│</span>   <span class="string">└──</span> <span class="string">cluster_check</span></span><br><span class="line"><span class="string">│</span>               <span class="string">├──</span> <span class="string">README.md</span></span><br><span class="line"><span class="string">│</span>               <span class="string">└──</span> <span class="string">galaxy.yml</span></span><br><span class="line"><span class="string">├──</span> <span class="string">ansible.cfg</span>         <span class="comment"># Ansible 的設定檔</span></span><br><span class="line"><span class="string">├──</span> <span class="string">inventory.ini</span>       <span class="comment"># Ansible 的 inventory 檔案</span></span><br><span class="line"><span class="string">└──</span> <span class="string">test-playbook.yml</span>   <span class="comment"># Ansible 的 playbook 檔案</span></span><br></pre></td></tr></table></figure><h2 id="1-1-設定-Conda-環境">1.1 設定 Conda 環境</h2><p>這邊建議您使用 conda 來建立虛擬環境，這樣可以避免跟系統的 Python 衝突。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 建立 conda 環境</span></span><br><span class="line">conda create -n &lt;conda-env-name&gt; python=3.13</span><br><span class="line"><span class="comment"># 進入 conda 環境</span></span><br><span class="line">conda activate &lt;conda-env-name&gt;</span><br><span class="line"><span class="comment"># 安裝 Ansible 使用 conda 的 pip 套件安裝 ansible 如果單純使用 pip 會裝在本地而非 conda 環境  </span></span><br><span class="line">python -m pip install ansible</span><br></pre></td></tr></table></figure><h2 id="1-2-檔案內容的建置">1.2 檔案內容的建置</h2><p>那這邊介紹一一下每個檔案放些什麼東西。</p><h3 id="ansible-cfg">ansible.cfg</h3><ul><li><code>ansible.cfg</code>：Ansible 的設定檔，這邊可以設定一些 Ansible 的參數，例如 inventory 的路徑、module 的路徑等等。</li></ul><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[defaults]</span></span><br><span class="line"><span class="attr">interpreter_python</span> = /Users/&lt;user-name&gt;/anaconda3/envs/&lt;conda-env-name&gt;/bin/python3.<span class="number">13</span> <span class="comment"># 這邊請改成你自己的 python 路徑，才不會跳 warning </span></span><br><span class="line"><span class="attr">host_key_checking</span> = <span class="literal">False</span> <span class="comment"># 不檢查 host key</span></span><br><span class="line"></span><br><span class="line"><span class="attr">collections_path</span> = ./collections <span class="comment"># collections 的路徑</span></span><br><span class="line"><span class="attr">inventory</span> = ./inventory.ini     <span class="comment"># inventory 的路徑</span></span><br></pre></td></tr></table></figure><h3 id="inventory-ini">inventory.ini</h3><ul><li><code>inventory.ini</code>：Ansible 的 inventory 檔案，這邊可以設定要連線的主機。</li></ul><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[local]</span></span><br><span class="line">localhost <span class="attr">ansible_connection</span>=local</span><br></pre></td></tr></table></figure><ul><li><code>test-playbook.yml</code>：Ansible 的 playbook 檔案，這邊可以設定要執行的 playbook。</li></ul><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Test</span> <span class="string">my</span> <span class="string">collection</span></span><br><span class="line">  <span class="attr">collections:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">shannonhung.my_collection</span></span><br><span class="line">  <span class="attr">hosts:</span> <span class="string">local</span></span><br><span class="line">  <span class="attr">tasks:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">My</span> <span class="string">Test</span></span><br><span class="line">      <span class="attr">my_test:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">hello</span> <span class="string">world</span></span><br><span class="line">        <span class="attr">new:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure><h3 id="test-playbook-py"><a href="http://test-playbook.py">test-playbook.py</a></h3><ul><li><code>my_test.py</code>：Ansible 的 module 檔案，這邊可以設定要執行的 module。</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- name: Test my collection</span><br><span class="line">  collections:</span><br><span class="line">    - shannonhung.my_collection</span><br><span class="line">  hosts: localhost</span><br><span class="line">  tasks:</span><br><span class="line">    - name: My Test</span><br><span class="line">      current_states:</span><br><span class="line">        name: hello world</span><br><span class="line">        new: true</span><br><span class="line">      register: testout</span><br><span class="line">    - name: dump test output</span><br><span class="line">      debug:</span><br><span class="line">        msg: <span class="string">&#x27;&#123;&#123; testout &#125;&#125;&#x27;</span></span><br></pre></td></tr></table></figure><h3 id="my-test-py">my_test.py</h3><div class="note info flat"><p>要記得先使用 <code>ansible-galaxy collection build</code> 來建立 collection 的檔案，這樣才會有 <code>shannonhung.my_collection</code> 這個 collection。</p></div><ul><li><code>my_test.py</code>：Ansible 的 module 檔案，這邊可以設定要執行的 module。</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Copyright: (c) 2018, Terry Jones &lt;terry.jones@example.org&gt;</span></span><br><span class="line"><span class="comment"># GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> (absolute_import, division, print_function)</span><br><span class="line"></span><br><span class="line">__metaclass__ = <span class="built_in">type</span></span><br><span class="line"></span><br><span class="line">DOCUMENTATION = <span class="string">r&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">module: my_test</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">short_description: This is my test module</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># If this is part of a collection, you need to use semantic versioning,</span></span><br><span class="line"><span class="string"># i.e. the version is of the form &quot;2.5.0&quot; and not &quot;2.4&quot;.</span></span><br><span class="line"><span class="string">version_added: &quot;1.0.0&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">description: This is my longer description explaining my test module.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">options:</span></span><br><span class="line"><span class="string">    name:</span></span><br><span class="line"><span class="string">        description: This is the message to send to the test module.</span></span><br><span class="line"><span class="string">        required: true</span></span><br><span class="line"><span class="string">        type: str</span></span><br><span class="line"><span class="string">    new:</span></span><br><span class="line"><span class="string">        description:</span></span><br><span class="line"><span class="string">            - Control to demo if the result of this module is changed or not.</span></span><br><span class="line"><span class="string">            - Parameter description can be a list as well.</span></span><br><span class="line"><span class="string">        required: false</span></span><br><span class="line"><span class="string">        type: bool</span></span><br><span class="line"><span class="string"># Specify this value according to your collection</span></span><br><span class="line"><span class="string"># in format of namespace.collection.doc_fragment_name</span></span><br><span class="line"><span class="string"># extends_documentation_fragment:</span></span><br><span class="line"><span class="string">#     - my_namespace.my_collection.my_doc_fragment_name</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">author:</span></span><br><span class="line"><span class="string">    - Your Name (@yourGitHubHandle)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">EXAMPLES = <span class="string">r&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"># Pass in a message</span></span><br><span class="line"><span class="string">- name: Test with a message</span></span><br><span class="line"><span class="string">  my_namespace.my_collection.my_test:</span></span><br><span class="line"><span class="string">    name: hello world</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># pass in a message and have changed true</span></span><br><span class="line"><span class="string">- name: Test with a message and changed output</span></span><br><span class="line"><span class="string">  my_namespace.my_collection.my_test:</span></span><br><span class="line"><span class="string">    name: hello world</span></span><br><span class="line"><span class="string">    new: true</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># fail the module</span></span><br><span class="line"><span class="string">- name: Test failure of the module</span></span><br><span class="line"><span class="string">  my_namespace.my_collection.my_test:</span></span><br><span class="line"><span class="string">    name: fail me</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">RETURN = <span class="string">r&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"># These are examples of possible return values, and in general should use other names for return values.</span></span><br><span class="line"><span class="string">original_message:</span></span><br><span class="line"><span class="string">    description: The original name param that was passed in.</span></span><br><span class="line"><span class="string">    type: str</span></span><br><span class="line"><span class="string">    returned: always</span></span><br><span class="line"><span class="string">    sample: &#x27;hello world&#x27;</span></span><br><span class="line"><span class="string">message:</span></span><br><span class="line"><span class="string">    description: The output message that the test module generates.</span></span><br><span class="line"><span class="string">    type: str</span></span><br><span class="line"><span class="string">    returned: always</span></span><br><span class="line"><span class="string">    sample: &#x27;goodbye&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> ansible.module_utils.basic <span class="keyword">import</span> AnsibleModule</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">run_module</span>():</span><br><span class="line">    <span class="comment"># define available arguments/parameters a user can pass to the module</span></span><br><span class="line">    module_args = <span class="built_in">dict</span>(</span><br><span class="line">        name=<span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;str&#x27;</span>, required=<span class="literal">True</span>),</span><br><span class="line">        new=<span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;bool&#x27;</span>, required=<span class="literal">False</span>, default=<span class="literal">False</span>),</span><br><span class="line">        <span class="comment"># real</span></span><br><span class="line">        desired_missing=<span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;bool&#x27;</span>, required=<span class="literal">False</span>, default=<span class="literal">False</span>),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># seed the result dict in the object</span></span><br><span class="line">    <span class="comment"># we primarily care about changed and state</span></span><br><span class="line">    <span class="comment"># changed is if this module effectively modified the target</span></span><br><span class="line">    <span class="comment"># state will include any data that you want your module to pass back</span></span><br><span class="line">    <span class="comment"># for consumption, for example, in a subsequent task</span></span><br><span class="line">    result = <span class="built_in">dict</span>(</span><br><span class="line">        changed=<span class="literal">False</span>,</span><br><span class="line">        original_message=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        message=<span class="string">&#x27;&#x27;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># the AnsibleModule object will be our abstraction working with Ansible</span></span><br><span class="line">    <span class="comment"># this includes instantiation, a couple of common attr would be the</span></span><br><span class="line">    <span class="comment"># args/params passed to the execution, as well as if the module</span></span><br><span class="line">    <span class="comment"># supports check mode</span></span><br><span class="line">    module = AnsibleModule(</span><br><span class="line">        argument_spec=module_args,</span><br><span class="line">        supports_check_mode=<span class="literal">True</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># if the user is working with this module in only check mode we do not</span></span><br><span class="line">    <span class="comment"># want to make any changes to the environment, just return the current</span></span><br><span class="line">    <span class="comment"># state with no modifications</span></span><br><span class="line">    <span class="keyword">if</span> module.check_mode:</span><br><span class="line">        module.exit_json(**result)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># manipulate or modify the state as needed (this is going to be the</span></span><br><span class="line">    <span class="comment"># part where your module will do what it needs to do)</span></span><br><span class="line">    result[<span class="string">&#x27;original_message&#x27;</span>] = module.params[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">    result[<span class="string">&#x27;message&#x27;</span>] = <span class="string">&#x27;goodbye&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># use whatever logic you need to determine whether or not this module</span></span><br><span class="line">    <span class="comment"># made any modifications to your target</span></span><br><span class="line">    <span class="keyword">if</span> module.params[<span class="string">&#x27;new&#x27;</span>]:</span><br><span class="line">        result[<span class="string">&#x27;changed&#x27;</span>] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># during the execution of the module, if there is an exception or a</span></span><br><span class="line">    <span class="comment"># conditional state that effectively causes a failure, run</span></span><br><span class="line">    <span class="comment"># AnsibleModule.fail_json() to pass in the message and the result</span></span><br><span class="line">    <span class="keyword">if</span> module.params[<span class="string">&#x27;name&#x27;</span>] == <span class="string">&#x27;fail me&#x27;</span>:</span><br><span class="line">        module.fail_json(msg=<span class="string">&#x27;You requested this to fail&#x27;</span>, **result)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># in the event of a successful module execution, you will want to</span></span><br><span class="line">    <span class="comment"># simple AnsibleModule.exit_json(), passing the key/value results</span></span><br><span class="line">    module.exit_json(**result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    run_module()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure><p>基本上到這裡應該要可以執行以下指令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible-playbook test-playbook.yml</span><br></pre></td></tr></table></figure><p>就會出現以下畫面：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">❯ ansible-playbook test-playbook.yml</span><br><span class="line"></span><br><span class="line">PLAY [Test my collection] *********************************************************************************************************************************************************************************************************</span><br><span class="line"></span><br><span class="line">TASK [Gathering Facts] ************************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [localhost]</span><br><span class="line"></span><br><span class="line">TASK [My Test] ********************************************************************************************************************************************************************************************************************</span><br><span class="line">changed: [localhost]</span><br><span class="line"></span><br><span class="line">TASK [dump <span class="built_in">test</span> output] ***********************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [localhost] =&gt; &#123;</span><br><span class="line">    <span class="string">&quot;msg&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;changed&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="string">&quot;failed&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">&quot;message&quot;</span>: <span class="string">&quot;goodbye&quot;</span>,</span><br><span class="line">        <span class="string">&quot;original_message&quot;</span>: <span class="string">&quot;hello world&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PLAY RECAP ************************************************************************************************************************************************************************************************************************</span><br><span class="line">localhost                  : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   </span><br></pre></td></tr></table></figure><h1 id="Step1-Pycharm-Debug-設定">Step1. Pycharm Debug 設定</h1><p><img src="/img/figure/ansible-1.png" alt=""></p><p>在 Pycharm 中，打開 <code>Run/Debug Configurations</code>，然後點擊 <code>+</code>，選擇 <code>Pythoon Debug Server</code>。可以看到上圖畫面，然後設定以下參數：</p><ol><li>選擇建立 <code>Python Debug Server</code>。</li><li>然後設定名稱。</li><li>這邊會告訴你等等設定完之後要在本機的 python 環境中下載 <code>pydevd-pycharm</code> 這個套件</li><li>然後設定 <code>port</code>，隨便都可以。</li><li>Path Mappings 設定成 <code>&lt;執行專案ansible的root目錄&gt;=&lt;debug server裡面的環境這裡使用tmp&gt;</code>，這邊是我們的 module 的路徑。</li></ol><p>都設定好之後，按下 <code>OK</code>，然後會看到上面有一個 <code>Python Debug Server</code> 的選項。</p><p>然後準備下載 <code>pydevd-pycharm</code> 這個套件，這邊可以使用 <code>pip</code> 或是 <code>conda</code> 來下載。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install -n &lt;conda-env-name&gt; pydevd-pycharm</span><br></pre></td></tr></table></figure><h1 id="Step2-在-Ansible-Module-中加入-Debug-的程式碼">Step2. 在 Ansible Module 中加入 Debug 的程式碼</h1><p>在 Ansible Module 中加入以下程式碼，可以把這段程式碼放在你想要 debug 的地方，這樣啟動 debug server 的時候才會卡在這裡。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 仔入 pydevd_pycharm 的套件</span></span><br><span class="line"><span class="keyword">import</span> pydevd_pycharm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把下面這行程式碼放在你想要 debug 的地方 這樣啟動 debug server 的時候才會卡在這裡 </span></span><br><span class="line">pydevd_pycharm.settrace(<span class="string">&#x27;localhost&#x27;</span>, port=<span class="number">12345</span>, stdoutToServer=<span class="literal">True</span>, stderrToServer=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure><p><img src="/img/figure/ansible-2.png" alt=""></p><h1 id="Step3-開啟-Debug-Server">Step3. 開啟 Debug Server</h1><p><img src="/img/figure/ansible-3.png" alt=""></p><p>然後選擇蟲蟲的圖示，然後選擇 <code>Python Debug Server</code>，然後按下 <code>Debug</code>，這樣就會啟動 debug server。應該會看到以下畫面，就表示啟動 debug server 成功了。</p><p><img src="/img/figure/ansible-4.png" alt=""></p><p>最後都準備就緒了，只要按照正常的流程執行 <code>ansible-playbook test-playbook.yml</code>，然後就會進入 debug 的畫面了。<br>這樣就可以在 Pycharm 中進行 Ansible Module 的 Debug 了。</p><p><img src="/img/figure/ansible-5.png" alt=""></p><h1 id="Reference">Reference</h1><ul><li>Ref: <a href="https://philroche.net/2021/10/15/debugging-ansible-collections-in-pycharm/">The musing of Philip Roche</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工具 </category>
+          
+          <category> Ansible </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Ansible </tag>
+            
+            <tag> Debug </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>GitLab CI/CD Components 介紹與使用</title>
       <link href="/posts/gitlab-component/"/>
       <url>/posts/gitlab-component/</url>
@@ -254,13 +283,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -784,9 +813,9 @@
             
             <tag> Recursion </tag>
             
-            <tag> Hard </tag>
-            
             <tag> Dynamic Programming </tag>
+            
+            <tag> Hard </tag>
             
         </tags>
       
@@ -1383,13 +1412,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -1420,8 +1449,6 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
@@ -1429,6 +1456,8 @@
             <tag> Recursion </tag>
             
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -1496,13 +1525,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -1533,13 +1562,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -1607,13 +1636,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> Easy </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -1644,13 +1673,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -1681,13 +1710,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> DFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> DFS </tag>
             
         </tags>
       
@@ -1718,13 +1747,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> BFS </tag>
-            
             <tag> practice </tag>
             
             <tag> binary-tree </tag>
             
             <tag> Medium </tag>
+            
+            <tag> BFS </tag>
             
         </tags>
       
@@ -1755,11 +1784,11 @@
             
             <tag> Lecture </tag>
             
+            <tag> Tree </tag>
+            
             <tag> BFS </tag>
             
             <tag> DFS </tag>
-            
-            <tag> Tree </tag>
             
         </tags>
       
@@ -2035,9 +2064,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> Tree </tag>
-            
             <tag> BST </tag>
+            
+            <tag> Tree </tag>
             
         </tags>
       
@@ -2348,11 +2377,11 @@
             
             <tag> practice </tag>
             
+            <tag> Hard </tag>
+            
             <tag> Review-Needed </tag>
             
             <tag> Stack </tag>
-            
-            <tag> Hard </tag>
             
         </tags>
       
