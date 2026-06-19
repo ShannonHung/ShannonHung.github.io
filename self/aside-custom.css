@@ -47,7 +47,7 @@
   transition: none;
   display: none;
 }
-#aside-content .card-categories > .parent > a.expand + .child {
+#aside-content .card-categories .card-category-list > .parent > a.expand + .child {
   display: block;
   max-height: none;
   opacity: 1;

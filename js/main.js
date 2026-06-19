@@ -864,6 +864,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = e.target
       if (target.nodeName === 'I') {
         e.preventDefault()
+        e.stopPropagation()
         target.parentNode.classList.toggle('expand')
       }
     }
