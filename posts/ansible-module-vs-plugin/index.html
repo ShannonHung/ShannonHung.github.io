@@ -1,0 +1,352 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Ansible - 自己寫 Ansible Module 與 Action Plugin 的比較 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="前言 最近嘗試在使用 Ansible 寫出針對 Inventory 的 Current State 狀態整理， Inventory 會記錄 kubernetes 中 cluster 所有的 nodes，但很多時候我們在開始執行 playbook 時才發現有些 node 的狀態不是健康的，所以希望寫出一個流程可以先做一些 precheck 捕捉 inventory 的狀態，這樣在執行 playboo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ansible - 自己寫 Ansible Module 與 Action Plugin 的比較">
+<meta property="og:url" content="https://shannonhung.github.io/posts/ansible-module-vs-plugin/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="前言 最近嘗試在使用 Ansible 寫出針對 Inventory 的 Current State 狀態整理， Inventory 會記錄 kubernetes 中 cluster 所有的 nodes，但很多時候我們在開始執行 playbook 時才發現有些 node 的狀態不是健康的，所以希望寫出一個流程可以先做一些 precheck 捕捉 inventory 的狀態，這樣在執行 playboo">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://shannonhung.github.io/img/cover/pipeline.jpg">
+<meta property="article:published_time" content="2025-04-26T05:53:00.000Z">
+<meta property="article:modified_time" content="2025-04-26T06:57:12.632Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="Ansible">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shannonhung.github.io/img/cover/pipeline.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Ansible - 自己寫 Ansible Module 與 Action Plugin 的比較",
+  "url": "https://shannonhung.github.io/posts/ansible-module-vs-plugin/",
+  "image": "https://shannonhung.github.io/img/cover/pipeline.jpg",
+  "datePublished": "2025-04-26T05:53:00.000Z",
+  "dateModified": "2025-04-26T06:57:12.632Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shannon Hung",
+      "url": "https://shannonhung.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/ansible-module-vs-plugin/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || []
+function gtag(){dataLayer.push(arguments)}
+gtag('js', new Date())
+gtag('config', 'G-XBNKVVH2P4')
+btf.addGlobalFn('pjaxComplete', () => {
+  gtag('config', 'G-XBNKVVH2P4', {'page_path': window.location.pathname})
+}, 'google_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '複製成功',
+    error: '複製失敗',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切換為繁體中文","cht_to_chs":"已切換為簡體中文","day_to_night":"已切換為深色模式","night_to_day":"已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Ansible - 自己寫 Ansible Module 與 Action Plugin 的比較',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"><link rel="stylesheet" href="/self/aside-custom.css"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover/pipeline.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a><a class="nav-page-title" href="/"><span class="site-name">Ansible - 自己寫 Ansible Module 與 Action Plugin 的比較</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首頁</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Ansible - 自己寫 Ansible Module 與 Action Plugin 的比較</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2025-04-26T05:53:00.000Z" title="發表於 2025-04-26 13:53:00">2025-04-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2025-04-26T06:57:12.632Z" title="更新於 2025-04-26 14:57:12">2025-04-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7/Ansible/">Ansible</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">總字數:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時間:</span><span>7分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/ansible-module-vs-plugin/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Ansible/">Ansible</a></div></div><article class="container post-content" id="article-container"><h1 id="前言">前言</h1>
+<p>最近嘗試在使用 Ansible 寫出針對 Inventory 的 Current State 狀態整理， Inventory 會記錄 kubernetes 中 cluster 所有的 nodes，但很多時候我們在開始執行 playbook 時才發現有些 node 的狀態不是健康的，所以希望寫出一個流程可以先做一些 precheck 捕捉 inventory 的狀態，這樣在執行 playbook 時就可以針對這些 unhealthy node 先排除，不會因為 node 的狀態不健康而導致 playbook 執行失敗。這種自己定義的邏輯我希望自己寫 .py 來實現，所以我在思考應該使用 module 還是 action plugin 來實現。這兩者的差異還是有點模糊，於是就寫下這篇文章來做個比較。</p>
+<p>在開始之前，先來講一些 ansible 常見的術語：</p>
+<ul>
+<li><strong>Modules</strong>:
+<ul>
+<li>透過 ansible 推送到各個節點的腳本 (像是那個 module 的 .py 檔案)，我們稱為<code>module</code>。</li>
+<li>而需要注意的事情是，<em>這些 module 是在 ansible 的目標主機上執行的，你在 Playbook 裡下 module 的參數，Ansible 幫你把 module（其實是 Python 腳本）丟到目標機器</em>，然後執行。所以 module 的 運作環境 是在遠端機器上。</li>
+<li>常見的 module 像是 <code>ansible.builtin.command</code> 或是 <code>ansible.builtin.copy</code>, <code>kubernetes.core.k8s</code>，這些 module 其實都是在 target host 上跑的。</li>
+</ul>
+</li>
+<li><strong>Module utilities</strong> （Ref: <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_module_utilities.html">Using and developing module utilities</a>
+<ul>
+<li>是一些可以在 module 裡面使用的 helper function，這些 function 可以幫助你更方便地寫 module，像是 <code>AnsibleModule</code> 就是 module utilities 的一個範例。</li>
+<li>當很多個 module 使用相同的程式碼時，我們可以把這些函數儲存在 module utilieis 以最大限度地減少重複和維護。</li>
+</ul>
+</li>
+<li><strong>Plugins</strong>:
+<ul>
+<li>主要是用來擴充 ansible 的核心功能，可以做到轉換資料、紀錄輸出、連線到 inventory 等等。</li>
+<li><em>Plugin 與 Module 不同的點在於 Plugin 主要執行在 Control Node 上用來處理 Ansible 的輸入和輸出</em>。</li>
+</ul>
+</li>
+</ul>
+<div class="note info flat"><p>小知識：Ansible 這個詞起源於科幻小說 Ender’s Game 中的一種超光速通訊裝置，用來控制遠方的星際戰艦。</p>
+</div>
+<h1 id="正確觀念">正確觀念</h1>
+<p>在開始之前，想先帶各位了解， 是否要使用到 module 還是 plugin? 在加上根據官方說明 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules.html">Should you develop a module</a> 有提到開發 modules 雖然很簡單，但是很多情境上不一定是必要的，我們在開始寫一個新的 module 之前應該要先問問自己：</p>
+<p><strong>1. 使否已經存在一個類似的 module 可以使用了？</strong><br>
+在現有的 module 裡面可能已經存在你需要的功能就不建議再重新造輪子了。</p>
+<p><strong>2. 你是否使用 action plugin 而不是 module 來開發？（重要）</strong><br>
+一個 action plugin 也許是最好的方法來滿足你想做到的功能， action plugins 是跑在 control node 而不是 managed node 上 （也就是我們的目標主機），並且 action plugin 最方便的地方其功能可供所有 module 使用。舉例來說，是可以在 action plugin 中使用其他 module 的，更詳細的部分可以參考 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_plugins.html#developing-plugins">developing plugins page</a>。</p>
+<p><strong>3. 是否使用 role 而不是 module 來開發？（重要）</strong><br>
+現有模組的組合可能涵蓋您想要的功能。您可以為這種類型的用例編寫一個 role。查看 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html#playbooks-reuse-roles">roles documentation</a>。</p>
+<p><strong>4. 是否要建立一個 collections 而不是一個 module 來開發？（重要）</strong><br>
+您想要的功能可能對於單一 module 來說太大時。像是您想將 Ansible 連接到新的雲端供應商、資料庫或網路平台，則可能需要開發一個新的 collection 會比較適合。查看 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_in_groups.html#developing-modules-in-groups">develop a new collection</a>。</p>
+<p>另外，有幾個 module 撰寫要注意的事情：</p>
+<p><em>1. 每個 module 都應具有簡潔且定義明確的功能</em>。基本上，遵循 UNIX 原則，專注做好一件事。</p>
+<p><em>2. 一個 module 不應該要求使用者了解它底層呼叫的 API 或工具的所有選項或參數</em>。</p>
+<ul>
+<li>
+<p>如果你寫了一個 module，是呼叫某個底層工具（例如 kubectl、curl、aws cli…），你不應該把所有底層參數暴露給使用者，讓他們來選。</p>
+</li>
+<li>
+<p>使用者需要 查 API 文件或 CLI 手冊 才知道該怎麼用你的 module，那這不是一個好 module。</p>
+</li>
+<li>
+<p>如果你無法在 Ansible module 文件裡 列出所有合法參數值（例如：因為參數太複雜、格式不穩定、依賴別的 context），那可能代表你的 module 應該被重構或會被拒絕收錄到 Ansible Galaxy。</p>
+<details class="toggle" ><summary class="toggle-button" style="">範例</summary><div class="toggle-content"><p>❌ 不好的例子（違反原則）：這樣的寫法其實只是把使用者丟進 CLI 的坑，Ansible 本身幾乎沒幫忙做事。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">my_module:</span></span><br><span class="line">    <span class="attr">cli_args:</span> <span class="string">&quot;--foo=bar --enable-x --disable-y&quot;</span></span><br></pre></td></tr></table></figure>
+<p>✅ 好的例子（符合原則）：這種寫法抽象了底層工具的參數，讓使用者可以「以直觀的方式」來使用 module，而不是需要熟悉底層工具。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">my_module:</span></span><br><span class="line">    <span class="attr">enable_feature_x:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">region:</span> <span class="string">us-east-1</span></span><br><span class="line">    <span class="attr">timeout:</span> <span class="number">60</span></span><br></pre></td></tr></table></figure>
+</div></details>
+</li>
+</ul>
+<p><em>3. Ansible modules 應該把實際邏輯包好，不是只做一層很薄的包裝</em></p>
+<ul>
+<li>Module 通常應該包含大部分與資源互動的邏輯。也就是說，不是把責任丟給 user 自己寫 playbook，而是 module 自己要負責好處理邏輯。</li>
+<li>如果你寫的 module 只是簡單包一層 API，裡面幾乎沒邏輯，使用者就會被迫把複雜邏輯寫在 playbook 裡。</li>
+<li>所以這種 module 應該被拒絕收錄。</li>
+</ul>
+<h1 id="案例分析">案例分析</h1>
+<p><strong>因為我的 use case 主要是在：</strong></p>
+<ul>
+<li>在控制端執行 playbook 的地方，使用 <code>kubectl get nodes</code> 的相關指令來獲取 node 的狀態。</li>
+<li>然後整理出 unhealthy 的節點內容，會傳整理結果給 plabyook</li>
+</ul>
+<p>在上面的例子中，<em>因為我們沒有需要「到每一台節點」執行某些檢查，像是去每一台機器下 <code>systemctl status</code> 來確認某些套件是否有裝了。因次我們應該使用 action plugin 在控制主機執行即可。</em><br>
+所以我們不需要使用 module 的方式來執行。使用 <code>action plugin</code> 即可做到。因為你根本不需要去很多台主機，事情在 bastion 查一次就可以了。</p>
+<p><strong>如果我們使用 Module 會遇到什麼困難？</strong><br>
+如果我們強行使用 Module 會變成：</p>
+<ul>
+<li>每個 module 會被分派到目標主機去跑，但其實我們的案例沒有需要到目標主機。</li>
+<li>如果 target 是多套 cluster 讓每台都要自己下 kubectl 指令，那資料分散也不好處理。</li>
+<li><em>(重要)最重要的是自己寫的 module 不能呼叫其他 module，因為 module 是在 target 主機上執行的程式（通常是獨立的 Python script）。</em></li>
+<li>它執行時是經由 ansible runner 單獨執行的環境，不知道其他 module 的存在，也無法像 action plugin 呼叫 <code>_execute_module</code>。</li>
+<li><em>module 設計原則是「單一職責、專注在某個資源的狀態處理」，不應該再管 orchestrate 其他 module</em>。</li>
+</ul>
+<p><strong>使用其他 module ?</strong></p>
+<p>因為我有一個步驟是想要使用 ansible 本身的 ping module 來檢查目標主機是否可以使用 ansible 控制這台主機，他與一般的 ICMP ping 不同，這個是要確認目標主機是否可以使用 ansible 控制這台主機。<br>
+為了可以使用這個 module，我們需要在 action plugin 裡面使用 <code>_execute_module</code> 來執行這個 module，這樣就可以在控制端執行 ping 的指令了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">result = self._execute_module(</span><br><span class="line">    module_name=<span class="string">&#x27;ping&#x27;</span>,</span><br><span class="line">    module_args=<span class="built_in">dict</span>(),</span><br><span class="line">    task_vars=task_vars</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h1 id="結論">結論</h1>
+<p>在了解完這些背景之後，最關鍵的要素使用 action plugin 來開發有以下：</p>
+<ol>
+<li>沒有需要「到每一台節點」執行某些檢查</li>
+<li>使用 ansible 原生的 module 來做處理資料</li>
+</ol>
+<p>但是如果今天你需要到每一台節點去檢查某些狀態，像是去每一台機器下 <code>systemctl status</code> 來確認某些套件是否有裝了，那就可以考慮使用 module 的方式來執行。</p>
+<h1 id="補充：ansible-ping-vs-icmp-ping">補充：ansible ping vs icmp ping</h1>
+<p><strong>什麼是「普通的 ping」？</strong><br>
+當你在電腦上打這行指令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping 192.168.1.10</span><br></pre></td></tr></table></figure>
+<p>這會用「ICMP 協定」去問 <code>192.168.1.10</code> 這台機器：</p>
+<blockquote>
+<p>嘿～你有在線上嗎？可以回我一個訊息嗎？</p>
+</blockquote>
+<p><em>這個叫 網路層的連線測試（只是確認網路通不通、主機有沒有回應）。</em></p>
+<p><strong>什麼是「Ansible 的 ping module」？</strong><br>
+在 Ansible 裡，如果你這樣下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Ping</span> <span class="string">hosts</span> <span class="string">with</span> <span class="string">ansible</span></span><br><span class="line">  <span class="attr">ansible.builtin.ping:</span></span><br></pre></td></tr></table></figure>
+<p>它不是做「普通 ping」，而是：<br>
+👉 Ansible會 連到目標機器（通常用 SSH 連線），<br>
+👉 登入成功後，在機器上跑一小段 Python code，<br>
+👉 確認「我可以用 Ansible 控制這台機器喔」。</p>
+<blockquote>
+<p>所以 Ansible 的 ping 是在問：<br>
+嘿～我能成功登入你的系統、而且可以跑 Python 腳本嗎？</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/ansible-module-vs-plugin/">https://shannonhung.github.io/posts/ansible-module-vs-plugin/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 授權協議。轉載請註明來源 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="post-share"><div class="social-share" data-image="/img/cover/pipeline.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/ansible-module-debug-pycharm/" title="Ansible - 如果對 Ansible Module 在 Pycharm 中進行 Debug"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/pipeline.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Ansible - 如果對 Ansible Module 在 Pycharm 中進行 Debug</div></div><div class="info-2"><div class="info-item-1">介紹 最近在開發 Ansible Module 時，想要在 Pycharm 中進行 Debug，不然每次去猜測每個變數裡面現在的值真的是太痛苦了…於是就嘗試使用 Pycharm 的 Debug 功能來進行除錯。 因為最近在開發 collection 的 module 所以本篇主要會以 collection 的 module debug 為主。 這篇文章會介紹如何在 Pycharm 中進行 Ansible Module 的 Debug，並且提供一些小技巧來讓你更有效率地進行除錯。 前置作業  先確保你已經安裝了 Pycharm 和 Ansible。 (這邊建議您使用 venv 或是 conda 來建立虛擬環境，這樣可以避免跟系統的 Python 衝突) 在 Pycharm 中建立一個新的專案，並且將 Ansible Module 的程式碼放到專案中。  12345678910111213141516171819202122# 可以使用 ansible-galaxy init 來建立 collection 的基本架構# 然後放在 collections 底下 .├── collect...</div></div></div></a><a class="pagination-related" href="/posts/leetcode-sum-up/" title="LeetCode - 刷題之旅的總結與心得"><img class="cover" src="/img/loading-icon.gif" data-original="/img/mountain-germany.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">LeetCode - 刷題之旅的總結與心得</div></div><div class="info-2"><div class="info-item-1">前言 這裡是我寫Leetcode總結核心概念的地方，不同的情境會使用到的武器不同，這裡我會描述在什麼樣的情境滿足下，適合的資料結構或是演算法。而這個演算法的核心概念是什麼，同時我也會紀錄一些我在刷題時的心得，以及刷題的時間，來慢慢看到成長與進步。 Leetcode時間紀錄  Hash Table 情境1: 快速找元素  通常使用 Hash 的關鍵在於要用 O(1) 的時間複雜度來查找元素，這樣就可以不用遍歷整個 list 從 O(n) 變成 O(1) 的時間內完成整個問題。 相關題目：  leetcode-1-two-sum: 給定一個 target 數值，從 list 中找到兩個數字相加等於 target leetcode-12-integer-to-roman: 整數轉羅馬數字 leetcode-13-roman-to-integer: 羅馬數字轉整數    情境2: 比對無序的東西  如果要比對兩個無序的東西，像是兩個字串是否是 Anagram，這時候可以使用 Hash 來記錄每個字元出現的次數，然後比對兩個 Hash 是否相同。 相關題目：  leetcode-49-gr...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/ansible-module-debug-pycharm/" title="Ansible - 如果對 Ansible Module 在 Pycharm 中進行 Debug"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/pipeline.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-24</div><div class="info-item-2">Ansible - 如果對 Ansible Module 在 Pycharm 中進行 Debug</div></div><div class="info-2"><div class="info-item-1">介紹 最近在開發 Ansible Module 時，想要在 Pycharm 中進行 Debug，不然每次去猜測每個變數裡面現在的值真的是太痛苦了…於是就嘗試使用 Pycharm 的 Debug 功能來進行除錯。 因為最近在開發 collection 的 module 所以本篇主要會以 collection 的 module debug 為主。 這篇文章會介紹如何在 Pycharm 中進行 Ansible Module 的 Debug，並且提供一些小技巧來讓你更有效率地進行除錯。 前置作業  先確保你已經安裝了 Pycharm 和 Ansible。 (這邊建議您使用 venv 或是 conda 來建立虛擬環境，這樣可以避免跟系統的 Python 衝突) 在 Pycharm 中建立一個新的專案，並且將 Ansible Module 的程式碼放到專案中。  12345678910111213141516171819202122# 可以使用 ansible-galaxy init 來建立 collection 的基本架構# 然後放在 collections 底下 .├── collect...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shannon Hung</div><div class="author-info-description">爲了避免健忘，而開始記錄</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AD%A3%E7%A2%BA%E8%A7%80%E5%BF%B5"><span class="toc-text">正確觀念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="toc-text">案例分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%90%E8%AB%96"><span class="toc-text">結論</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A3%9C%E5%85%85%EF%BC%9Aansible-ping-vs-icmp-ping"><span class="toc-text">補充：ansible ping vs icmp ping</span></a></li></ol></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By Shannon Hung</span></div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="前往評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="繁簡轉換">繁</button><button id="darkmode" type="button" title="日夜模式切換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="回到頂端"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '9876507b5246ce16f1dccf7f5ac05076'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script data-pjax src="/self/calendar.js"></script><script data-pjax src="/self/languages.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>

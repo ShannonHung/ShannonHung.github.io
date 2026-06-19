@@ -11,30 +11,137 @@
 <meta property="article:author" content="Shannon Hung">
 <meta property="article:tag" content="leetcode">
 <meta property="article:tag" content="Medium">
-<meta property="article:tag" content="Leetcode Contest">
 <meta property="article:tag" content="Sliding Window">
+<meta property="article:tag" content="Leetcode Contest">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://shannonhung.github.io/img/cover/fever.jpg"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XBNKVVH2P4');
+<meta name="twitter:image" content="https://shannonhung.github.io/img/cover/fever.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "LeetCode Biweekly Contest #Find the Power of K-Size Subarrays - 打怪開始",
+  "url": "https://shannonhung.github.io/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/",
+  "image": "https://shannonhung.github.io/img/cover/fever.jpg",
+  "datePublished": "2024-08-18T03:26:54.000Z",
+  "dateModified": "2024-09-09T11:33:06.852Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shannon Hung",
+      "url": "https://shannonhung.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || []
+function gtag(){dataLayer.push(arguments)}
+gtag('js', new Date())
+gtag('config', 'G-XBNKVVH2P4')
+btf.addGlobalFn('pjaxComplete', () => {
+  gtag('config', 'G-XBNKVVH2P4', {'page_path': window.location.pathname})
+}, 'google_analytics')
 </script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
-  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  localSearch: undefined,
   translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
-  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
-  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
   copy: {
     success: '複製成功',
-    error: '複製錯誤',
+    error: '複製失敗',
     noSupport: '瀏覽器不支援'
   },
   relativeDate: {
     homepage: false,
     post: false
   },
-  runtime: '天',
+  runtime: '',
   dateSuffix: {
     just: '剛剛',
     min: '分鐘前',
@@ -43,14 +150,14 @@ gtag('config', 'G-XBNKVVH2P4');
     month: '個月前'
   },
   copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切換為繁體中文","cht_to_chs":"已切換為簡體中文","day_to_night":"已切換為深色模式","night_to_day":"已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
   infinitegrid: {
     js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
     buttonText: '載入更多'
   },
   isPhotoFigcaption: true,
-  islazyload: false,
+  islazyloadPlugin: false,
   isAnchor: true,
   percent: {
     toc: true,
@@ -59,108 +166,10 @@ gtag('config', 'G-XBNKVVH2P4');
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: 'LeetCode Biweekly Contest #Find the Power of K-Size Subarrays - 打怪開始',
-  isPost: true,
-  isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-09-09 19:33:06'
-}</script><script>(win=>{
-      win.saveToLocal = {
-        set: (key, value, ttl) => {
-          if (ttl === 0) return
-          const now = Date.now()
-          const expiry = now + ttl * 86400000
-          const item = {
-            value,
-            expiry
-          }
-          localStorage.setItem(key, JSON.stringify(item))
-        },
-      
-        get: key => {
-          const itemStr = localStorage.getItem(key)
-      
-          if (!itemStr) {
-            return undefined
-          }
-          const item = JSON.parse(itemStr)
-          const now = Date.now()
-      
-          if (now > item.expiry) {
-            localStorage.removeItem(key)
-            return undefined
-          }
-          return item.value
-        }
-      }
-    
-      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
-        const script = document.createElement('script')
-        script.src = url
-        script.async = true
-        script.onerror = reject
-        script.onload = script.onreadystatechange = function() {
-          const loadState = this.readyState
-          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-          script.onload = script.onreadystatechange = null
-          resolve()
-        }
-
-        Object.keys(attr).forEach(key => {
-          script.setAttribute(key, attr[key])
-        })
-
-        document.head.appendChild(script)
-      })
-    
-      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = url
-        if (id) link.id = id
-        link.onerror = reject
-        link.onload = link.onreadystatechange = function() {
-          const loadState = this.readyState
-          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-          link.onload = link.onreadystatechange = null
-          resolve()
-        }
-        document.head.appendChild(link)
-      })
-    
-      win.activateDarkMode = () => {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = () => {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-        if (t === 'dark') activateDarkMode()
-        else if (t === 'light') activateLightMode()
-      
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-      const detectApple = () => {
-        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-          document.documentElement.classList.add('apple')
-        }
-      }
-      detectApple()
-    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">43</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/fever.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LeetCode Biweekly Contest #Find the Power of K-Size Subarrays - 打怪開始</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2024-08-18T03:26:54.000Z" title="發表於 2024-08-18 11:26:54">2024-08-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-09-09T11:33:06.852Z" title="更新於 2024-09-09 19:33:06">2024-09-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/">LeetCode</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/%E5%91%A8%E8%B3%BD/">周賽</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/%E5%91%A8%E8%B3%BD/Sliding-Window/">Sliding Window</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>8分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LeetCode Biweekly Contest #Find the Power of K-Size Subarrays - 打怪開始"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/leetcode/">leetcode</a><a class="post-meta__tags" href="/tags/Medium/">Medium</a><a class="post-meta__tags" href="/tags/Leetcode-Contest/">Leetcode Contest</a><a class="post-meta__tags" href="/tags/Sliding-Window/">Sliding Window</a></div></div><article class="post-content" id="article-container"><h1 id="1-題目描述">1 題目描述</h1>
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"><link rel="stylesheet" href="/self/aside-custom.css"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover/fever.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a><a class="nav-page-title" href="/"><span class="site-name">LeetCode Biweekly Contest #Find the Power of K-Size Subarrays - 打怪開始</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首頁</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">LeetCode Biweekly Contest #Find the Power of K-Size Subarrays - 打怪開始</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2024-08-18T03:26:54.000Z" title="發表於 2024-08-18 11:26:54">2024-08-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-09-09T11:33:06.852Z" title="更新於 2024-09-09 19:33:06">2024-09-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/">LeetCode</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/%E5%91%A8%E8%B3%BD/">周賽</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/LeetCode/%E5%91%A8%E8%B3%BD/Sliding-Window/">Sliding Window</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">總字數:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時間:</span><span>8分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/leetcode/">leetcode</a><a class="post-meta__tags" href="/tags/Medium/">Medium</a><a class="post-meta__tags" href="/tags/Sliding-Window/">Sliding Window</a><a class="post-meta__tags" href="/tags/Leetcode-Contest/">Leetcode Contest</a></div></div><article class="container post-content" id="article-container"><h1 id="1-題目描述">1 題目描述</h1>
 <p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/IgWuwKn.png" alt=""></p>
 <p>這是我的第一次參加 LeetCode Contest，這次的題目是一道簡單的滑動窗口問題，給定一個數組<code>nums</code>和一個整數<code>k</code>，你需要針對大小為 k 的所有子陣列計算它們的 “power”：</p>
 <ol>
@@ -267,57 +276,55 @@ gtag('config', 'G-XBNKVVH2P4');
 <ul>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://leetcode.com/contest/biweekly-contest-137/ranking/">Biweekly Contest 137 - Ranking</a></li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/">https://shannonhung.github.io/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！ <em>如果你覺得我的文章有幫助，希望你可以到我的 github 給我一個 star ⭐️ <a href="https://github.com/ShannonHung/ShannonHung.github.io" rel="external nofollow noreferrer" target="_blank">Shannon Blog Repo</a></em></span></div></div><div class="post_share"><div class="social-share" data-image="/img/cover/fever.jpg" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/leetcode-300-Longest-Increasing-Subsequence/" title="LeetCode #300 Longest Increasing Subsequence - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/Increasing.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">LeetCode #300 Longest Increasing Subsequence - 刷題之旅</div></div></a></div><div class="next-post pull-right"><a href="/posts/ml-improving/" title="機器學習 - 如何提高分類器的準確度"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/flower-ml.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">機器學習 - 如何提高分類器的準確度</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/leetcode-102-Binary-Tree-Level-Order-Traversal/" title="LeetCode #102 Binary Tree Level Order Traversal - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/connect.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-25</div><div class="title">LeetCode #102 Binary Tree Level Order Traversal - 刷題之旅</div></div></a></div><div><a href="/posts/leetcode-103-Binary-Tree-Zigzag-Level-Order-Traversal/" title="LeetCode #103 Binary Tree Zigzag Level Order Traversal - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/connect.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-02</div><div class="title">LeetCode #103 Binary Tree Zigzag Level Order Traversal - 刷題之旅</div></div></a></div><div><a href="/posts/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal/" title="LeetCode #105 Construct Binary Tree from Preorder and Inorder Traversal - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/split.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-29</div><div class="title">LeetCode #105 Construct Binary Tree from Preorder and Inorder Traversal - 刷題之旅</div></div></a></div><div><a href="/posts/leetcode-106-construct-binary-tree-from-postorder-and-inorder-traversal/" title="LeetCode #106 Construct Binary Tree from Postorder and Inorder Traversal - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/split.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-23</div><div class="title">LeetCode #106 Construct Binary Tree from Postorder and Inorder Traversal - 刷題之旅</div></div></a></div><div><a href="/posts/leetcode-114-flatten-binary-tree-to-linked-list/" title="LeetCode #114 Flatten Binary Tree to Linked List - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/flatten.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-03</div><div class="title">LeetCode #114 Flatten Binary Tree to Linked List - 刷題之旅</div></div></a></div><div><a href="/posts/leetcode-117-populating-next-right-pointers-in-each-node-ii/" title="LeetCode #117 Populating Next Right Pointers in Each Node II - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/connect.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">LeetCode #117 Populating Next Right Pointers in Each Node II - 刷題之旅</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">43</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E9%A1%8C%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-text">1 題目描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%A7%A3%E6%B3%95"><span class="toc-text">2 解法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E6%88%91%E7%9A%84%E8%A7%A3%E6%B3%95"><span class="toc-text">2.1 我的解法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E9%80%B2%E9%9A%8E%E8%A7%A3%E6%B3%95"><span class="toc-text">2.2 進階解法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E7%B5%90%E8%AA%9E"><span class="toc-text">3 結語</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E5%8F%83%E8%80%83"><span class="toc-text">4 參考</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2025 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
-  if (typeof pangu === 'object') pangu.autoSpacingPage()
-  else {
-    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
-      .then(() => {
-        pangu.autoSpacingPage()
-      })
-  }
-}
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/">https://shannonhung.github.io/posts/contest-137-Q1-Find-the-Power-of-K-Size-Subarrays/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 授權協議。轉載請註明來源 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="post-share"><div class="social-share" data-image="/img/cover/fever.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/leetcode-300-Longest-Increasing-Subsequence/" title="LeetCode #300 Longest Increasing Subsequence - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/Increasing.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">LeetCode #300 Longest Increasing Subsequence - 刷題之旅</div></div><div class="info-2"><div class="info-item-1">1 題目描述  給定一個整數數組nums，找到一個最長的遞增子序列的長度。 2 解法 2.1 Recursion 這題是DP問題，假設我們有一組數字[1, 2, 3, 7, 4, 5, 6] 我們需要比較當前的值 nums[i]是否比上一個值 last還要大，當滿足條件的時候，我們就要思考一個問題到底是**要把當前的值考量進去，還是跳過當前的？**這就會牽涉到兩個公式，類似背包問題，偷與不偷，那這裡就是塞與不塞：  塞： 1塞(當前值) + 未來的最佳解 不塞： 不塞 + 未來的最佳解  以上述的例子來說，如果我們走到 7 的時候，我們可以選擇塞或不塞  如果塞的話，未來的最佳解都是 0，因為沒有比7大的值了 如果不塞的話，後面還有4, 5, 6可以選擇  這樣的話我們可以得出一個公式，假設i是當前的值：  塞： 1 + helper(nums[i+1:]) 不塞： helper(nums[i+1:])  但是還有一個問題需要考慮，就是我們在往後比較的時候，需要知道被比較的對象是誰，舉例來說一樣從7開始  塞：那後續與4, 5, 6比較的就是7 不塞：那後續與4比較的就是3，與5...</div></div></div></a><a class="pagination-related" href="/posts/ml-improving/" title="機器學習 - 如何提高分類器的準確度"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/flower-ml.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">機器學習 - 如何提高分類器的準確度</div></div><div class="info-2"><div class="info-item-1">前言  CSND | 提高SVM分類器的準確率  目前，因為論文的主要題目是做法律文件的機器學習分類，但是因為資料量少，碰到一點瓶頸。所以整理了一些提高分類器準確度的方法，但是注意的是本篇內容主要針對傳統的機器學習像是SVM, RF, NB等，並非Deep Learning。主要有以下：  特徵工程：選擇更好的特徵 調整超參數：可以透過找到最佳的超參數組合，來提高分類器的準確率 數據清洗與預處理：數據清洗是機器學習中非常重要的一個環節，數據清洗的好壞直接影響到模型的準確率 使用核函數：有些模型像是SVM可以使用不同的核函數，來提高分類器的準確率，例如線性核函數、多項式核函數、高斯核函數等 集成學習：使用集成學習如Bagging、Boosting等方法，來提高分類器的準確率 增加訓練數據：增加訓練數據，可以提高分類器的準確率，特別是針對複雜的問題  調整超參數 你是否曾經覺得模型有太多的超參數而感到厭煩嗎？要從某一個演算法得到好的解必須要調整超參數，所謂的超參數就是控制訓練模型的一組神秘數字，例如學習速率就是一種超參數。你永遠都不知道 0~1 之間哪一個數字是最適合的，唯一的方法就...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/leetcode-117-populating-next-right-pointers-in-each-node-ii/" title="LeetCode #117 Populating Next Right Pointers in Each Node II - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/connect.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="info-item-2">LeetCode #117 Populating Next Right Pointers in Each Node II - 刷題之旅</div></div><div class="info-2"><div class="info-item-1">1 題目描述   給定一個二元樹，然後每個節點有一個 next 指針，將它指向它右邊的節點。如果沒有右邊的節點，則設為 None。 題目有特殊要求，不能使用額外的空間，也就是說不能使用 Queue 來解這題。  2 解法 我們先走簡單路線，你會發現基本上就是把同一層的節點串起來，然後再串下一層的節點。因此我們可以使用BFS的方式來解這題。講到BFS的演算法，可以參考這篇LeetCode 課前預習 - 掌握 BFS 與 DFS 指南。 2.1 Queue 我們可以知道在Iterative的方式下，先不考慮題目限制，我們可以使用Queue來解這題。 BFS的演算法 123456789101112131415161718192021def bfs_traversal(root):    def bfs(nodes):        # 如果沒有節點，就直接返回        if not nodes:            return         next_level = []     # 裝下一層的每個節點        result = []         # 裝目前這層的...</div></div></div></a><a class="pagination-related" href="/posts/leetcode-12-integer-to-roman/" title="LeetCode #12 Integer to Roman - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/hash-table.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-29</div><div class="info-item-2">LeetCode #12 Integer to Roman - 刷題之旅</div></div><div class="info-2"><div class="info-item-1"> 題目來源：https://leetcode.com/problems/roman-to-integer/description/  1 題目描述 把數字轉換成羅馬數字，正常情況就是把每個字母相加，並且大字母在前，小字母在後，上邊也介紹了像 4 和 9 那些特殊情況。   2 解法 2.1 我的作法(無HashTable) 簡單粗暴些，把所有可能都列舉出來，包含1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1，然後一個一個去減，直到 num 為 0 為止。 大概是這種感覺：  123456789101112131415161718192021222324252627282930class Solution(object):    def intToRoman(self, num):        &quot;&quot;&quot;        :type num: int        :rtype: str        &quot;&quot;&quot;        arr = [(1000, &#x27;M&#...</div></div></div></a><a class="pagination-related" href="/posts/leetcode-11-Container-With-Most-Water/" title="LeetCode #11 Container With Most Water - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/rainning.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-06</div><div class="info-item-2">LeetCode #11 Container With Most Water - 刷題之旅</div></div><div class="info-2"><div class="info-item-1">1 題目描述   給定一個非負整數的數組height，每個元素代表一個垂直線，並且每個線的寬度都是1。找出兩條線，使得他們和x軸組成的容器可以容納最多的水。 （注意不可以傾斜容器） 2 解法 2.1 暴力解法 這題的暴力破解是O(N)基本上就是遍歷所有的組合，找出最大的容器。 12345678class Solution:    def maxArea(self, height: List[int]) -&gt; int:        n = len(height)        ans = 0        for i in range(n):            for j in range(i+1, n):                ans = max(ans, min(height[i], height[j]) * (j-i))        return ans 2.2 Speed O(N) 從知道這是two pointer的時候就要有個認知，那就是某種程度上他是有序的，這個案例有兩個變數，在計算面積 = 距離(指標距離) * 高度(min指標值)，我們知道，距...</div></div></div></a><a class="pagination-related" href="/posts/leetcode-199-Binary-Tree-Right-Side-View/" title="LeetCode #199 Binary Tree Right Side View - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/tree-looking.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-01</div><div class="info-item-2">LeetCode #199 Binary Tree Right Side View - 刷題之旅</div></div><div class="info-2"><div class="info-item-1">1 題目描述   假如你站在樹的右邊，看著樹，你會看到樹的右邊的節點。紀錄下來這些節點。 2 解法 一開始我看到這題的時候，腦子浮現的是，我就是努力的往右邊走，如果右邊沒辦法走了，就往左邊走，這樣就可以記錄下來右邊的節點了。但是我的想法無法解決以下這個情境： 12345  1 / \2   3 \  5 以下的程式碼是錯誤的，他只會記錄到right subtree的最右邊，但是left subtree也就是 2 跟 5 節點不會被尋訪。 1234567891011121314class Solution:    res = []    def rightSideView(self, root: TreeNode) -&gt; List[int]:        if root is None:            return []        if root:             self.res.append(root.val)        # 如果右邊有節點，就往右邊走        if root.right:            self.rightSide...</div></div></div></a><a class="pagination-related" href="/posts/leetcode-36-Valid-Sudoku/" title="LeetCode #36 Valid Sudoku - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/square.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-11</div><div class="info-item-2">LeetCode #36 Valid Sudoku - 刷題之旅</div></div><div class="info-2"><div class="info-item-1">1 題目描述    檢查一個數獨是否合法，合法的數獨滿足以下條件：  每一行的數字都是1-9，且不重複 每一列的數字都是1-9，且不重複 每一個3x3的小格子裡的數字都是1-9，且不重複  注意：不用檢查數獨是否有解，只需要檢查數獨是否合法。 2 解法 其實思路很簡單，我們看到需要滿足的三個條件，就可以分別實現這三個條件的檢查函數，然後分別檢查即可。 但是在這之前你會發現這三個條件都有個共通點就是數字不重複，所以我們可以針對此設計一個不重複的檢查函數。 不重複  透過set的特定把重複的移除，然後比較移除&quot;.&quot;後的長度是否相等即可。  1234def check_unique(nums):    # 移除&#x27;.&#x27;的數組    nums = [num for num in nums if num != &#x27;.&#x27;]    return len(set(nums)) == len(nums) 檢查row 12345def check_row(board):    for row in board:        if not ch...</div></div></div></a><a class="pagination-related" href="/posts/leetcode-139-Word-Break/" title="LeetCode #139 Word Break - 刷題之旅"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/leetcode.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-12</div><div class="info-item-2">LeetCode #139 Word Break - 刷題之旅</div></div><div class="info-2"><div class="info-item-1">1 題目描述  這題簡單來說就是給定一個字串s和一個字典wordDict，判斷s是否可以被空格分割成一個或多個在字典中出現的單詞。 2 解法 2.1 我的作法 但是這個為什麼說他是一個dp問題，是因為他就像背包問題一樣，s是背包，wordDict是物品，我們要看看s能不能裝下wordDict裡面的物品。如果裝錯物品可能導致裝不下。 我的想法一開始是一個用切割的方式切成兩塊，然後把所有可能的組合都存到字典裡面，最後找到可以把目前切割結果組合成s的組合。 切割成兩塊  例如：applepenapple   a + pplepenapple ap + plepenapple app + lepenapple …  123for i in range(1, n):    check_w = word[0:i]    rest_w = word[i:n] 如果找到一組，切成兩塊的結果都是True就找到了  假設helper是一個可以判斷是否可以切割成wordDict的函數 關係式：helper(word[0:i]) and helper(word[i:n])  12345for i in ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shannon Hung</div><div class="author-info-description">爲了避免健忘，而開始記錄</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E9%A1%8C%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-text">1 題目描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%A7%A3%E6%B3%95"><span class="toc-text">2 解法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E6%88%91%E7%9A%84%E8%A7%A3%E6%B3%95"><span class="toc-text">2.1 我的解法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E9%80%B2%E9%9A%8E%E8%A7%A3%E6%B3%95"><span class="toc-text">2.2 進階解法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E7%B5%90%E8%AA%9E"><span class="toc-text">3 結語</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E5%8F%83%E8%80%83"><span class="toc-text">4 參考</span></a></li></ol></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By Shannon Hung</span></div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="前往評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="繁簡轉換">繁</button><button id="darkmode" type="button" title="日夜模式切換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="回到頂端"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
 
-function panguInit () {
-  if (false){
-    GLOBAL_CONFIG_SITE.isPost && panguFn()
-  } else {
-    panguFn()
-  }
-}
-
-document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
-  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
-    btf.wrap(item, 'div', { class: 'katex-wrap'})
-  })
-})()</script><script>(() => {
-  const initGitalk = () => {
-    const gitalk = new Gitalk(Object.assign({
-      clientID: '51917ecdc184bb98b226',
-      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
-      repo: 'shannonhung.github.io',
-      owner: 'ShannonHung',
-      admin: ['ShannonHung'],
-      id: '82bfcbd900a85300a80bdd8b47ba6339',
-      updateCountCallback: commentCount
-    },null))
-
-    gitalk.render('gitalk-container')
-  }
-
-  const loadGitalk = async() => {
-    if (typeof Gitalk === 'function') initGitalk()
-    else {
-      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
-      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
-      initGitalk()
-    }
-  }
-  
   const commentCount = n => {
     const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
     if (isCommentCount) {
       isCommentCount.textContent= n
     }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '82bfcbd900a85300a80bdd8b47ba6339'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
   }
 
   if ('Gitalk' === 'Gitalk' || !false) {
@@ -330,7 +337,7 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
 POWERMODE.shake = false;
 POWERMODE.mobile = false;
 document.body.addEventListener('input', POWERMODE);
-</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
         <style>
             [bg-lazy] {
                 background-image: none !important;

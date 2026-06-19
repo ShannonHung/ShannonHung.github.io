@@ -15,27 +15,134 @@
 <meta property="article:tag" content="Security">
 <meta property="article:tag" content="NIST SP 800-209">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/security-for-storage-infra/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XBNKVVH2P4');
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險",
+  "url": "https://shannonhung.github.io/posts/security-for-storage-infra/",
+  "image": "https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
+  "datePublished": "2023-07-13T07:04:45.000Z",
+  "dateModified": "2024-09-10T10:03:06.830Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shannon Hung",
+      "url": "https://shannonhung.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/security-for-storage-infra/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || []
+function gtag(){dataLayer.push(arguments)}
+gtag('js', new Date())
+gtag('config', 'G-XBNKVVH2P4')
+btf.addGlobalFn('pjaxComplete', () => {
+  gtag('config', 'G-XBNKVVH2P4', {'page_path': window.location.pathname})
+}, 'google_analytics')
 </script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
-  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  localSearch: undefined,
   translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
-  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
-  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
   copy: {
     success: '複製成功',
-    error: '複製錯誤',
+    error: '複製失敗',
     noSupport: '瀏覽器不支援'
   },
   relativeDate: {
     homepage: false,
     post: false
   },
-  runtime: '天',
+  runtime: '',
   dateSuffix: {
     just: '剛剛',
     min: '分鐘前',
@@ -44,14 +151,14 @@ gtag('config', 'G-XBNKVVH2P4');
     month: '個月前'
   },
   copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切換為繁體中文","cht_to_chs":"已切換為簡體中文","day_to_night":"已切換為深色模式","night_to_day":"已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
   infinitegrid: {
     js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
     buttonText: '載入更多'
   },
   isPhotoFigcaption: true,
-  islazyload: false,
+  islazyloadPlugin: false,
   isAnchor: true,
   percent: {
     toc: true,
@@ -60,108 +167,10 @@ gtag('config', 'G-XBNKVVH2P4');
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: 'NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險',
-  isPost: true,
-  isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-09-10 18:03:06'
-}</script><script>(win=>{
-      win.saveToLocal = {
-        set: (key, value, ttl) => {
-          if (ttl === 0) return
-          const now = Date.now()
-          const expiry = now + ttl * 86400000
-          const item = {
-            value,
-            expiry
-          }
-          localStorage.setItem(key, JSON.stringify(item))
-        },
-      
-        get: key => {
-          const itemStr = localStorage.getItem(key)
-      
-          if (!itemStr) {
-            return undefined
-          }
-          const item = JSON.parse(itemStr)
-          const now = Date.now()
-      
-          if (now > item.expiry) {
-            localStorage.removeItem(key)
-            return undefined
-          }
-          return item.value
-        }
-      }
-    
-      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
-        const script = document.createElement('script')
-        script.src = url
-        script.async = true
-        script.onerror = reject
-        script.onload = script.onreadystatechange = function() {
-          const loadState = this.readyState
-          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-          script.onload = script.onreadystatechange = null
-          resolve()
-        }
-
-        Object.keys(attr).forEach(key => {
-          script.setAttribute(key, attr[key])
-        })
-
-        document.head.appendChild(script)
-      })
-    
-      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = url
-        if (id) link.id = id
-        link.onerror = reject
-        link.onload = link.onreadystatechange = function() {
-          const loadState = this.readyState
-          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-          link.onload = link.onreadystatechange = null
-          resolve()
-        }
-        document.head.appendChild(link)
-      })
-    
-      win.activateDarkMode = () => {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = () => {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-        if (t === 'dark') activateDarkMode()
-        else if (t === 'light') activateLightMode()
-      
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-      const detectApple = () => {
-        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-          document.documentElement.classList.add('apple')
-        }
-      }
-      detectApple()
-    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">43</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-07-13T07:04:45.000Z" title="發表於 2023-07-13 15:04:45">2023-07-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-09-10T10:03:06.830Z" title="更新於 2024-09-10 18:03:06">2024-09-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/">技術</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/Database/">Database</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/Security/">Security</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">12.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>39分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/security-for-storage-infra/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Database/">Database</a><a class="post-meta__tags" href="/tags/%E7%A2%A9%E5%A3%AB%E8%AB%96%E6%96%87/">碩士論文</a><a class="post-meta__tags" href="/tags/Cloud-Storage/">Cloud Storage</a><a class="post-meta__tags" href="/tags/Security/">Security</a><a class="post-meta__tags" href="/tags/NIST-SP-800-209/">NIST SP 800-209</a></div></div><article class="post-content" id="article-container"><h1 id="參考資料">參考資料</h1>
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"><link rel="stylesheet" href="/self/aside-custom.css"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a><a class="nav-page-title" href="/"><span class="site-name">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首頁</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-07-13T07:04:45.000Z" title="發表於 2023-07-13 15:04:45">2023-07-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-09-10T10:03:06.830Z" title="更新於 2024-09-10 18:03:06">2024-09-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/">技術</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/Database/">Database</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E8%A1%93/Security/">Security</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">總字數:</span><span class="word-count">12.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時間:</span><span>39分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/security-for-storage-infra/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Database/">Database</a><a class="post-meta__tags" href="/tags/%E7%A2%A9%E5%A3%AB%E8%AB%96%E6%96%87/">碩士論文</a><a class="post-meta__tags" href="/tags/Cloud-Storage/">Cloud Storage</a><a class="post-meta__tags" href="/tags/Security/">Security</a><a class="post-meta__tags" href="/tags/NIST-SP-800-209/">NIST SP 800-209</a></div></div><article class="container post-content" id="article-container"><h1 id="參考資料">參考資料</h1>
 <ul>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://csrc.nist.gov/publications/detail/sp/800-209/final">NIST SP800-209 Security Guidelines for Storage Infrastructure</a></li>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://owasp.org/API-Security/editions/2023/en/0x11-t10/">OWASP API Top 10, 2023</a></li>
@@ -1026,53 +1035,55 @@ Risk: 對資料的機密性 完整性 可用性 已經造成損害，而影響�
 <h1 id="統整02：設計威脅模型">統整02：設計威脅模型</h1>
 <p>以下威脅模型是<strong>參考NIST SP 800-209 和 OWASP Top 10的常見威脅</strong>，所整理出來的威脅模型。裡面的環境主要簡單描述在資料基礎架構中，系統邊界、資料傳輸、備份監控等，可能會面臨的威脅。可以根據以下威脅，於統整01中的威脅參考相關的威脅描述與相關的安全建議。</p>
 <p><img src="/img/loading-icon.gif" data-original="https://i.imgur.com/HOvKOAN.png" alt=""></p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/security-for-storage-infra/">https://shannonhung.github.io/posts/security-for-storage-infra/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！ <em>如果你覺得我的文章有幫助，希望你可以到我的 github 給我一個 star ⭐️ <a href="https://github.com/ShannonHung/ShannonHung.github.io" rel="external nofollow noreferrer" target="_blank">Shannon Blog Repo</a></em></span></div></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/interupt-connection-pool/" title="如何介入 Connection Pool？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">如何介入 Connection Pool？</div></div></a></div><div class="next-post pull-right"><a href="/posts/security-for-storage-infra-2/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/security-for-storage-infra-2/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-27</div><div class="title">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引</div></div></a></div><div><a href="/posts/interupt-connection-pool/" title="如何介入 Connection Pool？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-10</div><div class="title">如何介入 Connection Pool？</div></div></a></div><div><a href="/posts/about-jdbc-connection-pool/" title="淺入淺出 JDBC, Connection Pool"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1483736762161-1d107f3c78e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMyMjU0NQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-08</div><div class="title">淺入淺出 JDBC, Connection Pool</div></div></a></div><div><a href="/posts/DLP-Survay-Paper/" title="DLP - Data Leakage Protection 的論文 Survey"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-21</div><div class="title">DLP - Data Leakage Protection 的論文 Survey</div></div></a></div><div><a href="/posts/ZTA-survey-AP-DB-summary/" title="適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇</div></div></a></div><div><a href="/posts/zta-survey/" title="適用於AP與DB之間的零信任架構(ZTA)原則"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-03</div><div class="title">適用於AP與DB之間的零信任架構(ZTA)原則</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">43</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E9%BB%9E%E6%95%B4%E7%90%86"><span class="toc-text">重點整理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-11-%E5%84%B2%E5%AD%98%E5%92%8C%E8%B3%87%E6%96%99%E7%AE%A1%E7%90%86-Storage-and-Data-Management"><span class="toc-text">2.11 儲存和資料管理 Storage and Data Management</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%84%B2%E5%AD%98%E5%9F%BA%E7%A4%8E%E8%A8%AD%E6%96%BD%E7%9A%84%E7%9B%B8%E9%97%9C%E5%A8%81%E8%84%85-Threats-Risks-and-Attack-Surfaces"><span class="toc-text">3. 儲存基礎設施的相關威脅 Threats, Risks, and Attack Surfaces</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Threat-%E5%A8%81%E8%84%85"><span class="toc-text">3.1 Threat 威脅</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Risk-%E9%A2%A8%E9%9A%AA"><span class="toc-text">3.2 Risk 風險</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Attack-Surface-%E6%94%BB%E6%93%8A%E9%9D%A2"><span class="toc-text">3.3 Attack Surface 攻擊面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%B1%E6%95%B401%EF%BC%9A%E6%95%B4%E7%90%86%E5%A8%81%E8%84%85%E8%88%87%E5%AF%A6%E9%AB%94%E6%94%BB%E6%93%8A%EF%BC%88%E5%8F%83%E8%80%83OWASP%EF%BC%89"><span class="toc-text">統整01：整理威脅與實體攻擊（參考OWASP）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%86%91%E8%AD%89%E8%A2%AB%E7%9B%9C%E6%88%96%E6%B4%A9%E9%9C%B2-Credential-Theft-or-Compromise"><span class="toc-text">1. 憑證被盜或洩露 Credential Theft or Compromise</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8A%A0%E5%AF%86%E7%A0%B4%E8%A7%A3-Cracking-Encryption"><span class="toc-text">2. 加密破解 Cracking Encryption</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%83%A1%E6%84%8F%E8%BB%9F%E9%AB%94%E8%88%87%E5%8B%92%E7%B4%A2%E8%BB%9F%E9%AB%94%E7%9A%84%E6%84%9F%E6%9F%93-Infection-of-Malware-and-Ransomware"><span class="toc-text">3. 惡意軟體與勒索軟體的感染 Infection of Malware and Ransomware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%BE%8C%E9%96%80%E6%9C%AA%E4%BF%AE%E8%A3%9C%E7%9A%84%E6%BC%8F%E6%B4%9E-Backdoors-and-Unpatched-Vulnerabilities"><span class="toc-text">4. 後門未修補的漏洞 Backdoors and Unpatched Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%89%B9%E6%AC%8A%E5%8D%87%E7%B4%9A-Privilege-Escalation"><span class="toc-text">5. 特權升級 Privilege Escalation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E4%BA%BA%E7%82%BA%E9%8C%AF%E8%AA%A4%E8%88%87%E6%95%85%E6%84%8F%E9%85%8D%E7%BD%AE%E5%A4%B1%E8%AA%A4-Human-Error-and-Deliberate-Misconfiguration"><span class="toc-text">6. 人為錯誤與故意配置失誤 Human Error and Deliberate Misconfiguration</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%AF%A6%E9%AB%94%E5%AA%92%E9%AB%94%E7%9A%84%E7%89%A9%E7%90%86%E5%81%B7%E7%AB%8A-Physical-Theft-of-Storage-Media"><span class="toc-text">7. 實體媒體的物理偷竊 Physical Theft of Storage Media</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E7%B6%B2%E8%B7%AF%E7%AB%8A%E8%81%BD%E8%B3%87%E6%96%99-Network-Eavesdropping"><span class="toc-text">8. 網路竊聽資料 Network Eavesdropping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E6%98%A0%E5%83%8F%E3%80%81%E8%BB%9F%E9%AB%94%E5%92%8C%E9%9F%8C%E9%AB%94-Insecure-Images-Software-and-Firmware"><span class="toc-text">9. 不安全的映像、軟體和韌體 Insecure Images, Software and Firmware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E8%B3%87%E5%AE%89%E8%A8%98%E9%8C%84%E5%8F%8A%E7%9B%A3%E6%8E%A7%E5%A4%B1%E6%95%88-Security-Logging-and-Monitoring-Failures"><span class="toc-text">10. 資安記錄及監控失效 Security Logging and Monitoring Failures</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%B1%E6%95%B402%EF%BC%9A%E8%A8%AD%E8%A8%88%E5%A8%81%E8%84%85%E6%A8%A1%E5%9E%8B"><span class="toc-text">統整02：設計威脅模型</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2025 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
-  if (typeof pangu === 'object') pangu.autoSpacingPage()
-  else {
-    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
-      .then(() => {
-        pangu.autoSpacingPage()
-      })
-  }
-}
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/security-for-storage-infra/">https://shannonhung.github.io/posts/security-for-storage-infra/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 授權協議。轉載請註明來源 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="post-share"><div class="social-share" data-image="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/interupt-connection-pool/" title="如何介入 Connection Pool？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">如何介入 Connection Pool？</div></div><div class="info-2"><div class="info-item-1">參考連結  Hikari Connection Pooling with Spring Boot AWS RDS Proxy Hikrai-Source Code AWS推出能提升關聯式資料庫應用可擴展性的代理服務 Hikrari配置設定 注入是用於監控的Druid dataSource 如何指定自己extends Hirkari的DataSource 如何构建实用的RDS Proxy? (一):有稍微提到怎麼使用Golang實作一個RDS Proxy kingshard:一個開源的Mysql Proxy但是已經沒在維護了，是用GO寫的 MySQL官网连接过程介绍:官方連線協議說明 mysql握手协议抓包: 有大概說明mysql的協議抓包內容 30-25之資料庫層的擴展 - 讀寫分離架構:資料庫的讀寫分離說明  前言 可以參考我的論文方向，是如何在資料庫中滿足零信任要求，零信任機制其實核心說白了就是存取控制機制，在Authentication驗證這個人是誰之時，取得所有相關的上下文，甚至是風險，經過多方考量後，最後做Authorization授權。那既然我們的目的在於，如何在資料...</div></div></div></a><a class="pagination-related" href="/posts/security-for-storage-infra-2/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引</div></div><div class="info-2"><div class="info-item-1">前言 因為之前的篇幅NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險擔心太長，因此再建立一的新的Post來進行整理。 上一篇主要針對資料儲存基礎設施盤點相關的威脅、風險和攻擊面。 本篇則是主要整理儲存部署的安全建議。論文的貢獻可以在於強調可以滿足零信任要求與資料儲存相關安全標準SP800-209的相關措施。  4. 儲存部署安全建議 Security Guidelines for Storage Deployments 第4.1至4.12節提供了存儲基礎架構安全的安全建議和指南，透過其命名和編號方案旨在確保每個指南都有獨特的識別號。主要的唯一識別號採用“xx-SS-Ry”的形式。 但是，因為本人的論文希望更著重在，AP(客戶端)與資料儲存裝置之間連線時和主機本身的安全措施，因此本章節並不會列出所有的安全建議，僅列出與AP(客戶端)與儲存裝置之間，又或是「儲存基礎設施本身」的安全建議。  “xx”是與節點標題相關的兩個字母組合：在第4.1節“物理存儲安全”中，主要識別號標記為PS-SS-R1，PS-...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/security-for-storage-infra-2/" title="NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTc2MA&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-27</div><div class="info-item-2">NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (2) 安全指引</div></div><div class="info-2"><div class="info-item-1">前言 因為之前的篇幅NIST SP 800-209 資料儲存安全指引 Security Guidelines for Storage (1) 威脅與風險擔心太長，因此再建立一的新的Post來進行整理。 上一篇主要針對資料儲存基礎設施盤點相關的威脅、風險和攻擊面。 本篇則是主要整理儲存部署的安全建議。論文的貢獻可以在於強調可以滿足零信任要求與資料儲存相關安全標準SP800-209的相關措施。  4. 儲存部署安全建議 Security Guidelines for Storage Deployments 第4.1至4.12節提供了存儲基礎架構安全的安全建議和指南，透過其命名和編號方案旨在確保每個指南都有獨特的識別號。主要的唯一識別號採用“xx-SS-Ry”的形式。 但是，因為本人的論文希望更著重在，AP(客戶端)與資料儲存裝置之間連線時和主機本身的安全措施，因此本章節並不會列出所有的安全建議，僅列出與AP(客戶端)與儲存裝置之間，又或是「儲存基礎設施本身」的安全建議。  “xx”是與節點標題相關的兩個字母組合：在第4.1節“物理存儲安全”中，主要識別號標記為PS-SS-R1，PS-...</div></div></div></a><a class="pagination-related" href="/posts/interupt-connection-pool/" title="如何介入 Connection Pool？"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMzMzk2Mg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-10</div><div class="info-item-2">如何介入 Connection Pool？</div></div><div class="info-2"><div class="info-item-1">參考連結  Hikari Connection Pooling with Spring Boot AWS RDS Proxy Hikrai-Source Code AWS推出能提升關聯式資料庫應用可擴展性的代理服務 Hikrari配置設定 注入是用於監控的Druid dataSource 如何指定自己extends Hirkari的DataSource 如何构建实用的RDS Proxy? (一):有稍微提到怎麼使用Golang實作一個RDS Proxy kingshard:一個開源的Mysql Proxy但是已經沒在維護了，是用GO寫的 MySQL官网连接过程介绍:官方連線協議說明 mysql握手协议抓包: 有大概說明mysql的協議抓包內容 30-25之資料庫層的擴展 - 讀寫分離架構:資料庫的讀寫分離說明  前言 可以參考我的論文方向，是如何在資料庫中滿足零信任要求，零信任機制其實核心說白了就是存取控制機制，在Authentication驗證這個人是誰之時，取得所有相關的上下文，甚至是風險，經過多方考量後，最後做Authorization授權。那既然我們的目的在於，如何在資料...</div></div></div></a><a class="pagination-related" href="/posts/about-jdbc-connection-pool/" title="淺入淺出 JDBC, Connection Pool"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1483736762161-1d107f3c78e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTMyMjU0NQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-08</div><div class="info-item-2">淺入淺出 JDBC, Connection Pool</div></div><div class="info-2"><div class="info-item-1">參考資料  JDBC是什麼？ (14) 深入 JDBC、Connection Pool，並導入 H2 DB Design Pattern - Object Pool 深入瞭解資料庫連線池的實現及原理 為什麼hikari這麼快的原因 spring-boot-starter-jdbc 和 spring-boot-starter-data-jdbc 的区别 Spring Boot- Data properties  前言 JDBC的全名是Java DataBase Connectivity，主要適用於Java程式語言 和 資料庫 之間連接的API標準，你也可以說他是Library，這裡的API到底指哪些事情呢？  連接到資料庫 創建, 執行 SQL  JDBC 架構  JDBC API提供以下接口和類:   Driver Manager: 管理資料庫驅動程式的列表，可以將Java Application的連接請求，與資料庫驅動程式進行配對，以建立資料庫的連接。 Driver: 處理與資料庫的通信，很少會直接與Driver溝通，而是會透過Driver Manager來管理這個對象。 Co...</div></div></div></a><a class="pagination-related" href="/posts/zta-survey/" title="適用於AP與DB之間的零信任架構(ZTA)原則"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-03</div><div class="info-item-2">適用於AP與DB之間的零信任架構(ZTA)原則</div></div><div class="info-2"><div class="info-item-1">參考連結  美國 NIST 在 2020 年發佈了 NIST SP 800-207 的文件 美國國防資訊系統局就在 2021發布美國國防部的零信任參考架構 Department of Defense - Zero Trust Reference Architecture 美國預算與管理辦公室於 2021 年 9 月先發布推動策略徵求意見後，於 2022 年 1 月發佈正式文件  前言 身為一個想要做資料庫與AP之間安全論文的研究生，如果想要套用零信任架構上去，首先就必須了解各種文件上面談到零信任應該滿足的要求或是符合零信任的架構。同時因為是要找AP與資料庫之間的安全，而零信任卻是更全面地談及不同層面應該滿足的要求，像是針對使用者的身份驗證等。因此需要認清楚自己的目標對象怎麼著中在AP與資料之間的安全，為此我將整理的要求和架構進行分類，哪些是針對User與AP，哪些可以用於AP與AP就需要區分出來。 因此這篇文章的目的是在整理以下三篇文章：  美國 NIST 在 2020 年發佈了 NIST SP 800-207 的文件：此文件作為國家導入零信任架構訂定基礎。 美國國防資訊系統局就...</div></div></div></a><a class="pagination-related" href="/posts/DLP-Survay-Paper/" title="DLP - Data Leakage Protection 的論文 Survey"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-21</div><div class="info-item-2">DLP - Data Leakage Protection 的論文 Survey</div></div><div class="info-2"><div class="info-item-1">前言 因為在做資料庫的零信任相關研究，在這篇適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇有提到幾點跟資料保護重要的技術，也就是DLP跟DRM。為此，本篇主要就是總結目前Survey與DLP相關的文獻。 主要目的是可以找出以下議題的相關論文，並擁有一定的了解：  DLP 在做什麼？ DLP 的相關技術？ DLP 跟 Data Risk Labeling 的結合？ DLP 跟 Access Control 的結合？ DLP 關於 Machine Learning 的應用？  DLP 在做什麼？ </div></div></div></a><a class="pagination-related" href="/posts/ZTA-survey-AP-DB-summary/" title="適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇"><img class="cover" src="/img/loading-icon.gif" data-original="/img/cover/zero-trust.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="info-item-2">適用於應用程式AP與資料庫DB之間的零信任架構(ZTA)原則 - 總整理篇</div></div><div class="info-2"><div class="info-item-1">前言 根據上一篇的內容，我們整理的主流的ZTA相關文件，並針對AP與DB的部分做重點。而本篇的目的就是針對這些文件做一個總整理，並且針對AP與DB的部分做一個總結。會想要整理這篇的目的是這樣的： 目前市面上的零信任架構文件更多探討的是使用者訪問敏感數據或受保護資源之前，與「應用程式或服務」的互動中如何實施持續性的驗證，並且由動態策略來進行決策。但是，這往往讓人忽略了在使用者完成與應用程式的驗證後，延續到應用程式對資料進行存取時的安全策略，儘管文件有提及到一些適用於應用程式應滿足的安全要求，例如應該要確保第三方元件的安全等。但並無特別列出應用服務在存取資源時如何持續地進行驗證、授權，或是對事件的監控、資料的收集和分析等，而資料安全方面也僅僅提出基本的要求，包含對重點資料座標記和分類，在應用程式對資源進行存取時，動態存取策略所需考量的要素、架構模型等以滿足零信任要求皆無更多的討論。 在微服務與雲原生架構的盛行下，多個應用程式可能會有存取相同的資源的需求，而對資源的存取權限往往掌控在應用程式對使用者的驗證與授權，然而基於零信任原則，我們不應信任並假設每個應用程式的驗證機制都能滿足零信任...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shannon Hung</div><div class="author-info-description">爲了避免健忘，而開始記錄</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E9%BB%9E%E6%95%B4%E7%90%86"><span class="toc-text">重點整理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-11-%E5%84%B2%E5%AD%98%E5%92%8C%E8%B3%87%E6%96%99%E7%AE%A1%E7%90%86-Storage-and-Data-Management"><span class="toc-text">2.11 儲存和資料管理 Storage and Data Management</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%84%B2%E5%AD%98%E5%9F%BA%E7%A4%8E%E8%A8%AD%E6%96%BD%E7%9A%84%E7%9B%B8%E9%97%9C%E5%A8%81%E8%84%85-Threats-Risks-and-Attack-Surfaces"><span class="toc-text">3. 儲存基礎設施的相關威脅 Threats, Risks, and Attack Surfaces</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Threat-%E5%A8%81%E8%84%85"><span class="toc-text">3.1 Threat 威脅</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Risk-%E9%A2%A8%E9%9A%AA"><span class="toc-text">3.2 Risk 風險</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Attack-Surface-%E6%94%BB%E6%93%8A%E9%9D%A2"><span class="toc-text">3.3 Attack Surface 攻擊面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%B1%E6%95%B401%EF%BC%9A%E6%95%B4%E7%90%86%E5%A8%81%E8%84%85%E8%88%87%E5%AF%A6%E9%AB%94%E6%94%BB%E6%93%8A%EF%BC%88%E5%8F%83%E8%80%83OWASP%EF%BC%89"><span class="toc-text">統整01：整理威脅與實體攻擊（參考OWASP）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%86%91%E8%AD%89%E8%A2%AB%E7%9B%9C%E6%88%96%E6%B4%A9%E9%9C%B2-Credential-Theft-or-Compromise"><span class="toc-text">1. 憑證被盜或洩露 Credential Theft or Compromise</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8A%A0%E5%AF%86%E7%A0%B4%E8%A7%A3-Cracking-Encryption"><span class="toc-text">2. 加密破解 Cracking Encryption</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%83%A1%E6%84%8F%E8%BB%9F%E9%AB%94%E8%88%87%E5%8B%92%E7%B4%A2%E8%BB%9F%E9%AB%94%E7%9A%84%E6%84%9F%E6%9F%93-Infection-of-Malware-and-Ransomware"><span class="toc-text">3. 惡意軟體與勒索軟體的感染 Infection of Malware and Ransomware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%BE%8C%E9%96%80%E6%9C%AA%E4%BF%AE%E8%A3%9C%E7%9A%84%E6%BC%8F%E6%B4%9E-Backdoors-and-Unpatched-Vulnerabilities"><span class="toc-text">4. 後門未修補的漏洞 Backdoors and Unpatched Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%89%B9%E6%AC%8A%E5%8D%87%E7%B4%9A-Privilege-Escalation"><span class="toc-text">5. 特權升級 Privilege Escalation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E4%BA%BA%E7%82%BA%E9%8C%AF%E8%AA%A4%E8%88%87%E6%95%85%E6%84%8F%E9%85%8D%E7%BD%AE%E5%A4%B1%E8%AA%A4-Human-Error-and-Deliberate-Misconfiguration"><span class="toc-text">6. 人為錯誤與故意配置失誤 Human Error and Deliberate Misconfiguration</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%AF%A6%E9%AB%94%E5%AA%92%E9%AB%94%E7%9A%84%E7%89%A9%E7%90%86%E5%81%B7%E7%AB%8A-Physical-Theft-of-Storage-Media"><span class="toc-text">7. 實體媒體的物理偷竊 Physical Theft of Storage Media</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E7%B6%B2%E8%B7%AF%E7%AB%8A%E8%81%BD%E8%B3%87%E6%96%99-Network-Eavesdropping"><span class="toc-text">8. 網路竊聽資料 Network Eavesdropping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E6%98%A0%E5%83%8F%E3%80%81%E8%BB%9F%E9%AB%94%E5%92%8C%E9%9F%8C%E9%AB%94-Insecure-Images-Software-and-Firmware"><span class="toc-text">9. 不安全的映像、軟體和韌體 Insecure Images, Software and Firmware</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E8%B3%87%E5%AE%89%E8%A8%98%E9%8C%84%E5%8F%8A%E7%9B%A3%E6%8E%A7%E5%A4%B1%E6%95%88-Security-Logging-and-Monitoring-Failures"><span class="toc-text">10. 資安記錄及監控失效 Security Logging and Monitoring Failures</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%B1%E6%95%B402%EF%BC%9A%E8%A8%AD%E8%A8%88%E5%A8%81%E8%84%85%E6%A8%A1%E5%9E%8B"><span class="toc-text">統整02：設計威脅模型</span></a></li></ol></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By Shannon Hung</span></div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="前往評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="繁簡轉換">繁</button><button id="darkmode" type="button" title="日夜模式切換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="回到頂端"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
 
-function panguInit () {
-  if (false){
-    GLOBAL_CONFIG_SITE.isPost && panguFn()
-  } else {
-    panguFn()
-  }
-}
-
-document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(() => {
-  const initGitalk = () => {
-    const gitalk = new Gitalk(Object.assign({
-      clientID: '51917ecdc184bb98b226',
-      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
-      repo: 'shannonhung.github.io',
-      owner: 'ShannonHung',
-      admin: ['ShannonHung'],
-      id: '728cf7f9b4dd0ad3f0301b629fff7d38',
-      updateCountCallback: commentCount
-    },null))
-
-    gitalk.render('gitalk-container')
-  }
-
-  const loadGitalk = async() => {
-    if (typeof Gitalk === 'function') initGitalk()
-    else {
-      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
-      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
-      initGitalk()
-    }
-  }
-  
   const commentCount = n => {
     const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
     if (isCommentCount) {
       isCommentCount.textContent= n
     }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '728cf7f9b4dd0ad3f0301b629fff7d38'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
   }
 
   if ('Gitalk' === 'Gitalk' || !false) {
@@ -1085,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
 POWERMODE.shake = false;
 POWERMODE.mobile = false;
 document.body.addEventListener('input', POWERMODE);
-</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
         <style>
             [bg-lazy] {
                 background-image: none !important;

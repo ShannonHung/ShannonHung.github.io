@@ -12,27 +12,134 @@
 <meta property="article:tag" content="elastic">
 <meta property="article:tag" content="alert">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/elast-alert/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XBNKVVH2P4');
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Wazuh的告警系統實作 - ElastAlert Docker 安裝 elastAlert",
+  "url": "https://shannonhung.github.io/posts/elast-alert/",
+  "image": "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080",
+  "datePublished": "2023-07-02T00:20:10.000Z",
+  "dateModified": "2024-09-10T10:01:43.348Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shannon Hung",
+      "url": "https://shannonhung.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/elast-alert/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || []
+function gtag(){dataLayer.push(arguments)}
+gtag('js', new Date())
+gtag('config', 'G-XBNKVVH2P4')
+btf.addGlobalFn('pjaxComplete', () => {
+  gtag('config', 'G-XBNKVVH2P4', {'page_path': window.location.pathname})
+}, 'google_analytics')
 </script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
-  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  localSearch: undefined,
   translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
-  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
-  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
   copy: {
     success: '複製成功',
-    error: '複製錯誤',
+    error: '複製失敗',
     noSupport: '瀏覽器不支援'
   },
   relativeDate: {
     homepage: false,
     post: false
   },
-  runtime: '天',
+  runtime: '',
   dateSuffix: {
     just: '剛剛',
     min: '分鐘前',
@@ -41,14 +148,14 @@ gtag('config', 'G-XBNKVVH2P4');
     month: '個月前'
   },
   copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: {"chs_to_cht":"你已切換為繁體中文","cht_to_chs":"你已切換為簡體中文","day_to_night":"你已切換為深色模式","night_to_day":"你已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切換為繁體中文","cht_to_chs":"已切換為簡體中文","day_to_night":"已切換為深色模式","night_to_day":"已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
   infinitegrid: {
     js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
     buttonText: '載入更多'
   },
   isPhotoFigcaption: true,
-  islazyload: false,
+  islazyloadPlugin: false,
   isAnchor: true,
   percent: {
     toc: true,
@@ -57,108 +164,10 @@ gtag('config', 'G-XBNKVVH2P4');
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: 'Wazuh的告警系統實作 - ElastAlert Docker 安裝 elastAlert',
-  isPost: true,
-  isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-09-10 18:01:43'
-}</script><script>(win=>{
-      win.saveToLocal = {
-        set: (key, value, ttl) => {
-          if (ttl === 0) return
-          const now = Date.now()
-          const expiry = now + ttl * 86400000
-          const item = {
-            value,
-            expiry
-          }
-          localStorage.setItem(key, JSON.stringify(item))
-        },
-      
-        get: key => {
-          const itemStr = localStorage.getItem(key)
-      
-          if (!itemStr) {
-            return undefined
-          }
-          const item = JSON.parse(itemStr)
-          const now = Date.now()
-      
-          if (now > item.expiry) {
-            localStorage.removeItem(key)
-            return undefined
-          }
-          return item.value
-        }
-      }
-    
-      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
-        const script = document.createElement('script')
-        script.src = url
-        script.async = true
-        script.onerror = reject
-        script.onload = script.onreadystatechange = function() {
-          const loadState = this.readyState
-          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-          script.onload = script.onreadystatechange = null
-          resolve()
-        }
-
-        Object.keys(attr).forEach(key => {
-          script.setAttribute(key, attr[key])
-        })
-
-        document.head.appendChild(script)
-      })
-    
-      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = url
-        if (id) link.id = id
-        link.onerror = reject
-        link.onload = link.onreadystatechange = function() {
-          const loadState = this.readyState
-          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-          link.onload = link.onreadystatechange = null
-          resolve()
-        }
-        document.head.appendChild(link)
-      })
-    
-      win.activateDarkMode = () => {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = () => {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-        if (t === 'dark') activateDarkMode()
-        else if (t === 'light') activateLightMode()
-      
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-      const detectApple = () => {
-        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-          document.documentElement.classList.add('apple')
-        }
-      }
-      detectApple()
-    })(window)</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">43</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080')"><nav id="nav"><span id="blog-info"><a href="/" title="Shannon's Blog 🐟 技術 | 生活 | 旅行"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Wazuh的告警系統實作 - ElastAlert Docker 安裝 elastAlert</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-07-02T00:20:10.000Z" title="發表於 2023-07-02 08:20:10">2023-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-09-10T10:01:43.348Z" title="更新於 2024-09-10 18:01:43">2024-09-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7/elastic/">elastic</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>10分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Wazuh的告警系統實作 - ElastAlert Docker 安裝 elastAlert"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/elast-alert/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/elastic/">elastic</a><a class="post-meta__tags" href="/tags/alert/">alert</a></div></div><article class="post-content" id="article-container"><h1 id="參考的網站">參考的網站</h1>
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"><link rel="stylesheet" href="/self/aside-custom.css"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a><a class="nav-page-title" href="/"><span class="site-name">Wazuh的告警系統實作 - ElastAlert Docker 安裝 elastAlert</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首頁</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Wazuh的告警系統實作 - ElastAlert Docker 安裝 elastAlert</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-07-02T00:20:10.000Z" title="發表於 2023-07-02 08:20:10">2023-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-09-10T10:01:43.348Z" title="更新於 2024-09-10 18:01:43">2024-09-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7/elastic/">elastic</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">總字數:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時間:</span><span>10分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/elast-alert/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/elastic/">elastic</a><a class="post-meta__tags" href="/tags/alert/">alert</a></div></div><article class="container post-content" id="article-container"><h1 id="參考的網站">參考的網站</h1>
 <ul>
 <li><a target="_blank" rel="noopener external nofollow noreferrer" href="https://help.aliyun.com/document_detail/61336.html?spm=a2c4g.74927.0.0.57bc2193sMQ77k#task-2445099">elastic相關yml設定挺詳細，裡面有談到如何啟用watcher的設定</a></li>
 <li>elasticAlert：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/Yelp/elastalert.git">https://github.com/Yelp/elastalert.git</a></li>
@@ -258,53 +267,55 @@ chmod 777 ca.crt</p>
 <strong>只需要進行 chmod 777 ca.crt 後 再mount到container即可解決</strong></p>
 </div>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">File <span class="string">&quot;/usr/local/lib/python3.11/site-packages/elasticsearch/connection/http_requests.py&quot;</span>, line 174, <span class="keyword">in</span> perform_request</span><br><span class="line">    raise SSLError(<span class="string">&quot;N/A&quot;</span>, str(e), e)</span><br><span class="line">elasticsearch.exceptions.SSLError: ConnectionError(HTTPSConnectionPool(host=<span class="string">&#x27;192.168.2.71&#x27;</span>, port=9200): Max retries exceeded with url: / (Caused by SSLError(PermissionError(13, <span class="string">&#x27;Permission denied&#x27;</span>)))) caused by: SSLError(HTTPSConnectionPool(host=<span class="string">&#x27;192.168.2.71&#x27;</span>, port=9200): Max retries exceeded with url: / (Caused by SSLError(PermissionError(13, <span class="string">&#x27;Permission denied&#x27;</span>))))</span><br></pre></td></tr></table></figure>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/elast-alert/">https://shannonhung.github.io/posts/elast-alert/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！ <em>如果你覺得我的文章有幫助，希望你可以到我的 github 給我一個 star ⭐️ <a href="https://github.com/ShannonHung/ShannonHung.github.io" rel="external nofollow noreferrer" target="_blank">Shannon Blog Repo</a></em></span></div></div><div class="post_share"><div class="social-share" data-image="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/install-wazuh/" title="Wazuh, elastic, kibana 的無腦串接與安裝教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Wazuh, elastic, kibana 的無腦串接與安裝教學</div></div></a></div><div class="next-post pull-right"><a href="/posts/elastic-alert-slack-guide/" title="Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/posts/elastic-alert-email-guide/" title="Wazuh的告警系統實作 - ElastAlert 的 POST &amp; EMAIL 警報觸發 教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-04</div><div class="title">Wazuh的告警系統實作 - ElastAlert 的 POST &amp; EMAIL 警報觸發 教學</div></div></a></div><div><a href="/posts/elastic-alert-slack-guide/" title="Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-03</div><div class="title">Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學</div></div></a></div><div><a href="/posts/install-wazuh/" title="Wazuh, elastic, kibana 的無腦串接與安裝教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-01</div><div class="title">Wazuh, elastic, kibana 的無腦串接與安裝教學</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Shannon Hung</div><div class="author-info__description">爲了避免健忘，而開始記錄</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">126</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">43</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E7%9A%84%E7%B6%B2%E7%AB%99"><span class="toc-text">參考的網站</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%9C%E6%96%BC%E5%8F%AF%E4%BB%A5%E4%BD%9C%E7%82%BA%E5%91%8A%E8%AD%A6%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="toc-text">關於可以作為告警的工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#elasticAlert-%E4%BB%8B%E7%B4%B9"><span class="toc-text">elasticAlert 介紹</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D%E6%95%99%E5%AD%B8%EF%BC%9A%E4%BD%BF%E7%94%A8-docker-%E5%95%9F%E5%8B%95"><span class="toc-text">安裝教學：使用 docker 啟動</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-opt-rules-a-yaml-%E6%AA%94%E6%A1%88"><span class="toc-text">建立 &#x2F;opt&#x2F;rules&#x2F;a.yaml 檔案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%8F%E9%81%8E-docker-%E6%8C%87%E4%BB%A4%E5%95%9F%E5%8B%95"><span class="toc-text">透過 docker 指令啟動</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%8F%E9%81%8E-docker-compose-%E5%95%9F%E5%8B%95"><span class="toc-text">透過 docker-compose 啟動</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B8%BD%E7%B5%90"><span class="toc-text">總結</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9D%911-SSLError-Permission-Denied"><span class="toc-text">坑1: SSLError Permission Denied</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2025 By Shannon Hung</div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="簡繁轉換">繁</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
-  if (typeof pangu === 'object') pangu.autoSpacingPage()
-  else {
-    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
-      .then(() => {
-        pangu.autoSpacingPage()
-      })
-  }
-}
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/elast-alert/">https://shannonhung.github.io/posts/elast-alert/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 授權協議。轉載請註明來源 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="post-share"><div class="social-share" data-image="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/install-wazuh/" title="Wazuh, elastic, kibana 的無腦串接與安裝教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Wazuh, elastic, kibana 的無腦串接與安裝教學</div></div><div class="info-2"><div class="info-item-1">參考連結  參考wauzh官方安裝教學: https://documentation.wazuh.com/current/deployment-options/elastic-stack/all-in-one-deployment/index.html#installing-elasticsearch 參考filebeat安裝: https://www.elastic.co/guide/en/beats/filebeat/7.17/setup-repositories.html  前言 請注意，我的安裝教學不是用正式環境，因為certs都是使用相同的，僅供教學快速安裝使用。   注意：目前教學內所使用的wazuh-manager版本是4.4.4，所以如果你的wazuh-manager是其他版本像是4.5，請務必修改以下所有含有4.4的script內容為4.5  12345# 原本為4.4 curl -so /etc/elasticsearch/elasticsearch.yml https://packages.wazuh.com/4.4/tpl/elastic-basic/el...</div></div></div></a><a class="pagination-related" href="/posts/elastic-alert-slack-guide/" title="Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&amp;ixlib=rb-4.0.3&amp;q=80&amp;utm_campaign=api-credit&amp;utm_medium=referral&amp;utm_source=unsplash_source&amp;w=1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學</div></div><div class="info-2"><div class="info-item-1">參考連結  ElastAlert - Writing Filters For Rules 寫了蠻多範例撰寫Rule elastAlert-Writing Filter  前言 根據前一篇的內容，我們接下來打算做的事情如下  [x] 了解 elastAlert 的 Rule types 撰寫方式 [x] 成功觸發 slack ，並發送訊息  關於 Filters 參考：https://elastalert2.readthedocs.io/en/latest/recipes/writing_filters.html  Filters 是什麼？  可以想像是 elasticsearch 的查詢條件，如果滿足的話，就觸發 rule 並執行告警動作。 在建立 rule 時可以設定 filters，filters 是作為 elasticsearch query DSL(Domain Specific Language) 的部分，DSL 提供基於 json 來定義查詢，  DSL 大概就長這樣（可以透過點擊Filter/Edit Filter/Edit as Query DSL來查看）    ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/elastic-alert-email-guide/" title="Wazuh的告警系統實作 - ElastAlert 的 POST &amp; EMAIL 警報觸發 教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-04</div><div class="info-item-2">Wazuh的告警系統實作 - ElastAlert 的 POST &amp; EMAIL 警報觸發 教學</div></div><div class="info-2"><div class="info-item-1">參考連結  elastAlert - HTTP POST 沒有mail server怎麼測試寄送email？快放過你的gmail來看看有那些可以測試用的smtp mail server 在elastAlert透過mail發送訊息  前言 我們在上一篇說明完如何透過 slack 來發送告警通知，本篇的目的這次著重在。  [x] 怎麼透過 email 發送訊息 [x] 成功觸發發送 email 功能 [x] 把 Labeling Service 部署到 機器上 [x] 成功觸發發送 發api進行 labeling 功能  透過 post 來發送訊息  參考根據官方網站說明：https://elastalert.readthedocs.io/en/latest/ruletypes.html#http-post  如果你想要設定 Rule 是可以發送 HTTP POST 的，可以參考以下的設定方式。  HTTP POST的設定Key意思:  http_post_url：設定要發送請求的URL地址。 http_post_payload（可選）：以键值對形式配置的POST请求的内容。  例如...</div></div></div></a><a class="pagination-related" href="/posts/elastic-alert-slack-guide/" title="Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-03</div><div class="info-item-2">Wazuh的告警系統實作 - ElastAlert 的 Slack 警報觸發 教學</div></div><div class="info-2"><div class="info-item-1">參考連結  ElastAlert - Writing Filters For Rules 寫了蠻多範例撰寫Rule elastAlert-Writing Filter  前言 根據前一篇的內容，我們接下來打算做的事情如下  [x] 了解 elastAlert 的 Rule types 撰寫方式 [x] 成功觸發 slack ，並發送訊息  關於 Filters 參考：https://elastalert2.readthedocs.io/en/latest/recipes/writing_filters.html  Filters 是什麼？  可以想像是 elasticsearch 的查詢條件，如果滿足的話，就觸發 rule 並執行告警動作。 在建立 rule 時可以設定 filters，filters 是作為 elasticsearch query DSL(Domain Specific Language) 的部分，DSL 提供基於 json 來定義查詢，  DSL 大概就長這樣（可以透過點擊Filter/Edit Filter/Edit as Query DSL來查看）    ...</div></div></div></a><a class="pagination-related" href="/posts/install-wazuh/" title="Wazuh, elastic, kibana 的無腦串接與安裝教學"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY4MTc3MTcyOQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-01</div><div class="info-item-2">Wazuh, elastic, kibana 的無腦串接與安裝教學</div></div><div class="info-2"><div class="info-item-1">參考連結  參考wauzh官方安裝教學: https://documentation.wazuh.com/current/deployment-options/elastic-stack/all-in-one-deployment/index.html#installing-elasticsearch 參考filebeat安裝: https://www.elastic.co/guide/en/beats/filebeat/7.17/setup-repositories.html  前言 請注意，我的安裝教學不是用正式環境，因為certs都是使用相同的，僅供教學快速安裝使用。   注意：目前教學內所使用的wazuh-manager版本是4.4.4，所以如果你的wazuh-manager是其他版本像是4.5，請務必修改以下所有含有4.4的script內容為4.5  12345# 原本為4.4 curl -so /etc/elasticsearch/elasticsearch.yml https://packages.wazuh.com/4.4/tpl/elastic-basic/el...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shannon Hung</div><div class="author-info-description">爲了避免健忘，而開始記錄</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">83</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">44</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E7%9A%84%E7%B6%B2%E7%AB%99"><span class="toc-text">參考的網站</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%9C%E6%96%BC%E5%8F%AF%E4%BB%A5%E4%BD%9C%E7%82%BA%E5%91%8A%E8%AD%A6%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="toc-text">關於可以作為告警的工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#elasticAlert-%E4%BB%8B%E7%B4%B9"><span class="toc-text">elasticAlert 介紹</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D%E6%95%99%E5%AD%B8%EF%BC%9A%E4%BD%BF%E7%94%A8-docker-%E5%95%9F%E5%8B%95"><span class="toc-text">安裝教學：使用 docker 啟動</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-opt-rules-a-yaml-%E6%AA%94%E6%A1%88"><span class="toc-text">建立 &#x2F;opt&#x2F;rules&#x2F;a.yaml 檔案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%8F%E9%81%8E-docker-%E6%8C%87%E4%BB%A4%E5%95%9F%E5%8B%95"><span class="toc-text">透過 docker 指令啟動</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%8F%E9%81%8E-docker-compose-%E5%95%9F%E5%8B%95"><span class="toc-text">透過 docker-compose 啟動</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B8%BD%E7%B5%90"><span class="toc-text">總結</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9D%911-SSLError-Permission-Denied"><span class="toc-text">坑1: SSLError Permission Denied</span></a></li></ol></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By Shannon Hung</span></div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="前往評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="繁簡轉換">繁</button><button id="darkmode" type="button" title="日夜模式切換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="回到頂端"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
 
-function panguInit () {
-  if (false){
-    GLOBAL_CONFIG_SITE.isPost && panguFn()
-  } else {
-    panguFn()
-  }
-}
-
-document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(() => {
-  const initGitalk = () => {
-    const gitalk = new Gitalk(Object.assign({
-      clientID: '51917ecdc184bb98b226',
-      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
-      repo: 'shannonhung.github.io',
-      owner: 'ShannonHung',
-      admin: ['ShannonHung'],
-      id: '27d50dd9deb8ad017850415afaa8e05d',
-      updateCountCallback: commentCount
-    },null))
-
-    gitalk.render('gitalk-container')
-  }
-
-  const loadGitalk = async() => {
-    if (typeof Gitalk === 'function') initGitalk()
-    else {
-      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
-      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
-      initGitalk()
-    }
-  }
-  
   const commentCount = n => {
     const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
     if (isCommentCount) {
       isCommentCount.textContent= n
     }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '27d50dd9deb8ad017850415afaa8e05d'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
   }
 
   if ('Gitalk' === 'Gitalk' || !false) {
@@ -317,7 +328,7 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
 POWERMODE.shake = false;
 POWERMODE.mobile = false;
 document.body.addEventListener('input', POWERMODE);
-</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
         <style>
             [bg-lazy] {
                 background-image: none !important;

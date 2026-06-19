@@ -1,0 +1,55 @@
+/* Custom aside overrides — keeps themes/butterfly/source/css/_layout/aside.styl at upstream */
+
+/* Tag cloud: colored pill style */
+#aside-content .card-tag-cloud a {
+  display: inline-block;
+  margin: 0.2rem 0.2rem 0.2rem 0;
+  padding: 0 0.4rem;
+  width: fit-content;
+  border: 1px solid #f76b61;
+  border-radius: 0.8rem;
+  background: #f76b61;
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 12px !important;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+#aside-content .card-tag-cloud a:hover {
+  background: #42d3d8;
+  color: #fff !important;
+  border: 1px solid #42d3d8;
+  box-shadow: 0 4px 8px 6px rgba(7, 17, 27, 0.03);
+  transform: scale(1.1);
+}
+
+/* Card widget: use margin-top flow instead of margin-bottom, add left indent */
+#aside-content .card-widget {
+  margin-bottom: 0;
+  margin-top: 20px;
+  margin-left: 15px;
+}
+#aside-content > .card-widget:first-child {
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  #aside-content > .card-widget:first-child {
+    margin-top: 20px;
+  }
+}
+
+/* Category list: simpler show/hide without opacity animation */
+#aside-content .card-categories .card-category-list.child {
+  overflow: visible;
+  max-height: none;
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+  display: none;
+}
+#aside-content .card-categories > .parent > a.expand + .child {
+  display: block;
+  max-height: none;
+  opacity: 1;
+  visibility: visible;
+}
