@@ -5,10 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const snackbarData = GLOBAL_CONFIG.Snackbar;
   let currentEncoding = defaultEncoding;
   const targetEncodingCookie = "translate-en-cht";
-  let targetEncoding =
-    saveToLocal.get(targetEncodingCookie) === undefined
-      ? defaultEncoding
-      : Number(saveToLocal.get("translate-en-cht"));
   let translateButtonObject;
   const isSnackbar = snackbarData !== undefined;
 
