@@ -20,12 +20,18 @@ p {
 #footer-wrap {
   color: #fff;
 }
-/* 粗體字 特效 */
+/* 粗體字 特效：螢光筆黃底，維持正常字級 */
 strong {
-  color: rgba(0, 153, 255);
   padding: 0 0.2rem;
-  font-size: 18px;
-  /* background: linear-gradient(180deg, transparent 50%, #fdda5a 0); */
+  font-weight: bold;
+  /* 只在字的下半部鋪黃色，像螢光筆畫過 */
+  background: linear-gradient(180deg, transparent 60%, #fdda5a 0);
+}
+/* dark 模式：黃底鋪滿整個字，深色字全程有底襯著才清楚 */
+[data-theme="dark"] strong {
+  color: #1a1a1a;
+  background: #fdda5a;
+  border-radius: 2px;
 }
 /* 斜線 */
 [data-theme="light"] em {
