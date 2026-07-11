@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>Mermaid 測試</title>
+      <link href="/posts/mermaid-guid/"/>
+      <url>/posts/mermaid-guid/</url>
+      
+        <content type="html"><![CDATA[<h1 id="TEST">TEST</h1><pre class="mermaid">flowchart LR    subgraph 指標來源["📊 指標來源 (Exporters)"]        NE["node-exporter<br/>主機 CPU/記憶體/磁碟<br/>:9100"]        KSM["kube-state-metrics<br/>K8s 物件狀態<br/>:8080"]    end    subgraph 收集者["🔍 收集與儲存"]        PROM["Prometheus<br/>抓取 + 儲存 + 查詢<br/>:9090"]    end    subgraph 視覺化["📈 視覺化"]        GRAF["Grafana<br/>儀表板<br/>:3000"]    end    K8SAPI["Kubernetes API"]    NE -->|/metrics| PROM    KSM -->|/metrics| PROM    PROM -.->|服務發現<br/>「現在有哪些目標？」| K8SAPI    KSM -.->|讀取物件狀態| K8SAPI    PROM -->|PromQL 查詢| GRAF</pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> Code </category>
+          
+          <category> Mermaid </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mermaid </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Pyproject.toml 手把手教學</title>
       <link href="/posts/pyproject-guid/"/>
       <url>/posts/pyproject-guid/</url>
@@ -339,13 +366,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -832,9 +859,9 @@
             
             <tag> Lecture </tag>
             
-            <tag> Two Pointer </tag>
-            
             <tag> Sliding Window </tag>
+            
+            <tag> Two Pointer </tag>
             
         </tags>
       
@@ -865,11 +892,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Recursion </tag>
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
+            <tag> Dynamic Programming </tag>
             
             <tag> Hard </tag>
             
@@ -902,11 +929,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -937,11 +964,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -972,13 +999,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Recursion </tag>
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1009,13 +1036,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Recursion </tag>
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1046,13 +1073,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Recursion </tag>
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1083,11 +1110,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1147,9 +1174,9 @@
             
             <tag> Medium </tag>
             
-            <tag> Sliding Window </tag>
-            
             <tag> Leetcode Contest </tag>
+            
+            <tag> Sliding Window </tag>
             
         </tags>
       
@@ -1180,11 +1207,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1215,11 +1242,11 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
-            
             <tag> practice </tag>
             
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1250,13 +1277,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Recursion </tag>
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1287,13 +1314,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Recursion </tag>
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Medium </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1324,13 +1351,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> Dynamic Programming </tag>
+            <tag> Recursion </tag>
             
             <tag> practice </tag>
             
-            <tag> Recursion </tag>
-            
             <tag> Easy </tag>
+            
+            <tag> Dynamic Programming </tag>
             
         </tags>
       
@@ -1392,13 +1419,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1429,15 +1456,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BST </tag>
             
             <tag> Recursion </tag>
             
-            <tag> Medium </tag>
-            
-            <tag> BST </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1468,13 +1495,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1505,15 +1532,15 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
+            <tag> BFS </tag>
             
             <tag> Recursion </tag>
             
-            <tag> Medium </tag>
-            
-            <tag> BFS </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1544,13 +1571,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1581,13 +1608,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1618,13 +1645,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1655,13 +1682,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1692,11 +1719,11 @@
             
             <tag> leetcode </tag>
             
+            <tag> DFS </tag>
+            
             <tag> practice </tag>
             
             <tag> Easy </tag>
-            
-            <tag> DFS </tag>
             
             <tag> binary-tree </tag>
             
@@ -1729,13 +1756,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1766,13 +1793,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> DFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1803,13 +1830,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
-            <tag> Medium </tag>
-            
             <tag> BFS </tag>
             
+            <tag> practice </tag>
+            
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1875,9 +1902,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Easy </tag>
             
@@ -1912,9 +1939,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Easy </tag>
             
@@ -1949,13 +1976,13 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
             
-            <tag> Medium </tag>
+            <tag> practice </tag>
             
             <tag> binary-tree </tag>
+            
+            <tag> Medium </tag>
             
         </tags>
       
@@ -1986,9 +2013,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Easy </tag>
             
@@ -2023,9 +2050,9 @@
             
             <tag> leetcode </tag>
             
-            <tag> practice </tag>
-            
             <tag> Recursion </tag>
+            
+            <tag> practice </tag>
             
             <tag> Easy </tag>
             

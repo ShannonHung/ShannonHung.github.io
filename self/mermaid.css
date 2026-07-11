@@ -1,0 +1,173 @@
+/* Mermaid diagram styling — injected via config-butterfly-zh.yml `inject.head`.
+ * hexo-filter-mermaid-diagrams wraps diagrams in <pre class="mermaid">, which
+ * inherits Butterfly's dark code-block background. Strip that so the diagram
+ * sits on the page background and the mermaid theme's own colours show through. */
+pre.mermaid {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 1rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+/* hexo-filter-mermaid-diagrams / Butterfly can add ::before or line-number
+ * decorations to <pre>; hide them for mermaid blocks. */
+pre.mermaid::before,
+pre.mermaid::after {
+  content: none !important;
+}
+
+pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Zoom button (top-right of each diagram) --------------------------- */
+pre.mermaid.mermaid-has-zoom {
+  position: relative;
+}
+
+.mermaid-zoom-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #5a5a5a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  z-index: 2;
+}
+pre.mermaid.mermaid-has-zoom:hover .mermaid-zoom-btn,
+.mermaid-zoom-btn:focus-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+.mermaid-zoom-btn:hover {
+  opacity: 1;
+  transform: scale(1.08);
+  background: #fff;
+  color: #222;
+}
+/* Touch devices have no hover: keep the button faintly visible. */
+@media (hover: none) {
+  .mermaid-zoom-btn { opacity: 0.7; transform: scale(1); }
+}
+:root[data-theme='dark'] .mermaid-zoom-btn {
+  background: rgba(45, 48, 56, 0.9);
+  color: #cfcfcf;
+}
+:root[data-theme='dark'] .mermaid-zoom-btn:hover {
+  background: #2d3038;
+  color: #fff;
+}
+
+/* --- Lightbox overlay -------------------------------------------------- */
+/* z-index above Butterfly's highest layer (99999). */
+#mermaid-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Semi-transparent backdrop: the page behind stays faintly visible.
+   * The blur keeps it from competing with the diagram card for attention. */
+  background: rgba(15, 17, 22, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: mermaid-lb-fade 0.15s ease;
+}
+@keyframes mermaid-lb-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Diagram sits on a clean framed card so it reads clearly against the backdrop. */
+.mermaid-lightbox-stage {
+  width: 90vw;
+  height: 86vh;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  padding: 12px;
+}
+.mermaid-lightbox-stage svg {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+.mermaid-lightbox-stage svg:active {
+  cursor: grabbing;
+}
+
+:root[data-theme='dark'] .mermaid-lightbox-stage {
+  background: #1e2027;
+}
+
+/* Close button */
+.mermaid-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.mermaid-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* Custom zoom controls (bottom-centre pill) */
+.mermaid-lightbox-controls {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.mermaid-lightbox-controls button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.mermaid-lightbox-controls button:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
