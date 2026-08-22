@@ -1,0 +1,1304 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>一個 kubectl apply 的旅程：Kubernetes 七個元件在做什麼 | Shannon's Blog 🐟 技術 | 生活 | 旅行</title><meta name="author" content="Shannon Hung"><meta name="copyright" content="Shannon Hung"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="前言：那兩秒之間發生了什麼事？ 你敲下 kubectl apply -f deployment.yaml，按 Enter，終端機回你一行： 1deployment.apps&#x2F;my-app created 兩秒後，kubectl get pods 顯示三個 Pod 正在 Running。 那兩秒之間發生了什麼事？ 你的 YAML 去了哪裡？誰決定這三個 Pod 要跑在哪幾台機器上？又是誰真的把容器拉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一個 kubectl apply 的旅程：Kubernetes 七個元件在做什麼">
+<meta property="og:url" content="https://shannonhung.github.io/posts/k8s-components-journey/">
+<meta property="og:site_name" content="Shannon&#39;s Blog 🐟 技術 | 生活 | 旅行">
+<meta property="og:description" content="前言：那兩秒之間發生了什麼事？ 你敲下 kubectl apply -f deployment.yaml，按 Enter，終端機回你一行： 1deployment.apps&#x2F;my-app created 兩秒後，kubectl get pods 顯示三個 Pod 正在 Running。 那兩秒之間發生了什麼事？ 你的 YAML 去了哪裡？誰決定這三個 Pod 要跑在哪幾台機器上？又是誰真的把容器拉">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg">
+<meta property="article:published_time" content="2026-08-22T07:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-22T14:07:43.185Z">
+<meta property="article:author" content="Shannon Hung">
+<meta property="article:tag" content="kubernetes">
+<meta property="article:tag" content="architecture">
+<meta property="article:tag" content="etcd">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "一個 kubectl apply 的旅程：Kubernetes 七個元件在做什麼",
+  "url": "https://shannonhung.github.io/posts/k8s-components-journey/",
+  "image": "https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg",
+  "datePublished": "2026-08-22T07:00:00.000Z",
+  "dateModified": "2026-08-22T14:07:43.185Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Shannon Hung",
+      "url": "https://shannonhung.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/shannon-icon.png"><link rel="canonical" href="https://shannonhung.github.io/posts/k8s-components-journey/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="IAmwAuWZP3fXPtoYru7VJBancFMT2BkhN15HC2iea1o"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-XBNKVVH2P4"></script><script>window.dataLayer = window.dataLayer || []
+function gtag(){dataLayer.push(arguments)}
+gtag('js', new Date())
+gtag('config', 'G-XBNKVVH2P4')
+btf.addGlobalFn('pjaxComplete', () => {
+  gtag('config', 'G-XBNKVVH2P4', {'page_path': window.location.pathname})
+}, 'google_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":-1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"找不到符合您查詢的內容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '複製成功',
+    error: '複製失敗',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切換為繁體中文","cht_to_chs":"已切換為簡體中文","day_to_night":"已切換為深色模式","night_to_day":"已切換為淺色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '一個 kubectl apply 的旅程：Kubernetes 七個元件在做什麼',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/background.css"><link rel="shortcut icon" href="#"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC&display=swap" rel="stylesheet"><link rel="stylesheet" href="/self/aside-custom.css"><link rel="stylesheet" href="/self/mermaid.css"><link rel="stylesheet" href="/self/callout.css"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">133</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">97</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">47</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Shannon's Blog 🐟 技術 | 生活 | 旅行</span></a><a class="nav-page-title" href="/"><span class="site-name">一個 kubectl apply 的旅程：Kubernetes 七個元件在做什麼</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首頁</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目錄</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於我</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相關連結</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 找文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-language"></i><span> 語言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/en/"><i class="fa-fw fas fa-e"></i><span> English</span></a></li><li><a class="site-page child" href="/"><i class="fa-fw fas fa-c"></i><span> 中文</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">一個 kubectl apply 的旅程：Kubernetes 七個元件在做什麼</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2026-08-22T07:00:00.000Z" title="發表於 2026-08-22 15:00:00">2026-08-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2026-08-22T14:07:43.185Z" title="更新於 2026-08-22 22:07:43">2026-08-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DevOps/">DevOps</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DevOps/Kubernetes/">Kubernetes</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">總字數:</span><span class="word-count">7.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時間:</span><span>26分鐘</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">瀏覽量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">評論數:</span><a href="/posts/k8s-components-journey/#post-comment"><span class="gitalk-comment-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/kubernetes/">kubernetes</a><a class="post-meta__tags" href="/tags/architecture/">architecture</a><a class="post-meta__tags" href="/tags/etcd/">etcd</a></div></div><article class="container post-content" id="article-container"><h1 id="前言：那兩秒之間發生了什麼事？">前言：那兩秒之間發生了什麼事？</h1>
+<p>你敲下 <code>kubectl apply -f deployment.yaml</code>，按 Enter，終端機回你一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deployment.apps/my-app created</span><br></pre></td></tr></table></figure>
+<p>兩秒後，<code>kubectl get pods</code> 顯示三個 Pod 正在 <code>Running</code>。</p>
+<p>那兩秒之間發生了什麼事？</p>
+<p>你的 YAML 去了哪裡？誰決定這三個 Pod 要跑在哪幾台機器上？又是誰真的把容器拉起來的？如果其中一個 Pod 掛掉，是誰發現的、誰把它補回來的？</p>
+<p>大部分講 Kubernetes 元件的文章，會給你一張架構圖和七個名詞解釋。但那樣很難記住——因為你不知道它們<strong>什麼時候會用到</strong>。</p>
+<p>所以這篇文章換個方式：<strong>我們跟著這一個 <code>kubectl apply</code> 指令，走完它在叢集裡經過的每一站。</strong> 每個元件都會在它該出場的時候登場，你會看到它接收到什麼、做了什麼決定、然後把什麼交給下一棒。</p>
+<p>走完這趟旅程，你不需要背，自然就記住了。</p>
+<blockquote>
+<p>[!NOTE] 這篇文章假設你會用 kubectl，但不知道背後發生什麼事<br>
+你能 <code>kubectl apply</code>、看得懂 Pod 和 Service 大概在做什麼。但如果被問到「誰決定 Pod 要跑在哪台機器上」，你答不太出來——這篇就是要回答這種問題。</p>
+</blockquote>
+<h2 id="先看全景">先看全景</h2>
+<p>在出發之前，先給你一張地圖。旅程會經過這幾站：</p>
+<pre class="mermaid">flowchart LR
+    subgraph LOCAL["你的電腦"]
+        K["kubectl"]
+    end
+    subgraph CP["Control Plane（大腦）"]
+        API["kube-apiserver"]
+        ETCD["etcd"]
+        CM["controller-manager"]
+        SCH["scheduler"]
+    end
+    subgraph NODE["Node（工人）"]
+        KUBELET["kubelet"]
+        PROXY["kube-proxy"]
+    end
+
+    K -->|"① REST 請求"| API
+    API <-->|"② 讀寫狀態"| ETCD
+    CM -->|"③ watch & 建立 Pod"| API
+    SCH -->|"④ 決定去哪台"| API
+    KUBELET -->|"⑤ 認領並建立容器"| API
+    PROXY -->|"⑥ 設定網路規則"| API
+
+    style API fill:#d4edda,stroke:#155724,color:#000
+    style ETCD fill:#fff3cd,stroke:#856404,color:#000</pre>
+<p>有兩個規律先記著，等一下每一站都會再看到：</p>
+<ol>
+<li><mark>所有東西都要經過 kube-apiserver</mark>。沒有任何元件會跳過它直接找別人講話。</li>
+<li><mark>只有 kube-apiserver 能碰 etcd</mark>。其他元件想知道叢集現在長什麼樣，一律問 apiserver。</li>
+</ol>
+<p>這兩條規律是整個架構的骨幹。現在出發。</p>
+<hr>
+<h1 id="第一站：kubectl-——-它其實不在叢集裡">第一站：kubectl —— 它其實不在叢集裡</h1>
+<p>旅程從你的筆電開始。</p>
+<p>這裡有個很多人沒意識到的事實：<mark><code>kubectl</code> 不是 Kubernetes 叢集的一部分。</mark> 它就是一支裝在你電腦上的 CLI 程式，跟 <code>curl</code> 沒有本質差別——它把你的 YAML 轉成 HTTP 請求，打到 apiserver 的 REST API。</p>
+<p>不信的話，你可以把 <code>kubectl</code> 在做的事直接用 <code>curl</code> 做一遍：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 讓 kubectl 在本機開一個到 apiserver 的代理</span></span><br><span class="line">kubectl proxy --port=8080 &amp;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 然後用 curl 直接問 apiserver 要 Pod 清單</span></span><br><span class="line">curl http://localhost:8080/api/v1/namespaces/default/pods</span><br></pre></td></tr></table></figure>
+<p>你會拿到一份 JSON，內容跟 <code>kubectl get pods -o json</code> 一模一樣。因為<mark>它們本來就是同一件事</mark>。</p>
+<p>想看得更清楚，加上 <code>-v=8</code> 讓 kubectl 把它實際發出的 HTTP 請求印出來：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f deployment.yaml -v=8</span><br></pre></td></tr></table></figure>
+<p>你會看到類似這樣的輸出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POST https://10.0.0.1:6443/apis/apps/v1/namespaces/default/deployments</span><br><span class="line">Request Body: &#123;&quot;apiVersion&quot;:&quot;apps/v1&quot;,&quot;kind&quot;:&quot;Deployment&quot;,...&#125;</span><br></pre></td></tr></table></figure>
+<p><mark>你的 YAML 被轉成了 JSON，用 POST 送到 apiserver。</mark> 這就是第一站的全部。</p>
+<blockquote>
+<p>[!TIP] 這解釋了升級時 kubectl 的規則為什麼比較寬鬆<br>
+因為 kubectl 只是個 API 客戶端，不是叢集內跑的元件，所以官方允許它比叢集<strong>新一個 minor 版本</strong>（其他元件一律不准比 apiserver 新）。細節可以看 [[升級 Kubernetes 前，怎麼提前知道哪裡會爆]] 的版本歪斜政策那一節。</p>
+</blockquote>
+<hr>
+<h1 id="第二站：kube-apiserver-——-叢集唯一的前門">第二站：kube-apiserver —— 叢集唯一的前門</h1>
+<p>你的請求抵達了 apiserver。這是整趟旅程最重要的一站，因為<strong>所有東西都要經過這裡</strong>。</p>
+<p>kube-apiserver 是叢集的「前門」：kubectl 要經過它、controller-manager 要經過它、scheduler 要經過它、連每個 node 上的 kubelet 都要經過它。它是唯一對外提供 REST API 的元件，也是唯一有資格碰資料庫的元件。</p>
+<h2 id="2-1-你的請求要通過三道關卡">2-1. 你的請求要通過三道關卡</h2>
+<p>apiserver 收到請求後，不會直接寫進資料庫。它會依序過三關，<mark>任何一關沒過就直接退回</mark>：</p>
+<pre class="mermaid">flowchart LR
+    R["你的請求"] --> A["① Authentication<br/>你是誰？"]
+    A --> B["② Authorization<br/>你有權限嗎？"]
+    B --> C["③ Admission Control<br/>這內容可以接受嗎？"]
+    C --> D["寫入 etcd"]
+    A -.->|"401"| X["拒絕"]
+    B -.->|"403"| X
+    C -.->|"依規則"| X
+    style A fill:#cfe2ff,stroke:#084298,color:#000
+    style B fill:#fff3cd,stroke:#856404,color:#000
+    style C fill:#f8d7da,stroke:#721c24,color:#000</pre>
+<p><strong>① Authentication（身分驗證）—— 你是誰？</strong></p>
+<p>確認請求的來源身分。可能是憑證、token、或雲端供應商的身分機制。你的 <code>~/.kube/config</code> 裡存的就是這個。</p>
+<p>沒通過 → <code>401 Unauthorized</code>。</p>
+<p><strong>② Authorization（授權）—— 你可以做這件事嗎？</strong></p>
+<p>知道你是誰之後，檢查你有沒有權限做這個動作。這一關通常由 <strong>RBAC</strong>（Role-Based Access Control，以角色為基礎的存取控制）負責——你的身分被綁定到某些角色，角色定義了「可以對哪些資源做哪些動作」。</p>
+<p>沒通過 → <code>403 Forbidden</code>。</p>
+<p>你可以直接問叢集你有沒有某個權限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我可以在 default namespace 建立 deployment 嗎？</span></span><br><span class="line">kubectl auth can-i create deployments --namespace default</span><br><span class="line"></span><br><span class="line"><span class="comment"># 我可以刪除節點嗎？</span></span><br><span class="line">kubectl auth can-i delete nodes</span><br></pre></td></tr></table></figure>
+<p><strong>③ Admission Control（准入控制）—— 這個內容我可以接受嗎？</strong></p>
+<p>這一關最有意思。<mark>前兩關管的是「<strong>誰</strong>」，這一關管的是「<strong>內容</strong>」</mark>。即使你身分正確、權限也夠，叢集仍然可以因為內容不合規而拒絕你，或是<strong>偷偷幫你改寫內容</strong>。</p>
+<p>Admission controller 分兩種：</p>
+<table>
+<thead>
+<tr>
+<th>類型</th>
+<th>做什麼</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mutating</strong>（變更型）</td>
+<td><strong>修改</strong>你送進來的內容</td>
+<td>自動注入 sidecar 容器、補上預設的 resource limits</td>
+</tr>
+<tr>
+<td><strong>Validating</strong>（驗證型）</td>
+<td><strong>檢查</strong>內容合不合規，只能通過或拒絕</td>
+<td>禁止使用 <code>latest</code> tag、要求所有 Pod 都得有 label</td>
+</tr>
+</tbody>
+</table>
+<p>先跑 Mutating，再跑 Validating——<mark>先改寫、後檢查</mark>，這個順序是有道理的：如果驗證跑在前面，後面的改寫就可能繞過驗證。</p>
+<blockquote>
+<p>[!NOTE] 你可能已經在用 admission control 了<br>
+如果你的叢集裝了 <strong>Istio</strong>，Pod 裡那個你沒寫在 YAML 裡卻自己冒出來的 Envoy sidecar，就是 mutating admission controller 注入的。如果你裝了 <strong>OPA Gatekeeper</strong>，那些「不符合公司政策就拒絕部署」的規則，就是 validating admission controller。</p>
+</blockquote>
+<h2 id="2-2-為什麼「所有東西都要經過它」是好設計">2-2. 為什麼「所有東西都要經過它」是好設計</h2>
+<p>把所有流量都塞給同一個元件，聽起來像是瓶頸。但這個設計換來三件很重要的事：</p>
+<ol>
+<li><strong>安全檢查只需要做一次</strong>。驗證、授權、准入控制全部集中在一個地方，不用在每個元件裡各實作一遍——那樣不只重複，還很容易出現漏洞。</li>
+<li><strong>資料格式可以統一轉換</strong>。你用舊的 <code>apiVersion</code> 送進來，apiserver 會自動轉成目前的儲存格式。這就是為什麼 API 版本升級時，你既有的資源不會突然爆掉。</li>
+<li><strong>etcd 被保護起來了</strong>。只有一個元件能碰資料庫，意味著資料庫的存取模式是可控的、可稽核的。</li>
+</ol>
+<blockquote>
+<p>[!WARNING] 但這也意味著 apiserver 掛掉會很慘<br>
+apiserver 一掛，整個叢集就「失聰」了：kubectl 不能用、controller 無法修正狀態、scheduler 無法排程。</p>
+<p>不過有個重要的例外——<mark>已經在跑的容器不會停</mark>。kubelet 會照著它最後收到的指令繼續維持容器運作，kube-proxy 的網路規則也還在。所以 apiserver 掛掉時，<mark>你的服務通常還活著，只是叢集失去了「自我修復」和「接受新指令」的能力</mark>。這也是為什麼正式環境要跑多台 apiserver。</p>
+</blockquote>
+<hr>
+<h1 id="第三站：etcd-——-叢集唯一的真相">第三站：etcd —— 叢集唯一的真相</h1>
+<p>請求通過三道關卡了。apiserver 現在要把你的 Deployment 存起來——存進 <strong>etcd</strong>。</p>
+<h2 id="3-1-淺層：它就是叢集的資料庫">3-1. 淺層：它就是叢集的資料庫</h2>
+<p>etcd 是一個 <strong>key-value store（鍵值資料庫）</strong>，而且是<strong>叢集裡唯一的資料庫</strong>。所有 API 物件的狀態——每個 Pod、Service、ConfigMap、Secret、Node——全都存在這裡。</p>
+<p>它的資料長得就像一個檔案系統的路徑：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/registry/deployments/default/my-app     →  &#123;Deployment 的完整 JSON&#125;</span><br><span class="line">/registry/pods/default/my-app-7d9f-x2k1  →  &#123;Pod 的完整 JSON&#125;</span><br><span class="line">/registry/services/default/my-app-svc    →  &#123;Service 的完整 JSON&#125;</span><br></pre></td></tr></table></figure>
+<p>這帶出一個很重要的觀念：</p>
+<blockquote>
+<p><mark>在 Kubernetes 裡，「存在」的定義就是「etcd 裡有這筆資料」。</mark></p>
+</blockquote>
+<p>你的 Deployment 現在被寫進 etcd 了，所以它<strong>存在</strong>了。但注意——<mark>此刻還沒有任何容器被建立</mark>，一個 Pod 都還沒有。目前為止發生的所有事情，只是「在資料庫裡記了一筆」。</p>
+<p>這就是 Kubernetes 最核心的設計哲學：<strong>宣告式（declarative）</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>做法</th>
+<th>你說的話</th>
+<th>誰負責執行</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>命令式</strong>（imperative）</td>
+<td>「去 node-3 上啟動一個容器」</td>
+<td>你自己要盯著它成功沒</td>
+</tr>
+<tr>
+<td><strong>宣告式</strong>（declarative）</td>
+<td>「我要有三個這樣的 Pod」</td>
+<td>系統自己想辦法達成，而且<strong>持續維持</strong></td>
+</tr>
+</tbody>
+</table>
+<p><mark>你寫的 YAML 是一份<strong>期望狀態（desired state）</strong> 的描述，不是一串指令</mark>。你只負責把「我要什麼」寫進 etcd，剩下的交給後面幾站的元件去實現。</p>
+<blockquote>
+<p>[!TIP] 這解釋了為什麼 <code>kubectl apply</code> 回得那麼快<br>
+那一行 <code>deployment.apps/my-app created</code> 的意思是「<strong>你的願望已經登記完成</strong>」，<mark>不是「你的容器已經跑起來了」</mark>。所以 apply 成功不等於部署成功——這兩件事中間還隔著後面好幾站。</p>
+</blockquote>
+<h2 id="3-2-中層：為什麼-etcd-要三台、五台？">3-2. 中層：為什麼 etcd 要三台、五台？</h2>
+<p>正式環境的 etcd 從來不是一台，而且<strong>幾乎一定是奇數台</strong>：3 台、5 台、7 台。這是為什麼？</p>
+<p>因為 etcd 要同時滿足兩個互相衝突的要求：</p>
+<ul>
+<li><strong>不能掛</strong>：一台壞了，叢集不能跟著死</li>
+<li><strong>不能分裂</strong>：多台之間的資料必須完全一致，絕不能各說各話</li>
+</ul>
+<p>解法叫做 <strong>quorum（法定人數）</strong>：<mark>任何一筆寫入，都必須有<strong>超過半數</strong>的節點確認，才算真正寫成功</mark>。</p>
+<pre class="mermaid">flowchart TD
+    W["寫入請求"] --> N1["節點 1 ✅"]
+    W --> N2["節點 2 ✅"]
+    W --> N3["節點 3 ❌ 掛了"]
+    N1 & N2 --> Q["2 / 3 > 半數<br/>✅ 寫入成功"]
+    style Q fill:#d4edda,stroke:#155724,color:#000
+    style N3 fill:#f8d7da,stroke:#721c24,color:#000</pre>
+<p>算一下不同規模能容忍幾台故障：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">總節點數</th>
+<th style="text-align:center">需要的 quorum</th>
+<th style="text-align:center">可容忍故障</th>
+<th>評語</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center"><strong>0</strong></td>
+<td>沒有容錯，測試用</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center"><strong>0</strong></td>
+<td>⚠️ 比一台還糟</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center">2</td>
+<td style="text-align:center"><strong>1</strong></td>
+<td>✅ 最常見的選擇</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center"><strong>1</strong></td>
+<td>⚠️ 多一台但容錯沒增加</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:center">3</td>
+<td style="text-align:center"><strong>2</strong></td>
+<td>✅ 大型叢集</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center"><strong>2</strong></td>
+<td>⚠️ 同樣白費一台</td>
+</tr>
+</tbody>
+</table>
+<p>看出偶數台的問題了嗎？<mark>4 台的容錯能力跟 3 台一樣，但你多付了一台的成本，還多了一台可能故障的機器。</mark> 這就是為什麼永遠選奇數。</p>
+<p>至於為什麼要「超過半數」而不是「至少一半」——因為半數會出事。假設 4 台的叢集從中間斷成 2+2，如果只要求「一半」，兩邊都覺得自己有效，各自接受寫入，資料就永久分裂了。這種情況叫 <strong>split-brain（腦裂）</strong>，要求「<strong>超過</strong>半數」可以從數學上保證不可能有兩群同時滿足條件。</p>
+<blockquote>
+<p>[!WARNING] quorum 失守 = 叢集變成唯讀<br>
+3 台掛掉 2 台，剩下的 1 台無法達成 quorum，此時 <mark>etcd 會拒絕所有寫入</mark>。實際的症狀是：<mark><code>kubectl get</code> 還能用（讀取還可以），但任何 <code>apply</code>、<code>delete</code>、<code>scale</code> 全部失敗</mark>。而且叢集也失去自我修復能力——Pod 掛了不會被重建，因為 controller 沒辦法寫入新狀態。</p>
+</blockquote>
+<h2 id="3-3-深層：備份，以及那個沒人想遇到的場景">3-3. 深層：備份，以及那個沒人想遇到的場景</h2>
+<p>前面講的容錯有個前提：<mark>壞掉的是機器，不是資料</mark>。</p>
+<p>但如果是資料本身出問題呢——有人誤刪了整個 namespace、或是 etcd 資料損毀？這時候多幾台節點救不了你，因為<mark>每一台都忠實地同步了那個錯誤</mark>。這正是 quorum 的設計目的：讓所有節點保持一致。它不會判斷內容對不對。</p>
+<p>所以你需要備份。</p>
+<p><strong>備份指令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ETCDCTL_API=3 etcdctl snapshot save /backup/etcd-snapshot-$(<span class="built_in">date</span> +%F).db \</span><br><span class="line">  --endpoints=https://127.0.0.1:2379 \</span><br><span class="line">  --cacert=/etc/kubernetes/pki/etcd/ca.crt \</span><br><span class="line">  --cert=/etc/kubernetes/pki/etcd/server.crt \</span><br><span class="line">  --key=/etc/kubernetes/pki/etcd/server.key</span><br></pre></td></tr></table></figure>
+<p><strong>檢查備份檔：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ETCDCTL_API=3 etcdctl snapshot status /backup/etcd-snapshot-2026-08-22.db --write-out=table</span><br></pre></td></tr></table></figure>
+<p><strong>還原：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ETCDCTL_API=3 etcdctl snapshot restore /backup/etcd-snapshot-2026-08-22.db \</span><br><span class="line">  --data-dir=/var/lib/etcd-restored</span><br></pre></td></tr></table></figure>
+<p>還原的完整流程比一行指令複雜：要先停掉 apiserver（避免還原過程中有人寫入）、每個 etcd 節點都要還原、改設定指向新的 data dir、再把 apiserver 拉起來。<mark>請務必在測試環境演練過再說你有備份。</mark></p>
+<blockquote>
+<p>[!IMPORTANT] 沒演練過的備份，等於沒有備份<br>
+這是維運的老話但值得再說一次：<mark>備份的價值不在於「有檔案」，而在於「<strong>確定能還原</strong>」</mark>。定期做一次還原演練，你會發現各種問題——憑證過期、版本不相容、磁碟空間不足、還原後 Pod 全部卡住。這些都是你不會想在真正出事那天才第一次遇到的。</p>
+</blockquote>
+<p><mark>還有一個容易被忽略的點：Secret 在 etcd 裡預設只是 base64 編碼，不是加密。</mark></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 任何能讀 etcd 的人，都能直接看到你的密碼</span></span><br><span class="line">ETCDCTL_API=3 etcdctl get /registry/secrets/default/my-secret</span><br></pre></td></tr></table></figure>
+<p>base64 是編碼不是加密，<code>base64 -d</code> 一秒就還原了。這代表兩件事：<mark>etcd 的備份檔跟你的密碼一樣敏感</mark>，要當機密資料保管；以及正式環境應該開啟 <a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/">encryption at rest</a>，讓 apiserver 在寫入前先加密。</p>
+<blockquote>
+<p>[!TIP] 升級時 etcd 為什麼要特別小心<br>
+因為它是<strong>唯一存放狀態的地方</strong>——其他元件都是無狀態的，掛了重啟就好，但 etcd 壞了資料就沒了。所以很多團隊會把 etcd 的版本節奏獨立管理，跟 K8s 主版本脫鉤，並且<strong>升級前一定先做一次 snapshot</strong>。這部分在 [[升級 Kubernetes 前，怎麼提前知道哪裡會爆]] 有更多脈絡。</p>
+</blockquote>
+<hr>
+<h1 id="第四站：controller-manager-——-把願望變成-Pod">第四站：controller-manager —— 把願望變成 Pod</h1>
+<p>你的 Deployment 躺在 etcd 裡了，但<mark>還是沒有任何 Pod</mark>。</p>
+<p>Deployment 只是一份宣告：「我要三個這樣的 Pod」。真正把這句話變成三個 Pod 物件的，是 <strong>kube-controller-manager</strong>。</p>
+<h2 id="4-1-Reconcile-Loop：整個-Kubernetes-的心跳">4-1. Reconcile Loop：整個 Kubernetes 的心跳</h2>
+<p>controller-manager 裡面跑著一大堆 <strong>controller</strong>，每一個都在做同一件事，這件事叫做 <strong>reconcile loop（調和迴圈）</strong>：</p>
+<pre class="mermaid">flowchart LR
+    A["讀取期望狀態<br/>（你的 YAML）"] --> B["觀察目前狀態<br/>（叢集實際情況）"]
+    B --> C{"有差異嗎？"}
+    C -->|"有"| D["採取行動<br/>縮小差距"]
+    C -->|"沒有"| E["什麼都不做"]
+    D --> A
+    E --> A
+    style C fill:#fff3cd,stroke:#856404,color:#000</pre>
+<p>用白話講就是三句話：</p>
+<blockquote>
+<p><mark>「你想要什麼？」→ 「現在是什麼？」→ 「不一樣的話，我來想辦法。」</mark></p>
+</blockquote>
+<p>而且這個迴圈<mark>永遠不會停</mark>。它不是「執行一次就結束」的任務，而是持續運轉的循環。這就是 Kubernetes 「自我修復」能力的來源——你不需要告訴它「Pod 掛了要重建」，它只是<mark>不斷地發現現況跟期望不符，然後動手修正</mark>。</p>
+<p>回到我們的 Deployment：</p>
+<table>
+<thead>
+<tr>
+<th>時間點</th>
+<th style="text-align:center">期望狀態</th>
+<th style="text-align:center">目前狀態</th>
+<th>Controller 的動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>剛 apply 完</td>
+<td style="text-align:center">3 個 Pod</td>
+<td style="text-align:center">0 個 Pod</td>
+<td>建立 3 個 Pod 物件</td>
+</tr>
+<tr>
+<td>正常運作時</td>
+<td style="text-align:center">3 個 Pod</td>
+<td style="text-align:center">3 個 Pod</td>
+<td>什麼都不做</td>
+</tr>
+<tr>
+<td>有台機器爆了</td>
+<td style="text-align:center">3 個 Pod</td>
+<td style="text-align:center">2 個 Pod</td>
+<td>再建立 1 個 Pod</td>
+</tr>
+<tr>
+<td>你手動刪一個</td>
+<td style="text-align:center">3 個 Pod</td>
+<td style="text-align:center">2 個 Pod</td>
+<td><strong>再建立 1 個</strong>（它不知道你是故意的）</td>
+</tr>
+</tbody>
+</table>
+<p>最後一列常常讓新手困惑：「我明明刪掉了，怎麼又冒出來？」——因為<mark>你只是改變了<strong>現況</strong>，沒有改變<strong>期望</strong></mark>。要真的減少 Pod，你得去改期望（<code>kubectl scale</code> 或改 YAML），而不是去刪結果。</p>
+<h2 id="4-2-不只一個-controller">4-2. 不只一個 controller</h2>
+<p>controller-manager 是一個程式，但裡面<strong>打包了幾十個 controller</strong>，各管各的：</p>
+<table>
+<thead>
+<tr>
+<th>Controller</th>
+<th>負責什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Deployment controller</strong></td>
+<td>管理 ReplicaSet，處理滾動更新</td>
+</tr>
+<tr>
+<td><strong>ReplicaSet controller</strong></td>
+<td>確保指定數量的 Pod 存在</td>
+</tr>
+<tr>
+<td><strong>Node controller</strong></td>
+<td>監控節點健康，節點失聯時標記並驅逐 Pod</td>
+</tr>
+<tr>
+<td><strong>Job controller</strong></td>
+<td>管理一次性任務跑完就結束</td>
+</tr>
+<tr>
+<td><strong>Endpoint controller</strong></td>
+<td>維護 Service 與 Pod 之間的對應關係</td>
+</tr>
+</tbody>
+</table>
+<p>以我們的 Deployment 為例，實際上是<strong>兩層接力</strong>：</p>
+<pre class="mermaid">flowchart LR
+    D["Deployment<br/>我要 3 個 Pod"] -->|"Deployment controller"| RS["ReplicaSet<br/>負責維持 3 個"]
+    RS -->|"ReplicaSet controller"| P1["Pod 1"]
+    RS --> P2["Pod 2"]
+    RS --> P3["Pod 3"]</pre>
+<p>為什麼要多一層 ReplicaSet？<mark>因為滾動更新需要它</mark>。當你改了 image 版本，Deployment controller 會建立一個<strong>新的</strong> ReplicaSet，然後慢慢把新的擴上去、舊的縮下來——<mark>兩個 ReplicaSet 同時存在，才能做到不中斷的切換</mark>。這也是 <code>kubectl rollout undo</code> 能夠回滾的原因：舊的 ReplicaSet 還留著。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 看看你的 Deployment 底下有哪些 ReplicaSet</span></span><br><span class="line">kubectl get rs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 看滾動更新的歷史</span></span><br><span class="line">kubectl rollout <span class="built_in">history</span> deployment/my-app</span><br></pre></td></tr></table></figure>
+<h2 id="4-3-此刻的狀態：Pod-有了，但還沒有家">4-3. 此刻的狀態：Pod 有了，但還沒有家</h2>
+<p>controller-manager 建立了三個 Pod 物件，寫回 etcd。</p>
+<p>但這三個 Pod 現在處於一個特殊狀態——<mark>它們還不知道自己要跑在哪台機器上</mark>。Pod 規格裡有個欄位叫 <code>spec.nodeName</code>，現在是<strong>空的</strong>。</p>
+<p>這種狀態你一定看過：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pods</span><br><span class="line">NAME                      READY   STATUS    RESTARTS   AGE</span><br><span class="line">my-app-7d9f4b6c5-x2k1     0/1     Pending   0          2s</span><br><span class="line">my-app-7d9f4b6c5-p8m3     0/1     Pending   0          2s</span><br><span class="line">my-app-7d9f4b6c5-q4n7     0/1     Pending   0          2s</span><br></pre></td></tr></table></figure>
+<p><mark><code>Pending</code> 的意思就是「這個 Pod 還沒有被分配到節點」。</mark> 它需要下一站的元件來決定它的歸屬。</p>
+<hr>
+<h1 id="第五站：kube-scheduler-——-決定去哪台機器">第五站：kube-scheduler —— 決定去哪台機器</h1>
+<p><strong>kube-scheduler</strong> 的工作只有一件事，而且它只做這一件事：<mark>看到沒有 <code>nodeName</code> 的 Pod，就幫它挑一台節點。</mark></p>
+<h2 id="5-1-兩個階段：先篩選，再評分">5-1. 兩個階段：先篩選，再評分</h2>
+<p>排程的決策分成兩步：</p>
+<pre class="mermaid">flowchart LR
+    A["所有節點<br/>node-1 ~ node-10"] --> B["① Filtering 篩選<br/>哪些「可以」？"]
+    B --> C["候選節點<br/>node-2, node-5, node-7"]
+    C --> D["② Scoring 評分<br/>哪一個「最好」？"]
+    D --> E["贏家<br/>node-5"]
+    style B fill:#cfe2ff,stroke:#084298,color:#000
+    style D fill:#fff3cd,stroke:#856404,color:#000
+    style E fill:#d4edda,stroke:#155724,color:#000</pre>
+<p><strong>① Filtering（篩選）—— 把不可能的排除掉</strong></p>
+<p>這一關是硬性條件，不符合就直接出局：</p>
+<ul>
+<li><strong>資源夠不夠</strong>？Pod 要求 2 CPU，但這台只剩 0.5 CPU → 淘汰</li>
+<li><strong>node selector / affinity 符合嗎</strong>？你指定要 <code>disktype=ssd</code>，這台沒有 → 淘汰</li>
+<li><strong>taint 擋住了嗎</strong>？節點有污點而 Pod 沒有對應的容忍設定 → 淘汰</li>
+<li><strong>port 衝突嗎</strong>？Pod 要用 hostPort 8080，這台已經被佔用 → 淘汰</li>
+</ul>
+<p><strong>② Scoring（評分）—— 從可以的裡面挑最好的</strong></p>
+<p>通過篩選的節點會被打分數，考量的因素包括：資源分布是否平均、image 是否已經在該節點上（省下拉取時間）、同一個 Service 的 Pod 是否過度集中等等。</p>
+<p>分數最高的獲勝。</p>
+<h2 id="5-2-關鍵：scheduler-不會自己建立容器">5-2. 關鍵：scheduler 不會自己建立容器</h2>
+<p>這是最容易誤解的地方。scheduler 選定 node-5 之後，它做的事<mark>只是把 <code>nodeName: node-5</code> 這個欄位寫回 apiserver</mark>。</p>
+<p>就這樣。它不會連到 node-5、不會拉 image、不會啟動容器。</p>
+<pre class="mermaid">sequenceDiagram
+    participant S as scheduler
+    participant A as apiserver
+    participant E as etcd
+    S->>A: 我看到一個 Pending 的 Pod
+    S->>S: 篩選 + 評分，決定放 node-5
+    S->>A: 幫我把 nodeName 設成 node-5
+    A->>E: 寫入
+    Note over S: scheduler 的工作到此結束</pre>
+<p>用一個比喻：<mark>scheduler 是婚姻仲介，不是搬家公司。</mark> 它負責配對，配好之後就退場了，真正把東西搬過去的是下一站的 kubelet。</p>
+<p>這個「只寫欄位、不做事」的設計再次體現了宣告式哲學——<mark><strong>scheduler 也只是在修改期望狀態</strong>，然後相信會有別的元件來實現它</mark>。</p>
+<blockquote>
+<p>[!TIP] 這解釋了 Pending 的除錯方向<br>
+如果 Pod 一直卡在 <code>Pending</code>，代表 <mark>scheduler 找不到適合的節點</mark>。直接問它原因：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pod &lt;pod-name&gt;</span><br></pre></td></tr></table></figure>
+<p>看 Events 區塊，通常會明說原因，例如 <code>0/3 nodes are available: 3 Insufficient cpu</code>（資源不足）或 <code>node(s) had untolerated taint</code>（被 taint 擋住）。</p>
+</blockquote>
+<hr>
+<h1 id="第六站：kubelet-——-終於有容器了">第六站：kubelet —— 終於有容器了</h1>
+<p><code>nodeName: node-5</code> 被寫進 etcd 的那一刻，node-5 上的 <strong>kubelet</strong> 發現：有一個 Pod 被指派給我了。</p>
+<p>kubelet 是每個 node 上的「代理人」——control plane 的決策，最終都由它在節點上執行。它是<mark>唯一真正會建立容器的元件</mark>。</p>
+<h2 id="6-1-kubelet-拿到-Pod-之後做什麼">6-1. kubelet 拿到 Pod 之後做什麼</h2>
+<pre class="mermaid">flowchart TD
+    A["發現有 Pod 指派給我"] --> B["準備網路<br/>呼叫 CNI 插件"]
+    B --> C["準備儲存<br/>掛載 Volume"]
+    C --> D["拉取 image"]
+    D --> E["透過 CRI 啟動容器"]
+    E --> F["持續健康檢查<br/>並回報狀態"]
+    F --> F
+    style E fill:#d4edda,stroke:#155724,color:#000</pre>
+<p>這裡出現三個 <code>C</code> 開頭的介面，它們是 Kubernetes 的<strong>插拔式設計</strong>——<mark>kubelet 自己不實作這些功能，而是定義介面讓別人來實作</mark>：</p>
+<table>
+<thead>
+<tr>
+<th>介面</th>
+<th>全名</th>
+<th>負責</th>
+<th>常見實作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CRI</strong></td>
+<td>Container Runtime Interface</td>
+<td>真正跑起容器</td>
+<td>containerd、CRI-O</td>
+</tr>
+<tr>
+<td><strong>CNI</strong></td>
+<td>Container Network Interface</td>
+<td>給 Pod 網路和 IP</td>
+<td>Cilium、Calico、Flannel</td>
+</tr>
+<tr>
+<td><strong>CSI</strong></td>
+<td>Container Storage Interface</td>
+<td>掛載儲存空間</td>
+<td>各家雲端的 volume driver</td>
+</tr>
+</tbody>
+</table>
+<p>所以「kubelet 建立容器」其實是簡化的說法。精確地說：<mark>kubelet 透過 CRI 指揮 containerd 或 CRI-O 去建立容器。</mark> kubelet 自己不碰容器的實作細節。</p>
+<blockquote>
+<p>[!NOTE] 這解釋了為什麼升級時要查 CRI 版本<br>
+因為 kubelet 和 container runtime 是兩個獨立的專案，透過 CRI 介面溝通。介面會演進，所以版本要搭配得起來——這就是為什麼 CRI-O 的版號要跟 K8s 對齊。細節見 [[升級 Kubernetes 前，怎麼提前知道哪裡會爆]]。</p>
+</blockquote>
+<h2 id="6-2-它同時是「回報者」">6-2. 它同時是「回報者」</h2>
+<p>kubelet 不只執行命令，它還<mark>持續回報</mark>：節點還活著嗎、資源用了多少、每個 Pod 的容器狀態如何。</p>
+<p>你 <code>kubectl get pods</code> 看到的 <code>Running</code>、<code>CrashLoopBackOff</code>、<code>READY 1/1</code>，全都是 kubelet 回報上去、經由 apiserver 寫進 etcd 的資料。</p>
+<p>它也負責執行你在 YAML 裡定義的健康檢查：</p>
+<table>
+<thead>
+<tr>
+<th>探針</th>
+<th>檢查什麼</th>
+<th>失敗時</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>livenessProbe</strong></td>
+<td>容器還活著嗎</td>
+<td><strong>重啟容器</strong></td>
+</tr>
+<tr>
+<td><strong>readinessProbe</strong></td>
+<td>準備好接流量了嗎</td>
+<td><strong>從 Service 移除</strong>（不重啟）</td>
+</tr>
+<tr>
+<td><strong>startupProbe</strong></td>
+<td>啟動完成了嗎</td>
+<td>保護啟動慢的應用不被誤殺</td>
+</tr>
+</tbody>
+</table>
+<p><mark><code>readinessProbe</code> 失敗<strong>不會重啟容器</strong>，只會讓它暫時不接流量</mark>——這個區別在排查「服務時好時壞」的問題時很關鍵。</p>
+<blockquote>
+<p>[!WARNING] kubelet 掛掉會怎樣？<br>
+節點上<strong>已經在跑的容器不會停</strong>——<mark>它們由 container runtime 維持，不是 kubelet</mark>。但這個節點會失去管理能力：無法建立新 Pod、無法回報狀態。</p>
+<p>過一段時間後，node controller 發現這個節點失聯，會把它標記為 <code>NotReady</code>，並開始把上面的 Pod 驅逐、在別的節點重建。</p>
+</blockquote>
+<hr>
+<h1 id="第七站：kube-proxy-——-讓流量找得到-Pod">第七站：kube-proxy —— 讓流量找得到 Pod</h1>
+<p>容器跑起來了，但還有最後一個問題：<strong>別人要怎麼連到它？</strong></p>
+<p><mark>Pod 的 IP 是會變的——重啟一次就換一個</mark>。所以你不會直接連 Pod IP，而是透過 <strong>Service</strong>：一個固定不變的虛擬 IP，背後對應到一組隨時在變的 Pod。</p>
+<p>把這件事實現出來的，就是 <strong>kube-proxy</strong>。</p>
+<h2 id="7-1-它其實不轉發流量">7-1. 它其實不轉發流量</h2>
+<p>名字裡有 proxy，很容易誤會它像 Nginx 那樣代理流量。<mark>它不是。</mark></p>
+<p>kube-proxy 做的事是：<strong>在每個節點上維護網路轉發規則</strong>（[[iptables 或 IPVS 規則]]）。<mark>真正轉發封包的是 Linux 核心，不是 kube-proxy 這支程式</mark>。</p>
+<pre class="mermaid">flowchart LR
+    A["Service 或 Endpoint<br/>有變動"] --> B["kube-proxy 發現"]
+    B --> C["更新節點上的<br/>iptables / IPVS 規則"]
+    C --> D["Linux kernel<br/>依規則轉發封包"]
+    style C fill:#cfe2ff,stroke:#084298,color:#000
+    style D fill:#d4edda,stroke:#155724,color:#000</pre>
+<p>用比喻來說：<mark>kube-proxy 是交通號誌的設定人員，不是指揮交通的警察。</mark> 它設定好規則就退場，實際的流量疏導由核心負責。</p>
+<p>這個設計有個很大的好處：<mark>流量不用經過 kube-proxy 這個程序</mark>，所以它掛掉的時候，既有的規則還留在核心裡，<mark>流量仍然會正常轉發</mark>——只是新的 Service 變更不會被套用。</p>
+<h2 id="7-2-它怎麼知道要轉發給誰">7-2. 它怎麼知道要轉發給誰</h2>
+<p>這裡要串回第四站的 <strong>Endpoint controller</strong>。整個鏈路是這樣：</p>
+<pre class="mermaid">flowchart LR
+    P["Pod 通過<br/>readinessProbe"] --> E["Endpoint controller<br/>把它加進 Endpoints"]
+    E --> KP["kube-proxy 發現變動"]
+    KP --> R["更新轉發規則"]</pre>
+<p>所以一個 Pod 要能接到流量，條件是：<mark><strong>它的 readinessProbe 通過</strong> → Endpoint controller 才會把它列入 → kube-proxy 才會把流量導過去</mark>。</p>
+<p>這解釋了滾動更新為什麼不會中斷服務：<mark>新 Pod 還沒 ready 之前，不會被加進轉發規則，流量繼續走舊 Pod</mark>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 看看某個 Service 目前實際指向哪些 Pod IP</span></span><br><span class="line">kubectl get endpoints my-app-svc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果這裡是空的，代表沒有任何 Pod 通過 readinessProbe</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>[!TIP] 「Service 連不上」的排查順序</p>
+<ol>
+<li><code>kubectl get endpoints &lt;svc&gt;</code> —— 有沒有 Pod IP？空的話問題在 readinessProbe 或 label selector</li>
+<li>Pod 的 label 跟 Service 的 selector 對得上嗎？</li>
+<li>前兩項都正常才需要懷疑 kube-proxy 或 CNI</li>
+</ol>
+<p>實際的連線測試方法，可以參考 [[Kubernetes 常用測試指令]]。</p>
+</blockquote>
+<hr>
+<h1 id="全程回顧：那兩秒鐘的完整旅程">全程回顧：那兩秒鐘的完整旅程</h1>
+<p>我們回到最初的問題：<code>kubectl apply</code> 之後的兩秒，到底發生了什麼？</p>
+<pre class="mermaid">sequenceDiagram
+    autonumber
+    participant U as 你
+    participant K as kubectl
+    participant A as apiserver
+    participant E as etcd
+    participant C as controller-manager
+    participant S as scheduler
+    participant KL as kubelet (node-5)
+    participant P as kube-proxy
+
+    U->>K: kubectl apply -f deployment.yaml
+    K->>A: POST /apis/apps/v1/.../deployments
+    A->>A: 驗證 → 授權 → 准入控制
+    A->>E: 寫入 Deployment
+    A-->>K: 201 Created
+    K-->>U: deployment.apps/my-app created
+
+    Note over C: 以下都是非同步發生的
+    C->>A: watch 到新的 Deployment
+    C->>A: 建立 ReplicaSet 與 3 個 Pod
+    A->>E: 寫入（此時 Pod 為 Pending）
+
+    S->>A: watch 到沒有 nodeName 的 Pod
+    S->>S: 篩選 + 評分
+    S->>A: 設定 nodeName = node-5
+
+    KL->>A: watch 到指派給我的 Pod
+    KL->>KL: CNI 網路 → CSI 儲存 → 拉 image
+    KL->>KL: 透過 CRI 啟動容器
+    KL->>A: 回報 Running
+
+    P->>A: watch 到 Endpoint 變動
+    P->>P: 更新 iptables / IPVS 規則</pre>
+<p>注意那一行 <code>deployment.apps/my-app created</code> 出現的位置——<mark>它在整個流程的很前面就回來了</mark>。後面所有的事情都是非同步發生的。</p>
+<p><mark>這就是為什麼「apply 成功」不等於「服務可用」。</mark></p>
+<h2 id="七個元件，一句話總結">七個元件，一句話總結</h2>
+<table>
+<thead>
+<tr>
+<th>元件</th>
+<th>位置</th>
+<th>一句話</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>kubectl</strong></td>
+<td>你的電腦</td>
+<td>API 客戶端，不是叢集的一部分</td>
+</tr>
+<tr>
+<td><strong>kube-apiserver</strong></td>
+<td>Control Plane</td>
+<td>唯一的前門，唯一能碰 etcd 的元件</td>
+</tr>
+<tr>
+<td><strong>etcd</strong></td>
+<td>Control Plane</td>
+<td>唯一的資料庫，叢集狀態的唯一真相</td>
+</tr>
+<tr>
+<td><strong>controller-manager</strong></td>
+<td>Control Plane</td>
+<td>不斷比對期望與現況，動手縮小差距</td>
+</tr>
+<tr>
+<td><strong>kube-scheduler</strong></td>
+<td>Control Plane</td>
+<td>只決定 Pod 去哪台，不負責建立</td>
+</tr>
+<tr>
+<td><strong>kubelet</strong></td>
+<td>每個 Node</td>
+<td>唯一真正建立容器的元件，也負責回報狀態</td>
+</tr>
+<tr>
+<td><strong>kube-proxy</strong></td>
+<td>每個 Node</td>
+<td>設定轉發規則，但不親自轉發流量</td>
+</tr>
+</tbody>
+</table>
+<h2 id="三個貫穿全文的設計原則">三個貫穿全文的設計原則</h2>
+<p>走完全程之後，回頭看會發現這七個元件遵循著同樣的三條原則：</p>
+<p><mark>① 所有溝通都經過 apiserver。</mark> 沒有任何兩個元件直接對話。scheduler 不會打電話給 kubelet，它只是修改 apiserver 上的資料，然後 kubelet 自己發現。這叫做 <strong>hub-and-spoke（軸輻式）</strong>，好處是安全檢查集中、元件彼此解耦。</p>
+<p><mark>② 每個元件只管一件事，而且只修改狀態。</mark> scheduler 只寫 <code>nodeName</code>、controller 只建立 Pod 物件。沒有人「命令」別人做事，大家都只是<mark>改變期望狀態，然後相信會有人來實現</mark>。</p>
+<p><mark>③ 一切都是 reconcile loop。</mark> 沒有「執行一次就結束」的流程，只有永不停止的「比對現況與期望、然後修正」。這就是自我修復能力的來源。</p>
+<hr>
+<h1 id="用這些知識除錯：狀態對照表">用這些知識除錯：狀態對照表</h1>
+<p>知道每個元件負責什麼，最直接的用途就是<mark>看到問題時知道該查誰</mark>：</p>
+<table>
+<thead>
+<tr>
+<th>你看到的狀態</th>
+<th>卡在哪一站</th>
+<th>先查什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kubectl</code> 沒反應 / 連線逾時</td>
+<td>apiserver</td>
+<td>apiserver 是否存活、kubeconfig 是否正確</td>
+</tr>
+<tr>
+<td><code>403 Forbidden</code></td>
+<td>apiserver（授權關卡）</td>
+<td><code>kubectl auth can-i ...</code> 檢查 RBAC</td>
+</tr>
+<tr>
+<td>建立時被拒絕、或內容被改</td>
+<td>apiserver（准入控制）</td>
+<td>檢查 admission webhook（Gatekeeper、Istio）</td>
+</tr>
+<tr>
+<td>Pod 一直 <code>Pending</code></td>
+<td><strong>scheduler</strong> 找不到節點</td>
+<td><code>kubectl describe pod</code> 看 Events：資源不足？taint？</td>
+</tr>
+<tr>
+<td>Pod 卡在 <code>ContainerCreating</code></td>
+<td><strong>kubelet</strong></td>
+<td>image 拉不下來？volume 掛不上？CNI 沒給到 IP？</td>
+</tr>
+<tr>
+<td><code>CrashLoopBackOff</code></td>
+<td>容器本身，不是元件問題</td>
+<td><code>kubectl logs --previous</code> 看應用程式錯誤</td>
+</tr>
+<tr>
+<td>Pod <code>Running</code> 但沒流量</td>
+<td>Endpoint → <strong>kube-proxy</strong></td>
+<td><code>kubectl get endpoints</code> 是否為空？readinessProbe 過了嗎？</td>
+</tr>
+<tr>
+<td>全部指令都變唯讀</td>
+<td><strong>etcd</strong> quorum 失守</td>
+<td>檢查 etcd 節點健康狀態</td>
+</tr>
+<tr>
+<td>節點顯示 <code>NotReady</code></td>
+<td>該節點的 <strong>kubelet</strong></td>
+<td>kubelet 服務是否運作、節點是否失聯</td>
+</tr>
+</tbody>
+</table>
+<p>這張表的價值不在於背下來，而在於<strong>它示範了一種思考方式</strong>：<mark>遇到問題時先問「這件事是誰負責的」，範圍立刻就縮小了</mark>。</p>
+<hr>
+<h1 id="結語：從「會用」到「知道為什麼」">結語：從「會用」到「知道為什麼」</h1>
+<p>回到開頭那個問題：<code>kubectl apply</code> 之後的兩秒發生了什麼事？</p>
+<p>答案是——<mark>你的願望被登記進了資料庫，然後一群各司其職的元件，各自發現了與自己有關的部分，接力把它變成現實。</mark></p>
+<p>沒有人指揮誰。controller-manager 不知道 scheduler 的存在，scheduler 也不認識 kubelet。它們只是<mark>各自盯著 apiserver，看到跟自己有關的變化就動手，做完之後把結果寫回去</mark>。</p>
+<p>理解這件事之後，很多原本要死背的規則會突然變得理所當然：</p>
+<ul>
+<li>為什麼刪掉的 Pod 會自己長回來？→ 因為你改的是現況，不是期望</li>
+<li>為什麼 apiserver 掛了服務還在跑？→ 因為容器由 kubelet 和 runtime 維持，不需要 control plane</li>
+<li>為什麼升級順序是 apiserver 優先？→ 因為所有人都要跟它講話</li>
+<li>為什麼 Pod 卡在 Pending？→ 因為排程是獨立的一步，還沒有人認領它</li>
+</ul>
+<p>這也是為什麼理解元件職責不只是「知識」——它直接決定你除錯的速度。</p>
+<hr>
+<h2 id="延伸閱讀">延伸閱讀</h2>
+<ul>
+<li>[[升級 Kubernetes 前，怎麼提前知道哪裡會爆]] —— 這篇講的是「元件在做什麼」，那篇講的是「升級時這些元件的版本怎麼搭配」，包含版本歪斜政策為什麼以 apiserver 為基準</li>
+<li>[[Kubernetes 常用測試指令]] —— 除錯對照表裡提到的連線測試，實際指令在這裡</li>
+<li>[[在 k3s 上手把手打造 Prometheus + Grafana 監控系統]] —— 想觀察這些元件的實際運作指標，可以從監控系統開始</li>
+</ul>
+<h2 id="官方參考來源">官方參考來源</h2>
+<table>
+<thead>
+<tr>
+<th>主題</th>
+<th>連結</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>叢集架構總覽</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/concepts/architecture/">https://kubernetes.io/docs/concepts/architecture/</a></td>
+</tr>
+<tr>
+<td>kube-apiserver</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/concepts/overview/components/#kube-apiserver">https://kubernetes.io/docs/concepts/overview/components/#kube-apiserver</a></td>
+</tr>
+<tr>
+<td>Admission Controllers</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/">https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/</a></td>
+</tr>
+<tr>
+<td>etcd 官方文件</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://etcd.io/docs/">https://etcd.io/docs/</a></td>
+</tr>
+<tr>
+<td>備份與還原 etcd</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/">https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/</a></td>
+</tr>
+<tr>
+<td>Secret 加密（encryption at rest）</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/">https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/</a></td>
+</tr>
+<tr>
+<td>kube-scheduler 排程機制</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/">https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/</a></td>
+</tr>
+<tr>
+<td>CRI / CNI / CSI 介面</td>
+<td><a target="_blank" rel="noopener external nofollow noreferrer" href="https://kubernetes.io/docs/concepts/architecture/cri/">https://kubernetes.io/docs/concepts/architecture/cri/</a></td>
+</tr>
+</tbody>
+</table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io">Shannon Hung</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="https://shannonhung.github.io/posts/k8s-components-journey/">https://shannonhung.github.io/posts/k8s-components-journey/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 授權協議。轉載請註明來源 <a href="https://shannonhung.github.io" target="_blank">Shannon's Blog 🐟 技術 | 生活 | 旅行</a>！</span></div></div><div class="post-share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/k8s-upgrade-preflight-check/" title="升級 Kubernetes 前，怎麼提前知道哪裡會爆"><img class="cover" src="/img/loading-icon.gif" data-original="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">升級 Kubernetes 前，怎麼提前知道哪裡會爆</div></div><div class="info-2"><div class="info-item-1">前言：升級當天才發現，就太晚了 升級 Kubernetes 真正花時間的，從來不是那三行 kubeadm 指令。 是升級前那份「到底什麼東西會爆」的清單。 而會爆的東西分成三種，它們壞掉的方式完全不一樣：    會爆的東西 長什麼樣 什麼時候發現     ① 元件版本不相容 Cilium 不支援新版 K8s、Helm chart 裝不上去 升級當下就失敗   ② 你的 YAML 用了被移除的 API apiVersion 在新版已經不存在，資源直接建不起來 升級後才發現，而且是安靜地壞**   ③ Feature gate 換階段了 你依賴的功能預設值變了，或開關直接被移除 行為變了但沒有錯誤訊息，最難查    第一種是大家都會想到的，但它其實最不危險——因為它會當場失敗，你馬上知道。 真正陰險的是第二、三種。你的 Deployment 昨天還好好的，升級完之後某天有人重新 apply 一次，才發現 apiVersion 已經不被接受了；或是某個功能的預設值悄悄從關變成開，三天後某個 Pod 重啟才爆出來。 這篇文章要教的就是怎麼在升級前，把這三種都提前抓出來：  元件版本 → ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/k3s-prometheus-grafana/" title="在 k3s 上手把手打造 Prometheus + Grafana 監控系統"><img class="cover" src="/img/loading-icon.gif" data-original="https://images.unsplash.com/photo-1484766280341-87861644c80d?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-12</div><div class="info-item-2">在 k3s 上手把手打造 Prometheus + Grafana 監控系統</div></div><div class="info-2"><div class="info-item-1">前言 當你把服務一個個丟進 Kubernetes 叢集之後，一定會遇到這些讓人半夜驚醒的時刻：  「使用者說網站很慢，但我怎麼知道是哪個節點的 CPU 爆了？」 「某個 Pod 一直重啟，到底是記憶體不夠，還是被 OOMKill 了？」 「我想做一張漂亮的儀表板給老闆看，但數據要從哪裡來？」  這些問題的答案，其實都指向同一套解法：Prometheus 負責『收集與儲存』數據，Grafana 負責『把數據畫成人看得懂的圖』。 這兩個工具幾乎是雲原生世界的監控黃金組合。 網路上大部分教學都叫你直接 helm install 一鍵安裝，但那樣你永遠不會知道「箱子裡面到底裝了什麼」。這篇文章反其道而行——我們用手寫 YAML manifests 的方式，在一個 k3s 輕量叢集上，一塊磚一塊磚地把整套監控系統疊起來。等你讀完，你不只會「用」，更會「懂」。  📦 本文所有範例都跑在 k3d 叢集（namespace 為 monitoring）。k3s 是輕量級的 Kubernetes 發行版，而 k3d 則是把 k3s 跑在 Docker 裡的工具，很適合本機學習。指令換成任何標準 K...</div></div></div></a><a class="pagination-related" href="/posts/k8s-upgrade-preflight-check/" title="升級 Kubernetes 前，怎麼提前知道哪裡會爆"><img class="cover" src="/img/loading-icon.gif" data-original="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-22</div><div class="info-item-2">升級 Kubernetes 前，怎麼提前知道哪裡會爆</div></div><div class="info-2"><div class="info-item-1">前言：升級當天才發現，就太晚了 升級 Kubernetes 真正花時間的，從來不是那三行 kubeadm 指令。 是升級前那份「到底什麼東西會爆」的清單。 而會爆的東西分成三種，它們壞掉的方式完全不一樣：    會爆的東西 長什麼樣 什麼時候發現     ① 元件版本不相容 Cilium 不支援新版 K8s、Helm chart 裝不上去 升級當下就失敗   ② 你的 YAML 用了被移除的 API apiVersion 在新版已經不存在，資源直接建不起來 升級後才發現，而且是安靜地壞**   ③ Feature gate 換階段了 你依賴的功能預設值變了，或開關直接被移除 行為變了但沒有錯誤訊息，最難查    第一種是大家都會想到的，但它其實最不危險——因為它會當場失敗，你馬上知道。 真正陰險的是第二、三種。你的 Deployment 昨天還好好的，升級完之後某天有人重新 apply 一次，才發現 apiVersion 已經不被接受了；或是某個功能的預設值悄悄從關變成開，三天後某個 Pod 重啟才爆出來。 這篇文章要教的就是怎麼在升級前，把這三種都提前抓出來：  元件版本 → ...</div></div></div></a><a class="pagination-related" href="/posts/k8s-test-commands/" title="Kubernetes 常用測試指令"><img class="cover" src="/img/loading-icon.gif" data-original="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-11</div><div class="info-item-2">Kubernetes 常用測試指令</div></div><div class="info-2"><div class="info-item-1">如何 curl 測試容器 1kubectl -n monitoring run ne-test --rm -i --restart=Never --image=curlimages/curl:8.10.1 -- curl -s http://node-exporter:9100/metrics 2&gt;&amp;1 | grep -E &quot;^node_(memory_MemAvailable|cpu_seconds_total|filesystem_avail)&quot; | head -5 這是一個非常典型的 Kubernetes 臨時除錯指令。它利用一個暫時性的容器來測試叢集內部的網路連通性，並獲取 Prometheus 格式的監控數據。 我們可以將指令拆解成三個部分來理解： 1.啟動測試容器 (The Runner) 1kubectl -n monitoring run ne-test --rm -i --restart=Never --image=curlimages/curl:8.10.1  -n monitoring: 在指定的 monitoring 命名...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading-icon.gif" data-original="/img/dudu-me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Shannon Hung</div><div class="author-info-description">爲了避免健忘，而開始記錄</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">133</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">97</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">47</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ShannonHung"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ShannonHung" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hsuanhung036@gmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/hung-yi-hsuan/" rel="external nofollow noreferrer" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0077b5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嗨～我是Shannon，開始架設此網站的原因是，因為自己的記憶力太過於短暫，雖然學了很多，但也忘記很多。為了避免健忘，開始我的筆記生活。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A%E9%82%A3%E5%85%A9%E7%A7%92%E4%B9%8B%E9%96%93%E7%99%BC%E7%94%9F%E4%BA%86%E4%BB%80%E9%BA%BC%E4%BA%8B%EF%BC%9F"><span class="toc-text">前言：那兩秒之間發生了什麼事？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E7%9C%8B%E5%85%A8%E6%99%AF"><span class="toc-text">先看全景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%99%EF%BC%9Akubectl-%E2%80%94%E2%80%94-%E5%AE%83%E5%85%B6%E5%AF%A6%E4%B8%8D%E5%9C%A8%E5%8F%A2%E9%9B%86%E8%A3%A1"><span class="toc-text">第一站：kubectl —— 它其實不在叢集裡</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%99%EF%BC%9Akube-apiserver-%E2%80%94%E2%80%94-%E5%8F%A2%E9%9B%86%E5%94%AF%E4%B8%80%E7%9A%84%E5%89%8D%E9%96%80"><span class="toc-text">第二站：kube-apiserver —— 叢集唯一的前門</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E4%BD%A0%E7%9A%84%E8%AB%8B%E6%B1%82%E8%A6%81%E9%80%9A%E9%81%8E%E4%B8%89%E9%81%93%E9%97%9C%E5%8D%A1"><span class="toc-text">2-1. 你的請求要通過三道關卡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E7%82%BA%E4%BB%80%E9%BA%BC%E3%80%8C%E6%89%80%E6%9C%89%E6%9D%B1%E8%A5%BF%E9%83%BD%E8%A6%81%E7%B6%93%E9%81%8E%E5%AE%83%E3%80%8D%E6%98%AF%E5%A5%BD%E8%A8%AD%E8%A8%88"><span class="toc-text">2-2. 為什麼「所有東西都要經過它」是好設計</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%99%EF%BC%9Aetcd-%E2%80%94%E2%80%94-%E5%8F%A2%E9%9B%86%E5%94%AF%E4%B8%80%E7%9A%84%E7%9C%9F%E7%9B%B8"><span class="toc-text">第三站：etcd —— 叢集唯一的真相</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E6%B7%BA%E5%B1%A4%EF%BC%9A%E5%AE%83%E5%B0%B1%E6%98%AF%E5%8F%A2%E9%9B%86%E7%9A%84%E8%B3%87%E6%96%99%E5%BA%AB"><span class="toc-text">3-1. 淺層：它就是叢集的資料庫</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E4%B8%AD%E5%B1%A4%EF%BC%9A%E7%82%BA%E4%BB%80%E9%BA%BC-etcd-%E8%A6%81%E4%B8%89%E5%8F%B0%E3%80%81%E4%BA%94%E5%8F%B0%EF%BC%9F"><span class="toc-text">3-2. 中層：為什麼 etcd 要三台、五台？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%B7%B1%E5%B1%A4%EF%BC%9A%E5%82%99%E4%BB%BD%EF%BC%8C%E4%BB%A5%E5%8F%8A%E9%82%A3%E5%80%8B%E6%B2%92%E4%BA%BA%E6%83%B3%E9%81%87%E5%88%B0%E7%9A%84%E5%A0%B4%E6%99%AF"><span class="toc-text">3-3. 深層：備份，以及那個沒人想遇到的場景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%99%EF%BC%9Acontroller-manager-%E2%80%94%E2%80%94-%E6%8A%8A%E9%A1%98%E6%9C%9B%E8%AE%8A%E6%88%90-Pod"><span class="toc-text">第四站：controller-manager —— 把願望變成 Pod</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-Reconcile-Loop%EF%BC%9A%E6%95%B4%E5%80%8B-Kubernetes-%E7%9A%84%E5%BF%83%E8%B7%B3"><span class="toc-text">4-1. Reconcile Loop：整個 Kubernetes 的心跳</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E4%B8%8D%E5%8F%AA%E4%B8%80%E5%80%8B-controller"><span class="toc-text">4-2. 不只一個 controller</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-%E6%AD%A4%E5%88%BB%E7%9A%84%E7%8B%80%E6%85%8B%EF%BC%9APod-%E6%9C%89%E4%BA%86%EF%BC%8C%E4%BD%86%E9%82%84%E6%B2%92%E6%9C%89%E5%AE%B6"><span class="toc-text">4-3. 此刻的狀態：Pod 有了，但還沒有家</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%99%EF%BC%9Akube-scheduler-%E2%80%94%E2%80%94-%E6%B1%BA%E5%AE%9A%E5%8E%BB%E5%93%AA%E5%8F%B0%E6%A9%9F%E5%99%A8"><span class="toc-text">第五站：kube-scheduler —— 決定去哪台機器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-%E5%85%A9%E5%80%8B%E9%9A%8E%E6%AE%B5%EF%BC%9A%E5%85%88%E7%AF%A9%E9%81%B8%EF%BC%8C%E5%86%8D%E8%A9%95%E5%88%86"><span class="toc-text">5-1. 兩個階段：先篩選，再評分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-%E9%97%9C%E9%8D%B5%EF%BC%9Ascheduler-%E4%B8%8D%E6%9C%83%E8%87%AA%E5%B7%B1%E5%BB%BA%E7%AB%8B%E5%AE%B9%E5%99%A8"><span class="toc-text">5-2. 關鍵：scheduler 不會自己建立容器</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%99%EF%BC%9Akubelet-%E2%80%94%E2%80%94-%E7%B5%82%E6%96%BC%E6%9C%89%E5%AE%B9%E5%99%A8%E4%BA%86"><span class="toc-text">第六站：kubelet —— 終於有容器了</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1-kubelet-%E6%8B%BF%E5%88%B0-Pod-%E4%B9%8B%E5%BE%8C%E5%81%9A%E4%BB%80%E9%BA%BC"><span class="toc-text">6-1. kubelet 拿到 Pod 之後做什麼</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2-%E5%AE%83%E5%90%8C%E6%99%82%E6%98%AF%E3%80%8C%E5%9B%9E%E5%A0%B1%E8%80%85%E3%80%8D"><span class="toc-text">6-2. 它同時是「回報者」</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E7%AB%99%EF%BC%9Akube-proxy-%E2%80%94%E2%80%94-%E8%AE%93%E6%B5%81%E9%87%8F%E6%89%BE%E5%BE%97%E5%88%B0-Pod"><span class="toc-text">第七站：kube-proxy —— 讓流量找得到 Pod</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-1-%E5%AE%83%E5%85%B6%E5%AF%A6%E4%B8%8D%E8%BD%89%E7%99%BC%E6%B5%81%E9%87%8F"><span class="toc-text">7-1. 它其實不轉發流量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-2-%E5%AE%83%E6%80%8E%E9%BA%BC%E7%9F%A5%E9%81%93%E8%A6%81%E8%BD%89%E7%99%BC%E7%B5%A6%E8%AA%B0"><span class="toc-text">7-2. 它怎麼知道要轉發給誰</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%A8%E7%A8%8B%E5%9B%9E%E9%A1%A7%EF%BC%9A%E9%82%A3%E5%85%A9%E7%A7%92%E9%90%98%E7%9A%84%E5%AE%8C%E6%95%B4%E6%97%85%E7%A8%8B"><span class="toc-text">全程回顧：那兩秒鐘的完整旅程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E5%80%8B%E5%85%83%E4%BB%B6%EF%BC%8C%E4%B8%80%E5%8F%A5%E8%A9%B1%E7%B8%BD%E7%B5%90"><span class="toc-text">七個元件，一句話總結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E5%80%8B%E8%B2%AB%E7%A9%BF%E5%85%A8%E6%96%87%E7%9A%84%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87"><span class="toc-text">三個貫穿全文的設計原則</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%A8%E9%80%99%E4%BA%9B%E7%9F%A5%E8%AD%98%E9%99%A4%E9%8C%AF%EF%BC%9A%E7%8B%80%E6%85%8B%E5%B0%8D%E7%85%A7%E8%A1%A8"><span class="toc-text">用這些知識除錯：狀態對照表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B5%90%E8%AA%9E%EF%BC%9A%E5%BE%9E%E3%80%8C%E6%9C%83%E7%94%A8%E3%80%8D%E5%88%B0%E3%80%8C%E7%9F%A5%E9%81%93%E7%82%BA%E4%BB%80%E9%BA%BC%E3%80%8D"><span class="toc-text">結語：從「會用」到「知道為什麼」</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%B6%E4%BC%B8%E9%96%B1%E8%AE%80"><span class="toc-text">延伸閱讀</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E5%8F%83%E8%80%83%E4%BE%86%E6%BA%90"><span class="toc-text">官方參考來源</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2026 By Shannon Hung</span></div><div class="footer_custom_text">Hi, welcome to Shannon <a target="_blank" rel="noopener external nofollow noreferrer" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button><a id="to_comment" href="#post-comment" title="前往評論"><i class="fas fa-comments"></i></a></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="translateLink" type="button" title="繁簡轉換">繁</button><button id="darkmode" type="button" title="日夜模式切換"><i class="fas fa-adjust"></i></button><button id="go-up" type="button" title="回到頂端"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const parseViewBox = viewBox => {
+    if (!viewBox) return null
+    const parts = viewBox.trim().split(/[\s,]+/).map(n => Number(n))
+    if (parts.length !== 4 || parts.some(n => Number.isNaN(n))) return null
+    return parts
+  }
+
+  const getSvgViewBox = svg => {
+    const attr = parseViewBox(svg.getAttribute('viewBox'))
+    if (attr) return attr
+
+    // Fallback: use bbox to build a viewBox
+    try {
+      const bbox = svg.getBBox()
+      if (bbox && bbox.width && bbox.height) return [bbox.x, bbox.y, bbox.width, bbox.height]
+    } catch (e) {
+      // getBBox may fail on some edge cases; ignore
+    }
+
+    const w = Number(svg.getAttribute('width')) || 0
+    const h = Number(svg.getAttribute('height')) || 0
+    if (w > 0 && h > 0) return [0, 0, w, h]
+    return [0, 0, 100, 100]
+  }
+
+  const setSvgViewBox = (svg, vb) => {
+    svg.setAttribute('viewBox', `${vb[0]} ${vb[1]} ${vb[2]} ${vb[3]}`)
+  }
+
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v))
+
+  const openSvgInNewTab = ({ source, initViewBox }) => {
+    const getClonedSvg = () => {
+      if (typeof source === 'string') {
+        const template = document.createElement('template')
+        template.innerHTML = source.trim()
+        const svg = template.content.querySelector('svg')
+        return svg ? svg.cloneNode(true) : null
+      }
+      if (source && typeof source.cloneNode === 'function') {
+        return source.cloneNode(true)
+      }
+      return null
+    }
+
+    const clone = getClonedSvg()
+    if (!clone) return
+    if (initViewBox && initViewBox.length === 4) {
+      clone.setAttribute('viewBox', initViewBox.join(' '))
+    }
+    if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+    if (!clone.getAttribute('xmlns:xlink') && clone.outerHTML.includes('xlink:')) {
+      clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
+    }
+    // inject background to match current theme
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+    const bg = getComputedStyle(document.body).backgroundColor || (isDark ? '#1e1e1e' : '#ffffff')
+    if (!clone.style.background) clone.style.background = bg
+
+    const serializer = new XMLSerializer()
+    const svgSource = serializer.serializeToString(clone)
+    const htmlSource = `<!doctype html><html><head><meta charset="utf-8" />
+      <style>
+        html, body { width: 100%; height: 100%; margin: 0; display: flex; align-items: center; justify-content: center; background: ${bg}; }
+        svg { max-width: 100%; max-height: 100%; height: auto; width: auto; }
+      </style>
+      </head><body>${svgSource}</body></html>`
+    const blob = new Blob([htmlSource], { type: 'text/html;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    window.open(url, '_blank', 'noopener')
+    setTimeout(() => URL.revokeObjectURL(url), 30000)
+  }
+
+  const attachMermaidViewerButton = wrap => {
+    let btn = wrap.querySelector('.mermaid-open-btn')
+    if (!btn) {
+      btn = document.createElement('button')
+      btn.type = 'button'
+      btn.className = 'mermaid-open-btn'
+      wrap.appendChild(btn)
+    }
+
+    btn.innerHTML = '<i class="fa fa-search fa-fw" aria-hidden="true"></i>'
+
+    if (!btn.__mermaidViewerBound) {
+      btn.addEventListener('click', e => {
+        e.preventDefault()
+        e.stopPropagation()
+        const svg = wrap.__mermaidOriginalSvg || wrap.querySelector('svg')
+        if (!svg) return
+        const initViewBox = wrap.__mermaidInitViewBox
+        if (typeof svg === 'string') {
+          openSvgInNewTab({ source: svg, initViewBox })
+          return
+        }
+        openSvgInNewTab({ source: svg, initViewBox })
+      })
+      btn.__mermaidViewerBound = true
+    }
+  }
+
+  // Zoom around a point (px, py) in the SVG viewport (in viewBox coordinates)
+  const zoomAtPoint = (vb, factor, px, py) => {
+    const w = vb[2] * factor
+    const h = vb[3] * factor
+    const nx = px - (px - vb[0]) * factor
+    const ny = py - (py - vb[1]) * factor
+    return [nx, ny, w, h]
+  }
+
+  const initMermaidGestures = wrap => {
+    const svg = wrap.querySelector('svg')
+    if (!svg) return
+
+    // Ensure viewBox exists so gestures always work
+    const initVb = getSvgViewBox(svg)
+    wrap.__mermaidInitViewBox = initVb
+    wrap.__mermaidCurViewBox = initVb.slice()
+    setSvgViewBox(svg, initVb)
+
+    // Avoid binding multiple times on themeChange/pjax
+    if (wrap.__mermaidGestureBound) return
+    wrap.__mermaidGestureBound = true
+
+    // Helper: map client (viewport) coordinate -> viewBox coordinate
+    const clientToViewBox = (clientX, clientY) => {
+      const rect = svg.getBoundingClientRect()
+      const vb = wrap.__mermaidCurViewBox || getSvgViewBox(svg)
+      const x = vb[0] + (clientX - rect.left) * (vb[2] / rect.width)
+      const y = vb[1] + (clientY - rect.top) * (vb[3] / rect.height)
+      return { x, y, rect, vb }
+    }
+
+    const state = {
+      pointers: new Map(),
+      startVb: null,
+      startDist: 0,
+      startCenter: null
+    }
+
+    const clampVb = vb => {
+      const init = wrap.__mermaidInitViewBox || vb
+      const minW = init[2] * 0.1
+      const maxW = init[2] * 10
+      const minH = init[3] * 0.1
+      const maxH = init[3] * 10
+      vb[2] = clamp(vb[2], minW, maxW)
+      vb[3] = clamp(vb[3], minH, maxH)
+      return vb
+    }
+
+    const setCurVb = vb => {
+      vb = clampVb(vb)
+      wrap.__mermaidCurViewBox = vb
+      setSvgViewBox(svg, vb)
+    }
+
+    const onPointerDown = e => {
+      // Allow only primary button for mouse
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      svg.setPointerCapture(e.pointerId)
+      state.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      if (state.pointers.size === 1) {
+        state.startVb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+      } else if (state.pointers.size === 2) {
+        const pts = [...state.pointers.values()]
+        const dx = pts[0].x - pts[1].x
+        const dy = pts[0].y - pts[1].y
+        state.startDist = Math.hypot(dx, dy)
+        state.startVb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+        state.startCenter = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 }
+      }
+    }
+
+    const onPointerMove = e => {
+      if (!state.pointers.has(e.pointerId)) return
+      state.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      // Pan with 1 pointer
+      if (state.pointers.size === 1 && state.startVb) {
+        const p = [...state.pointers.values()][0]
+        const prev = { x: e.clientX - e.movementX, y: e.clientY - e.movementY }
+        // movementX/Y unreliable on touch, compute from stored last position
+        const last = wrap.__mermaidLastSinglePointer || p
+        const dxClient = p.x - last.x
+        const dyClient = p.y - last.y
+        wrap.__mermaidLastSinglePointer = p
+
+        const { rect } = clientToViewBox(p.x, p.y)
+        const vb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+        const dx = dxClient * (vb[2] / rect.width)
+        const dy = dyClient * (vb[3] / rect.height)
+        setCurVb([vb[0] - dx, vb[1] - dy, vb[2], vb[3]])
+        return
+      }
+
+      // Pinch zoom with 2 pointers
+      if (state.pointers.size === 2 && state.startVb && state.startDist > 0) {
+        const pts = [...state.pointers.values()]
+        const dx = pts[0].x - pts[1].x
+        const dy = pts[0].y - pts[1].y
+        const dist = Math.hypot(dx, dy)
+        if (!dist) return
+        const factor = state.startDist / dist // dist bigger => zoom in (viewBox smaller)
+
+        const cx = (pts[0].x + pts[1].x) / 2
+        const cy = (pts[0].y + pts[1].y) / 2
+        const centerClient = { x: cx, y: cy }
+
+        const pxy = clientToViewBox(centerClient.x, centerClient.y)
+        const cpx = pxy.x
+        const cpy = pxy.y
+
+        const vb = zoomAtPoint(state.startVb, factor, cpx, cpy)
+        setCurVb(vb)
+      }
+    }
+
+    const onPointerUpOrCancel = e => {
+      state.pointers.delete(e.pointerId)
+      if (state.pointers.size === 0) {
+        state.startVb = null
+        state.startDist = 0
+        state.startCenter = null
+        wrap.__mermaidLastSinglePointer = null
+      } else if (state.pointers.size === 1) {
+        // reset single pointer baseline to avoid jump
+        wrap.__mermaidLastSinglePointer = [...state.pointers.values()][0]
+      }
+    }
+
+    // Wheel zoom (mouse/trackpad)
+    const onWheel = e => {
+      // ctrlKey on mac trackpad pinch; we treat both as zoom
+      e.preventDefault()
+      const delta = e.deltaY
+      const zoomFactor = delta > 0 ? 1.1 : 0.9
+      const { x, y } = clientToViewBox(e.clientX, e.clientY)
+      const vb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+      setCurVb(zoomAtPoint(vb, zoomFactor, x, y))
+    }
+
+    const onDblClick = () => {
+      const init = wrap.__mermaidInitViewBox
+      if (!init) return
+      wrap.__mermaidCurViewBox = init.slice()
+      setSvgViewBox(svg, init)
+    }
+
+    svg.addEventListener('pointerdown', onPointerDown)
+    svg.addEventListener('pointermove', onPointerMove)
+    svg.addEventListener('pointerup', onPointerUpOrCancel)
+    svg.addEventListener('pointercancel', onPointerUpOrCancel)
+    svg.addEventListener('wheel', onWheel, { passive: false })
+    svg.addEventListener('dblclick', onDblClick)
+  }
+
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+
+      // Clear old render (themeChange/pjax will rerun)
+      const oldSvg = item.querySelector('svg')
+      if (oldSvg) oldSvg.remove()
+      item.__mermaidGestureBound = false
+
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+        if (true) initMermaidGestures(item)
+        item.__mermaidOriginalSvg = svg
+        if (true) attachMermaidViewerButton(item)
+      }
+
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: '51917ecdc184bb98b226',
+      clientSecret: 'e48b44c1908c14b74ff7513f06c7cb892a4f4748',
+      repo: 'shannonhung.github.io',
+      owner: 'ShannonHung',
+      admin: ['ShannonHung'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || '4aef7e6abd51df5c65099b5746f556d6'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script data-pjax src="/self/btf.js"></script><script data-pjax src="/self/tw_en.js"></script><script data-pjax src="/self/calendar.js"></script><script data-pjax src="/self/languages.js"></script><script data-pjax src="/self/mermaid.js"></script><script data-pjax src="/self/callout.js"></script><script id="canvas_nest" defer="defer" color="139,71,38" opacity="0.5" zIndex="-1" count="500" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料載入中</span></div><div class="local-search-input"><input placeholder="搜尋文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 3,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>

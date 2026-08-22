@@ -20,34 +20,32 @@ p {
 #footer-wrap {
   color: #fff;
 }
-/* 粗體字 特效：螢光筆黃底，維持正常字級 */
+/* 粗體字：單純加粗，不再套螢光筆。
+ * 螢光筆改用 ==文字== 語法（markdown-it-mark，見下方 mark 樣式）。 */
 strong {
+  font-weight: bold;
+}
+
+/* 螢光筆：==文字== → <mark>
+ * 由 markdown-it-mark 產生（在 config-zh.yml / config-en.yml 啟用）。 */
+mark {
   padding: 0 0.2rem;
+  color: inherit;
+  /* 跟舊的粗體螢光筆一致：字要粗，黃底才不會顯得太滿 */
   font-weight: bold;
   /* 只在字的下半部鋪黃色，像螢光筆畫過 */
   background: linear-gradient(180deg, transparent 60%, #fdda5a 0);
 }
 /* dark 模式：黃底鋪滿整個字，深色字全程有底襯著才清楚 */
-[data-theme="dark"] strong {
+[data-theme="dark"] mark {
   color: #1a1a1a;
   background: #fdda5a;
   border-radius: 2px;
 }
-/* 斜線 */
-[data-theme="light"] em {
-  /* bold */
-  padding: 0.3rem;
-  font-weight: bold;
-  font-size: 15px;
-  background: linear-gradient(180deg, transparent 50%, #fdda5a 0);
-}
-[data-theme="dark"] em {
-  /* bold */
-  padding: 0 0.2rem;
-  font-weight: bold;
-  font-size: 15px;
-  color: black;
-  background: linear-gradient(180deg, transparent 0%, #fdda5a 0%);
+/* 斜體：恢復瀏覽器原本的斜體，不再套螢光筆。
+ * 螢光筆請改用 ==文字== 語法（見上方 mark 樣式）。 */
+em {
+  font-style: italic;
 }
 /* 鼠標樣式 */
 body {

@@ -1,0 +1,145 @@
+/* Obsidian / GitHub 風格的 callout（> [!TIP] 之類）樣式。
+ * 依 CLAUDE.md 的規則走 inject.head，不動 themes/butterfly 原始碼。
+ * HTML 結構由 /self/callout.js 在瀏覽器端把 <blockquote> 改寫而成：
+ *
+ *   <blockquote class="callout callout-tip">
+ *     <div class="callout-title"><svg class="callout-icon">…</svg><span>標題</span></div>
+ *     <div class="callout-body">…原本的內容…</div>
+ *   </blockquote>
+ */
+
+.callout {
+  --callout-color: #6b7280;
+  --callout-bg: rgba(107, 114, 128, .08);
+
+  position: relative;
+  margin: 1.4rem 0;
+  padding: .9rem 1.1rem;
+  border: 1px solid transparent;
+  border-left: 4px solid var(--callout-color);
+  border-radius: 6px;
+  background: var(--callout-bg);
+  color: inherit;
+}
+
+/* Butterfly 的 blockquote 預設有自己的底色與左框線，這裡一併覆蓋掉。 */
+.callout::before,
+.callout::after {
+  content: none !important;
+}
+
+.callout-title {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  font-weight: 700;
+  color: var(--callout-color);
+  line-height: 1.5;
+}
+
+.callout-icon {
+  flex: 0 0 auto;
+  width: 1.15em;
+  height: 1.15em;
+  margin-top: .18em;
+  color: var(--callout-color);
+}
+
+/* 沒有標題文字時（只有 > [!TIP]），icon 不用獨佔一整行的留白。 */
+.callout-title:empty {
+  display: none;
+}
+
+.callout-body {
+  margin-top: .5rem;
+}
+
+.callout-body > :first-child { margin-top: 0; }
+.callout-body > :last-child  { margin-bottom: 0; }
+
+/* ── 各類型配色 ───────────────────────────────────────────── */
+
+/* TIP：綠底、綠色粗體標題、燈泡 */
+.callout-tip {
+  --callout-color: #1a7f45;
+  --callout-bg: rgba(26, 127, 69, .09);
+}
+
+/* WARNING：黃底、橘色粗體標題、三角驚嘆號 */
+.callout-warning {
+  --callout-color: #b8690f;
+  --callout-bg: rgba(255, 196, 61, .16);
+}
+
+/* NOTE：藍底、藍色粗體標題、筆 */
+.callout-note {
+  --callout-color: #1063c4;
+  --callout-bg: rgba(16, 99, 196, .09);
+}
+
+/* IMPORTANT：紫底、驚嘆號圓框 */
+.callout-important {
+  --callout-color: #7a3ec2;
+  --callout-bg: rgba(122, 62, 194, .09);
+}
+
+/* CAUTION：紅底、八角警示 */
+.callout-caution {
+  --callout-color: #c9333d;
+  --callout-bg: rgba(201, 51, 61, .09);
+}
+
+/* ── 深色模式：底色調淡、字色提亮 ───────────────────────── */
+
+[data-theme='dark'] .callout {
+  --callout-bg: rgba(255, 255, 255, .05);
+}
+
+[data-theme='dark'] .callout-tip       { --callout-color: #4ade80; --callout-bg: rgba(74, 222, 128, .1); }
+[data-theme='dark'] .callout-warning   { --callout-color: #f0a24a; --callout-bg: rgba(240, 162, 74, .12); }
+[data-theme='dark'] .callout-note      { --callout-color: #60a5fa; --callout-bg: rgba(96, 165, 250, .1); }
+[data-theme='dark'] .callout-important { --callout-color: #c084fc; --callout-bg: rgba(192, 132, 252, .1); }
+[data-theme='dark'] .callout-caution   { --callout-color: #f87171; --callout-bg: rgba(248, 113, 113, .1); }
+
+/* callout 內的行內程式碼沿用主題樣式即可，但底色要跟 callout 底色分開。 */
+[data-theme='dark'] .callout code {
+  background: rgba(255, 255, 255, .08);
+}
+
+/* ── 螢光筆（==重點== → <mark>） ─────────────────────────
+ * 由 markdown-it-mark 產生（設定在 config-zh.yml 的 markdown.plugins）。
+ * 用漸層模擬螢光筆只塗下半部的效果，而不是整塊實心底色，
+ * 這樣長句被標起來時仍然好讀。
+ */
+
+mark {
+  background: linear-gradient(
+    to bottom,
+    transparent 8%,
+    rgba(255, 213, 79, .55) 8%,
+    rgba(255, 213, 79, .55) 92%,
+    transparent 92%
+  );
+  color: inherit;
+  padding: 0 .12em;
+  border-radius: .1em;
+  /* 讓螢光筆跨行時每一行都塗到 */
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* 深色模式：黃色實心會刺眼，改用低飽和底色 + 提亮字色 */
+[data-theme='dark'] mark {
+  background: linear-gradient(
+    to bottom,
+    transparent 8%,
+    rgba(250, 204, 21, .22) 8%,
+    rgba(250, 204, 21, .22) 92%,
+    transparent 92%
+  );
+  color: #fde68a;
+}
+
+/* 螢光筆裡的粗體與行內程式碼不要被底色蓋掉 */
+mark strong { color: inherit; }
+mark code { background: transparent; }
